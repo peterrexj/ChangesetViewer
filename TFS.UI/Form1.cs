@@ -23,7 +23,7 @@ namespace TFS.UI
             listBox1.Items.Clear();
             
 
-            TFS.Reader.Infra.TfsServer tfs = new TFS.Reader.Infra.TfsServer();
+            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
             //var pp = tfs.Connection();
 
             //if (pp.HasAuthenticated == false)

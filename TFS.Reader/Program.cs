@@ -10,8 +10,8 @@ namespace TFS.Reader
     {
         static void Main(string[] args)
         {
-            Infra.TfsServer tfs = new Infra.TfsServer();
-            var pp = tfs.Connection();
+            Infrastructure.TfsServer tfs = new Infrastructure.TfsServer();
+            var pp = tfs.GetCollection();
 
             if (pp.HasAuthenticated == false)
                 pp.Authenticate();

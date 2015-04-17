@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TFS.Reader.Infra;
+using TFS.Reader.Infrastructure;
 
 namespace TFS.Reader.Infrastructure
 {
@@ -28,7 +28,7 @@ namespace TFS.Reader.Infrastructure
 
         public IEnumerable<Changeset> Get(string projectPath, DateTime from)
         {
-            var projectCollection = _tfsServer.Connection();
+            var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
                 projectCollection.Authenticate();
 
@@ -47,7 +47,7 @@ namespace TFS.Reader.Infrastructure
 
         public IEnumerable<Changeset> Get(string projectPath, int topN, string containsCheck = "")
         {
-            var projectCollection = _tfsServer.Connection();
+            var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
                 projectCollection.Authenticate();
 
@@ -138,7 +138,7 @@ namespace TFS.Reader.Infrastructure
         /// <see cref="http://stackoverflow.com/questions/9514204/tfs2010-track-merges"/>
         public Changeset Get(int changesetId)
         {
-            var projectCollection = _tfsServer.Connection();
+            var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
                 projectCollection.Authenticate();
 
