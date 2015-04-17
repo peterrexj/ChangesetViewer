@@ -6,23 +6,29 @@
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300"
-             Name="MyToolWindow" Width="197">
+             Name="MyToolWindow">
     <Grid>
-        <DockPanel HorizontalAlignment="Left" Height="57" LastChildFill="False" VerticalAlignment="Top" Width="197">
-            
-
-        </DockPanel>
-
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
             <TextBox Height="23" TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource"/>
-            <TextBox Height="23" TextWrapping="Wrap" Text="" x:Name="txtSearchText"/>
-            <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Margin="124,26,2,1" Width="71" Height="25"/>
-            <ListBox Height="212" Name="lstContainer"/>
-            
-
+            <TextBox Height="23" TextWrapping="Wrap" Text="" x:Name="txtSearchText" HorizontalAlignment="Right" Width="114"/>
+            <ComboBox x:Name="lstUsers"/>
+            <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Margin="124,26,2,1" Width="71" Height="25" HorizontalAlignment="Right"/>
+            <ListBox Height="249" Name="lstContainer" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,2,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Title}" />
+                            <TextBlock Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
-
     </Grid>
+
 </UserControl>

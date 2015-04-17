@@ -22,6 +22,7 @@ namespace PeterRexJoseph.ChangesetViewer
         public MyControl()
         {
             InitializeComponent();
+            
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
@@ -35,14 +36,14 @@ namespace PeterRexJoseph.ChangesetViewer
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             lstContainer.Items.Clear();
-            TFS.Reader.Infra.TfsServer tfs = new TFS.Reader.Infra.TfsServer();
+            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
 
             TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
 
             var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
             foreach (var d in dd)
             {
-                lstContainer.Items.Add(d.ChangesetId);
+                lstContainer.Items.Add(new { Title = d.ChangesetId, Name = d.Committer });
             }
 
             //lblCount.Text = dd.Count().ToString();
