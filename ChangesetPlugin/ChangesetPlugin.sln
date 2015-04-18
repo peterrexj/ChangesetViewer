@@ -21,9 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_UnitTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.UI.Test", "ChangesetViewer.UI.Test\ChangesetViewer.UI.Test.csproj", "{08127934-1E88-4BDE-B612-87BB9616CDCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginCore", "PluginCore\PluginCore.csproj", "{3ED5B861-64DF-492B-8FF5-DC64527684BE}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 8
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://peterrexjoseph.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -45,6 +47,9 @@ Global
 		SccProjectUniqueName6 = ChangesetViewer.UI.Test\\ChangesetViewer.UI.Test.csproj
 		SccProjectName6 = ChangesetViewer.UI.Test
 		SccLocalPath6 = ChangesetViewer.UI.Test
+		SccProjectUniqueName7 = PluginCore\\PluginCore.csproj
+		SccProjectName7 = PluginCore
+		SccLocalPath7 = PluginCore
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +80,10 @@ Global
 		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

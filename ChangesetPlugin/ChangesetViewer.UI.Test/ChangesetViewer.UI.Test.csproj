@@ -105,6 +105,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PluginCore\PluginCore.csproj">
+      <Project>{3ed5b861-64df-492b-8ff5-dc64527684be}</Project>
+      <Name>PluginCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TFS.Reader\TFS.Reader.csproj">
       <Project>{0300f4d5-a8bd-464c-b076-d966d9112319}</Project>
       <Name>TFS.Reader</Name>
