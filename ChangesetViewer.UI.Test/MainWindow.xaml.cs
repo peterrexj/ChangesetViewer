@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TFS.Reader.Infrastructure;
+using PluginCore.Extensions;
 
 namespace ChangesetViewer.UI.Test
 {
@@ -47,7 +48,10 @@ namespace ChangesetViewer.UI.Test
         {
 
             TfsUsers users = new TfsUsers();
-            var something = users.GetAllUsersInTFS().Select(u => new { Title = u.UniqueName, Name = u.DisplayName });
+            var something = users.GetAllUsersInTFS().Select(u => new { Title = u.UniqueName, Name = u.DisplayName })
+                .DistinctBy(d => d.Title).OrderBy(d => d.Name);
+            lstUsers.ItemsSource = something;
+            //lstContainer.ItemsSource = something;
             //lstContainer.DataContext
   
 
