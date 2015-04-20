@@ -37,19 +37,34 @@ namespace ChangesetViewer.UI.Test
 
             TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
 
-            var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
-            foreach (var d in dd)
-            {
-                lstContainer.Items.Add(new { Title = d.ChangesetId, Name = d.Committer });
-            }
+            var ddd  = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim()).First();
+            var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim())
+                .Select(u => new { Id = u.ChangesetId, CommitterName = u.Committer, Comment = u.Comment })
+                .Take(1);
+
+            lstContainer.ItemsSource = dd;
+
+            //foreach (var d in dd)
+            //{
+            //    lstContainer.Items.Add(new { Title = d.ChangesetId, Name = d.Committer });
+            //}
         }
 
         private void btnUsers_Click(object sender, RoutedEventArgs e)
         {
 
             TfsUsers users = new TfsUsers();
-            var something = users.GetAllUsersInTFS().Select(u => new { Title = u.UniqueName, Name = u.DisplayName })
-                .DistinctBy(d => d.Title).OrderBy(d => d.Name);
+            //var something = users.GetAllUsersInTFS().Select(u => new { Id = u.UniqueName, Name = u.DisplayName })
+            //    .DistinctBy(d => d.Id)
+            //    .OrderBy(d => d.Name);
+
+            var something = users.GetAllUsersInTFSBasedOnIdentity()
+                .Where(u => !u.Deleted && u.Type == IdentityType.WindowsUser) 
+                .Select(u => new { Id = u.TeamFoundationId, Name = u.DisplayName })
+                .DistinctBy(d => d.Name)
+                .OrderBy(d => d.Name);
+
+
             lstUsers.ItemsSource = something;
             //lstContainer.ItemsSource = something;
             //lstContainer.DataContext
