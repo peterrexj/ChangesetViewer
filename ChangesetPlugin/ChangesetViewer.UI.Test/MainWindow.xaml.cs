@@ -39,8 +39,8 @@ namespace ChangesetViewer.UI.Test
 
             var ddd  = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim()).First();
             var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim())
-                .Select(u => new { Id = u.ChangesetId, CommitterName = u.Committer, Comment = u.Comment })
-                .Take(1);
+                .Select(u => new { Id = u.ChangesetId, CommitterName = u.Committer, Comment = u.Comment });
+                
 
             lstContainer.ItemsSource = dd;
 
@@ -52,6 +52,12 @@ namespace ChangesetViewer.UI.Test
 
         private void btnUsers_Click(object sender, RoutedEventArgs e)
         {
+            //Microsoft.TeamFoundation.VersionControl.Control vxc;
+
+
+
+
+
 
             TfsUsers users = new TfsUsers();
             //var something = users.GetAllUsersInTFS().Select(u => new { Id = u.UniqueName, Name = u.DisplayName })
@@ -100,6 +106,20 @@ namespace ChangesetViewer.UI.Test
             //tfs.Server.GetService<Microsoft.TeamFoundation.Client.TfsTeamService>();
 
             //tfs.Server.GetService<
+        }
+
+        private void lstUsers_DropDownOpened(object sender, EventArgs e)
+        {
+            if (lstUsers.ItemsSource == null)
+            {
+                TfsUsers users = new TfsUsers();
+
+                lstUsers.ItemsSource = users.GetAllUsersInTFSBasedOnIdentity()
+                    .Where(u => !u.Deleted && u.Type == IdentityType.WindowsUser)
+                    .Select(u => new { Id = u.TeamFoundationId, Name = u.DisplayName })
+                    .DistinctBy(d => d.Name)
+                    .OrderBy(d => d.Name);
+            }
         }
     }
 }
