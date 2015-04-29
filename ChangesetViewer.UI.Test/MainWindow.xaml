@@ -42,14 +42,14 @@
                         <GridViewColumn Header="Name" Width="150">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Grid.Column="1" Text="{Binding CommitterName}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding CommitterName}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Name" Width="200">
+                        <GridViewColumn Header="Comment" Width="264">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Grid.Column="1" Text="{Binding Comment}" />
+                                    <TextBlock Grid.Column="3" Text="{Binding Comment}" TextWrapping="Wrap" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
