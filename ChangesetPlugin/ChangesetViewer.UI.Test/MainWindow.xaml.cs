@@ -30,19 +30,29 @@ namespace ChangesetViewer.UI.Test
             InitializeComponent();
         }
 
+        public IEnumerable<Identity> AllUsersInTfs { get; set; }
+
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
+            lstContainer.ItemsSource = null;
             lstContainer.Items.Clear();
             TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
 
             TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
 
-            var ddd  = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim()).First();
-            var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim())
-                .Select(u => new { Id = u.ChangesetId, CommitterName = u.Committer, Comment = u.Comment });
-                
+            //var ddd  = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim()).First();
+            var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
 
-            lstContainer.ItemsSource = dd;
+
+            
+                     
+                     
+
+                //.Select(u => new { Id = u.ChangesetId, CommitterName = u.Committer, Comment = u.Comment });
+
+
+            lstContainer.ItemsSource = dd
+                .Select(u => new { Id = u.ChangesetId, CommitterName = u.CommitterDisplayName, Comment = u.Comment });
 
             //foreach (var d in dd)
             //{
@@ -69,7 +79,6 @@ namespace ChangesetViewer.UI.Test
                 .Select(u => new { Id = u.TeamFoundationId, Name = u.DisplayName })
                 .DistinctBy(d => d.Name)
                 .OrderBy(d => d.Name);
-
 
             lstUsers.ItemsSource = something;
             //lstContainer.ItemsSource = something;
@@ -114,7 +123,9 @@ namespace ChangesetViewer.UI.Test
             {
                 TfsUsers users = new TfsUsers();
 
-                lstUsers.ItemsSource = users.GetAllUsersInTFSBasedOnIdentity()
+                AllUsersInTfs = users.GetAllUsersInTFSBasedOnIdentity();
+
+                lstUsers.ItemsSource = AllUsersInTfs
                     .Where(u => !u.Deleted && u.Type == IdentityType.WindowsUser)
                     .Select(u => new { Id = u.TeamFoundationId, Name = u.DisplayName })
                     .DistinctBy(d => d.Name)
