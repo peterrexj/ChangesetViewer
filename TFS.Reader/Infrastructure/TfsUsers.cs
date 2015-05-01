@@ -40,5 +40,14 @@ namespace TFS.Reader.Infrastructure
             return gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None);
         }
 
+        public async Task<Identity[]> GetAllUsersInTFSBasedOnIdentityAsync()
+        {
+            Collection.EnsureAuthenticated();
+            IGroupSecurityService gss = Collection.GetService<IGroupSecurityService>();
+            Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
+            var readUsersTask = Task.Factory.StartNew(() => gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None).OrderBy(u => u.DisplayName).Select(u => u).ToArray());
+            return await readUsersTask;
+        }
+
     }
 }

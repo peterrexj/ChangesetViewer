@@ -6,58 +6,65 @@
         <Grid DockPanel.Dock="Top">
             <StackPanel Orientation="Vertical">
                 <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
-                <TextBox Height="23" TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" VerticalContentAlignment="Center" />
+                <WrapPanel>
+                    <Button Content="  ...  " />
+                    <TextBox Height="23" TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" VerticalContentAlignment="Center" Width="auto"/>
+                </WrapPanel>
                 <Grid>
                     <Label Content="Search Text" />
                     <TextBox Height="23" TextWrapping="Wrap" Text="**PJ" x:Name="txtSearchText" HorizontalAlignment="Right" Width="322" MinHeight="3" VerticalContentAlignment="Center"/>
                 </Grid>
                 <ComboBox x:Name="lstUsers" 
                       IsEditable="True"
-                      TextSearch.TextPath="Name" DropDownOpened="lstUsers_DropDownOpened">
+                      TextSearch.TextPath="DisplayName" DropDownOpened="lstUsers_DropDownOpened">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
+                            <TextBlock Text="{Binding DisplayName}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-
-                <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Margin="124,26,2,1" Width="71" Height="25" HorizontalAlignment="Right"/>
-                <Button Content="List Users" Click="btnUsers_Click" x:Name="btnListUsers" Margin="0,26,2,1" Width="71" Height="25" HorizontalAlignment="Right"/>
+                <WrapPanel>
+                    <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
+                    <Button Content="List Users" Click="btnUsers_Click" x:Name="btnListUsers" Width="71" Height="25" HorizontalAlignment="Right"/>
+                    <Label x:Name="lblTotalCount" Content="" />
+                </WrapPanel>
+                <Image />
+                
             </StackPanel>
         </Grid>
-        
-            <ListView DockPanel.Dock="Bottom" x:Name="lstContainer">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Id" Width="50">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    
-                                    <TextBlock Grid.Column="1" Text="{Binding Id}" />
-                                    
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Name" Width="150">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Grid.Column="2" Text="{Binding CommitterName}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Comment" Width="264">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Grid.Column="3" Text="{Binding Comment}" TextWrapping="Wrap" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-                <TextBlock Text="{Binding CommitterName}"></TextBlock>
-            </ListView>
+
+        <ListView DockPanel.Dock="Bottom" x:Name="lstContainer">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" Width="50">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                                <TextBlock Grid.Column="1" Text="{Binding ChangesetId}" />
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Name" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Grid.Column="2" Text="{Binding CommitterDisplayName}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Comment" Width="264">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Grid.Column="3" Text="{Binding Comment}" TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <TextBlock Text="{Binding CommitterName}"></TextBlock>
+        </ListView>
 
     </DockPanel>
-    
+
 </Window>
