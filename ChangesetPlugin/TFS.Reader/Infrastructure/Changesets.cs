@@ -13,10 +13,18 @@ namespace TFS.Reader.Infrastructure
     {
         IEnumerable<Changeset> Get(string projectPath, DateTime from);
         IEnumerable<Changeset> Get(string projectPath, int topN, string containsCheck);
+        Task<IEnumerable<Changeset>> GetAsync(string projectPath, int topN, string containsCheck);
+
 
         Changeset Get(int changesetId);
     }
 
+    public class ChangesetSearchModel
+    {
+        public int TopN { get; set; }
+        public string SearchKeyword { get; set; }
+        public string Committer { get; set; }
+    }
     public class Changesets : IChangsets
     {
         private readonly ITfsServer _tfsServer;
@@ -53,7 +61,6 @@ namespace TFS.Reader.Infrastructure
 
             // Get the Changeset list from the TFS API.
             var source = projectCollection.GetService<VersionControlServer>();
-            Trace.WriteLine(String.Format("Searching history for project {0}", projectPath));
 
             var projectHistory = source.QueryHistory(projectPath, VersionSpec.Latest, 0, RecursionType.Full,
                 null, null, null, topN,
@@ -66,6 +73,25 @@ namespace TFS.Reader.Infrastructure
 
             return projectHistory;
         }
+
+        public async Task<IEnumerable<Changeset>> GetAsync(string projectPath, int topN, string containsCheck = "")
+        {
+            var projectCollection = _tfsServer.GetCollection();
+            if (projectCollection.HasAuthenticated == false)
+                projectCollection.Authenticate();
+
+            // Get the Changeset list from the TFS API.
+            var source = projectCollection.GetService<VersionControlServer>();
+
+            var projectHistory = Task.Factory.StartNew(() => source.QueryHistory(projectPath, VersionSpec.Latest, 0, RecursionType.Full,
+                null, null, null, topN,
+                false, false, false, false)
+                    .OfType<Changeset>()
+                    .Where(p => (string.IsNullOrEmpty(containsCheck) || p.Comment.Contains(containsCheck))));
+
+            return await projectHistory;
+        }
+
 
         //public async Task<ExtendedMerge> TrackChangesetInAsync(Changeset changeset, string projectPath, string branch)
         //{
