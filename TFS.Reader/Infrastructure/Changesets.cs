@@ -13,7 +13,7 @@ namespace TFS.Reader.Infrastructure
     {
         IEnumerable<Changeset> Get(string projectPath, DateTime from);
         IEnumerable<Changeset> Get(string projectPath, int topN, string containsCheck);
-        Task<IEnumerable<Changeset>> GetAsync(string projectPath, int topN, string containsCheck);
+        Task<IEnumerable<Changeset>> GetAsync(ChangesetSearchModel search);
 
 
         Changeset Get(int changesetId);
@@ -21,6 +21,7 @@ namespace TFS.Reader.Infrastructure
 
     public class ChangesetSearchModel
     {
+        public string ProjectSourcePath { get; set; }
         public int TopN { get; set; }
         public string SearchKeyword { get; set; }
         public string Committer { get; set; }
@@ -74,7 +75,7 @@ namespace TFS.Reader.Infrastructure
             return projectHistory;
         }
 
-        public async Task<IEnumerable<Changeset>> GetAsync(string projectPath, int topN, string containsCheck = "")
+        public async Task<IEnumerable<Changeset>> GetAsync(ChangesetSearchModel search)
         {
             var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
@@ -83,11 +84,12 @@ namespace TFS.Reader.Infrastructure
             // Get the Changeset list from the TFS API.
             var source = projectCollection.GetService<VersionControlServer>();
 
-            var projectHistory = Task.Factory.StartNew(() => source.QueryHistory(projectPath, VersionSpec.Latest, 0, RecursionType.Full,
-                null, null, null, topN,
+            var projectHistory = Task.Factory.StartNew(() => source.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
+                null, null, null, search.TopN,
                 false, false, false, false)
                     .OfType<Changeset>()
-                    .Where(p => (string.IsNullOrEmpty(containsCheck) || p.Comment.Contains(containsCheck))));
+                    .Where(p => (string.IsNullOrEmpty(search.SearchKeyword) || p.Comment.Contains(search.SearchKeyword))
+                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer)));
 
             return await projectHistory;
         }
