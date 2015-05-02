@@ -45,94 +45,23 @@ namespace ChangesetViewer.UI.Test
             {
                 lstContainer.Items.Clear();
                 lstContainer.ItemsSource = ChangeSetCollection;
-                    //.Select(u => new { Id = u.ChangesetId, CommitterName = u.CommitterDisplayName, Comment = u.Comment });
             }
-
-            //lstContainer.ItemsSource = null;
-            //lstContainer.Items.Clear();
-            //TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
-
-            //TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
-
-            ////var ddd  = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim()).First();
-            //var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
-
-
-            
-                     
-                     
-
-            //    //.Select(u => new { Id = u.ChangesetId, CommitterName = u.Committer, Comment = u.Comment });
-
-
-            //lstContainer.ItemsSource = dd
-            //    .Select(u => new { Id = u.ChangesetId, CommitterName = u.CommitterDisplayName, Comment = u.Comment });
-
-            ////foreach (var d in dd)
-            ////{
-            ////    lstContainer.Items.Add(new { Title = d.ChangesetId, Name = d.Committer });
-            ////}
         }
 
-        private void btnUsers_Click(object sender, RoutedEventArgs e)
+        private void btnTest_Click(object sender, RoutedEventArgs e)
         {
-            //Microsoft.TeamFoundation.VersionControl.Control vxc;
-
-
-
-            LoadUsersInTFSasync();
-
-            lstUsers.ItemsSource = UserCollectionInTFS;
-
-            //TfsUsers users = new TfsUsers();
-            ////var something = users.GetAllUsersInTFS().Select(u => new { Id = u.UniqueName, Name = u.DisplayName })
-            ////    .DistinctBy(d => d.Id)
-            ////    .OrderBy(d => d.Name);
-
-            //var something = users.GetAllUsersInTFSBasedOnIdentity()
-            //    .Where(u => !u.Deleted && u.Type == IdentityType.WindowsUser) 
-            //    .Select(u => new { Id = u.TeamFoundationId, Name = u.DisplayName })
-            //    .DistinctBy(d => d.Name)
-            //    .OrderBy(d => d.Name);
-
-            //lstUsers.ItemsSource = something;
-            //lstContainer.ItemsSource = something;
-            //lstContainer.DataContext
-  
-
-            //TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
-            //tfs.GetCollection();
-
-            //var css4 = tfs.Collection.GetService<Microsoft.TeamFoundation.Server.ICommonStructureService4>();
-            //TfsTeamService teamService = tfs.Collection.GetService<TfsTeamService>();
-
-            //foreach (var projectInfo in css4.ListProjects())
-            //{
-            //    var allTeams = teamService.QueryTeams(projectInfo.Uri);
-            //    foreach (TeamFoundationTeam team in allTeams)
-            //    {
-                    
-            //        foreach (var mem in team.GetMembers(tfs.Collection, MembershipQuery.Direct))
-            //        {
-            //            lstContainer.Items.Add(new { Title = mem.UniqueName, Name = mem.DisplayName });
-                        
-            //        }
-            //    }
-            //}
-
-            //ProjectInfo projectInfo = css4.GetProjectFromName("$/CLS");
-            
-            
-
-            //$/CLS
-
-
-            //tfs.Server.GetService<Microsoft.TeamFoundation.Client.TfsTeamService>();
-
-            //tfs.Server.GetService<
         }
 
         private void lstUsers_DropDownOpened(object sender, EventArgs e)
+        {
+            InitializeUserList();
+        }
+        private void lstUsers_GotFocus(object sender, RoutedEventArgs e)
+        {
+            InitializeUserList();
+        }
+
+        public void InitializeUserList()
         {
             if (lstUsers.ItemsSource == null)
             {
@@ -140,7 +69,6 @@ namespace ChangesetViewer.UI.Test
                 lstUsers.ItemsSource = UserCollectionInTFS;
             }
         }
-
         public async void LoadUsersInTFSasync()
         {
             TfsUsers users = new TfsUsers();
@@ -163,21 +91,40 @@ namespace ChangesetViewer.UI.Test
 
         public async void GetChangesetAsync()
         {
+            
             ChangeSetCollection.Clear();
             TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
             TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
 
-            IEnumerable<Changeset> changesets = await cs.GetAsync(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
+            IEnumerable<Changeset> changesets = await cs.GetAsync(
+                new ChangesetSearchModel 
+                { 
+                    ProjectSourcePath = txtSource.Text.Trim(),
+                    TopN = 1500, 
+                    SearchKeyword = txtSearchText.Text.Trim(),
+                    Committer = lstUsers.Text
+                });
 
             IObservable<Changeset> changesetToLoad = changesets.ToObservable<Changeset>();
+
+            Action<Changeset> AddChangesetToCollection = (changeset) =>
+            {
+                this.ChangeSetCollection.Add(changeset);
+                lblTotalCount.Content = this.ChangeSetCollection.Count;
+            };
 
             changesetToLoad.Subscribe<Changeset>(c =>
             {
                 System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, new Action<Changeset>(AddChangesetToCollection), c);
+                //System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background, AddChangesetToCollection, c);
             }, () =>
             {
                 //this block will execute once the iteration is over.
+                //loader_Gif.Stop();
+                //loader_Gif.Source = null;
             });
+
+            
         }
 
         private void AddChangesetToCollection(Changeset changeset)
@@ -188,6 +135,14 @@ namespace ChangesetViewer.UI.Test
 
         public ObservableCollection<Identity> UserCollectionInTFS { get; set; }
         public ObservableCollection<Changeset> ChangeSetCollection { get; set; }
+
+        private void loader_Gif_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            loader_Gif.Position = new TimeSpan(0, 0, 1);
+            loader_Gif.Play();
+        }
+
+        
         
 
     }
