@@ -3,43 +3,65 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="390" Width="482">
     <DockPanel>
+
+
         <Grid DockPanel.Dock="Top">
             <StackPanel Orientation="Vertical">
                 <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
-                <WrapPanel>
-                    
+                <StackPanel>
                     <DockPanel LastChildFill="True">
-                        <Button DockPanel.Dock="Left" Content="  ...  " />
-                        <TextBox  Height="23" TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" VerticalAlignment="Center" Width="Auto" />
+                        <Button DockPanel.Dock="Left" Content="  Path ...  " />
+                        <TextBox DockPanel.Dock="Right" Height="23" 
+                                 TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
+                                 VerticalContentAlignment="Center" />
                     </DockPanel>
-                    
-                </WrapPanel>
-                <Grid>
-                    <Label Content="Search Text" />
-                    <TextBox Height="23" TextWrapping="Wrap" Text="**PJ" x:Name="txtSearchText" HorizontalAlignment="Right" Width="322" MinHeight="3" VerticalContentAlignment="Center"/>
-                </Grid>
-                <ComboBox x:Name="lstUsers" 
+                    <DockPanel LastChildFill="True" >
+                        <Label DockPanel.Dock="Left" Content="Search Text" Width="75" />
+                        <TextBox DockPanel.Dock="Right" x:Name="txtSearchText"
+                                 Height="23" TextWrapping="Wrap" 
+                                 VerticalContentAlignment="Center"
+                                 Text="**PJ" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="True">
+                        <Label DockPanel.Dock="Left" Content="Users" Width="75" />
+                        <MediaElement 
+                            x:Name="loaderUser_Gif" 
+                            MediaEnded="loader_Gif_MediaEnded" 
+                            UnloadedBehavior="Manual" Source="" 
+                            LoadedBehavior="Manual"  
+                            Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
+                            Width="28"/>
+                        <ComboBox DockPanel.Dock="Right" x:Name="lstUsers" 
                           IsEditable="True"
                           TextSearch.TextPath="DisplayName" 
-                          DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus"
-                          
-                          >
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DisplayName}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                          DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                    </DockPanel>
+                </StackPanel>
+
 
                 <WrapPanel>
                     <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
                     <Button Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
                     <Label x:Name="lblTotalCount" Content="" />
+
+                    <MediaElement 
+                        x:Name="loader_Gif" 
+                        MediaEnded="loader_Gif_MediaEnded" 
+                        UnloadedBehavior="Manual" Source="" 
+                        LoadedBehavior="Manual"  
+                        Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
+                        Width="28"/>
                 </WrapPanel>
-                <MediaElement x:Name="loader_Gif" MediaEnded="loader_Gif_MediaEnded" UnloadedBehavior="Manual" Source="file://D:\294Black.GIF" LoadedBehavior="Manual"  Stretch="None"/>
-                
             </StackPanel>
         </Grid>
+
 
         <ListView DockPanel.Dock="Bottom" x:Name="lstContainer">
             <ListView.View>
