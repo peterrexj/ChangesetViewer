@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TFS.Reader.Infrastructure;
 
@@ -13,8 +14,9 @@ namespace TFS.Reader.Infrastructure
     {
         IEnumerable<Changeset> Get(string projectPath, DateTime from);
         IEnumerable<Changeset> Get(string projectPath, int topN, string containsCheck);
-        Task<IEnumerable<Changeset>> GetAsync(ChangesetSearchModel search);
 
+        Task<IEnumerable<Changeset>> GetAsync(ChangesetSearchModel search);
+        void CancelQueryHistorySearch();
 
         Changeset Get(int changesetId);
     }
@@ -29,6 +31,7 @@ namespace TFS.Reader.Infrastructure
     public class Changesets : IChangsets
     {
         private readonly ITfsServer _tfsServer;
+        private VersionControlServer _versionControlServer;
 
         public Changesets(ITfsServer tfsServer)
         {
@@ -77,22 +80,33 @@ namespace TFS.Reader.Infrastructure
 
         public async Task<IEnumerable<Changeset>> GetAsync(ChangesetSearchModel search)
         {
+            Task<IEnumerable<Changeset>> qryHistory;
+
             var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
                 projectCollection.Authenticate();
 
             // Get the Changeset list from the TFS API.
-            var source = projectCollection.GetService<VersionControlServer>();
+            _versionControlServer = projectCollection.GetService<VersionControlServer>();
+            
 
-            var projectHistory = Task.Factory.StartNew(() => source.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
+            qryHistory = Task.Factory.StartNew(() => _versionControlServer.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
                 null, null, null, search.TopN,
                 false, false, false, false)
                     .OfType<Changeset>()
                     .Where(p => (string.IsNullOrEmpty(search.SearchKeyword) || p.Comment.Contains(search.SearchKeyword))
-                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer)));
+                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer))
+                    );
 
-            return await projectHistory;
+            return await qryHistory;
         }
+
+        public void CancelQueryHistorySearch()
+        {
+            if (_versionControlServer != null)
+                _versionControlServer.Canceled = true;
+        }
+
 
 
         //public async Task<ExtendedMerge> TrackChangesetInAsync(Changeset changeset, string projectPath, string branch)
