@@ -26,11 +26,12 @@
                         <Label DockPanel.Dock="Left" Content="Users" Width="75" />
                         <MediaElement 
                             x:Name="loaderUser_Gif" 
+                            Source="Images/loader01.gif" 
                             MediaEnded="loader_Gif_MediaEnded" 
-                            UnloadedBehavior="Manual" Source="" 
+                            UnloadedBehavior="Manual" 
                             LoadedBehavior="Manual"  
                             Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
-                            Width="28"/>
+                            Width="20"/>
                         <ComboBox DockPanel.Dock="Right" x:Name="lstUsers" 
                           IsEditable="True"
                           TextSearch.TextPath="DisplayName" 
@@ -43,6 +44,28 @@
                         </ComboBox>
 
                     </DockPanel>
+                    <DockPanel LastChildFill="True">
+
+                        <Label DockPanel.Dock="Left" Content="Dates Between" Width="100" />
+
+                        <WrapPanel DockPanel.Dock="Right">
+
+                            <DatePicker x:Name="startDate" Width="150"/>
+                            <Label Content="~" />
+                            <DatePicker x:Name="endDate" Width="150"/>
+                            <TreeView x:Name="projects" ItemsSource="{Binding Projects}">
+                                <!--<TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Items}">
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>-->
+
+                            </TreeView>
+                        </WrapPanel>
+
+
+
+                    </DockPanel>
                 </StackPanel>
 
 
@@ -53,11 +76,12 @@
 
                     <MediaElement 
                         x:Name="loader_Gif" 
+                        Source="Images/loader01.gif"
                         MediaEnded="loader_Gif_MediaEnded" 
-                        UnloadedBehavior="Manual" Source="" 
+                        UnloadedBehavior="Manual"
                         LoadedBehavior="Manual"  
                         Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
-                        Width="28"/>
+                        Width="20"/>
                 </WrapPanel>
             </StackPanel>
         </Grid>
@@ -69,9 +93,7 @@
                     <GridViewColumn Header="Id" Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-
                                 <TextBlock Grid.Column="1" Text="{Binding ChangesetId}" />
-
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -86,6 +108,13 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Grid.Column="3" Text="{Binding Comment}" TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Comment" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Grid.Column="4" Text="{Binding CreationDate}" TextWrapping="Wrap" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

@@ -22,6 +22,8 @@ using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using System.ComponentModel;
+using System.Reflection;
+using System.Threading;
 
 namespace ChangesetViewer.UI.Test
 {
@@ -30,12 +32,34 @@ namespace ChangesetViewer.UI.Test
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        public IEnumerable<Identity> AllUsersInTfs { get; set; }
+        public ObservableCollection<Identity> UserCollectionInTFS { get; set; }
+        public ObservableCollection<Changeset> ChangeSetCollection { get; set; }
+
+        private readonly BackgroundWorker workerChangesetFetch = new BackgroundWorker();
+        private readonly BackgroundWorker workerUsersFetch = new BackgroundWorker();
+        private CancellationTokenSource _cts;
+        private TFS.Reader.Infrastructure.IChangsets _changesets;
+        private ChangesetSearchModel searchModel;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            InitializeWindow();
+
+        }
+
+        public void InitializeWindow()
+        {
             UserCollectionInTFS = new ObservableCollection<Identity>();
             ChangeSetCollection = new ObservableCollection<Microsoft.TeamFoundation.VersionControl.Client.Changeset>();
 
+            searchModel = new ChangesetSearchModel();
+
+            workerChangesetFetch.WorkerSupportsCancellation = true;
+            workerChangesetFetch.WorkerReportsProgress = true;
             workerChangesetFetch.DoWork += workerChangesetFetch_DoWork;
             workerChangesetFetch.RunWorkerCompleted += workerChangesetFetch_RunWorkerCompleted;
 
@@ -44,45 +68,45 @@ namespace ChangesetViewer.UI.Test
 
             loaderUser_Gif.Visibility = System.Windows.Visibility.Hidden;
         }
-
         
-        public IEnumerable<Identity> AllUsersInTfs { get; set; }
-        public ObservableCollection<Identity> UserCollectionInTFS { get; set; }
-        public ObservableCollection<Changeset> ChangeSetCollection { get; set; }
-
-        private readonly BackgroundWorker workerChangesetFetch = new BackgroundWorker();
-        private readonly BackgroundWorker workerUsersFetch = new BackgroundWorker();
-
-        private ChangesetSearchModel searchModel = new ChangesetSearchModel();
 
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
+            Test();
         }
 
 
         #region Changeset listing
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            loader_Gif.Source = new Uri("E://loader01.gif");
-            loader_Gif.Play();
-            loader_Gif.Visibility = System.Windows.Visibility.Visible;
-            searchModel = new ChangesetSearchModel
+            if (((Button)sender).Content.Equals("Search"))
             {
-                ProjectSourcePath = txtSource.Text.Trim(),
-                TopN = 1500,
-                SearchKeyword = txtSearchText.Text.Trim(),
-                Committer = lstUsers.Text
-            };
-            if (lstContainer.ItemsSource == null)
-            {
-                lstContainer.Items.Clear();
-                lstContainer.ItemsSource = ChangeSetCollection;
-            }
-            ChangeSetCollection.Clear();
-            lblTotalCount.Content = "";
+                _cts = new CancellationTokenSource();
+                loader_Gif.Play();
+                loader_Gif.Visibility = System.Windows.Visibility.Visible;
+                searchModel = new ChangesetSearchModel
+                {
+                    ProjectSourcePath = txtSource.Text.Trim(),
+                    TopN = System.Int32.MaxValue,
+                    SearchKeyword = txtSearchText.Text.Trim(),
+                    Committer = lstUsers.Text
+                };
+                if (lstContainer.ItemsSource == null)
+                {
+                    lstContainer.Items.Clear();
+                    lstContainer.ItemsSource = ChangeSetCollection;
+                }
+                ChangeSetCollection.Clear();
+                lblTotalCount.Content = "";
+                btnSearch.Content = "Stop";
 
-            workerChangesetFetch.RunWorkerAsync();
-            //InitializeTFSChangesetList();
+                workerChangesetFetch.RunWorkerAsync();
+            }
+            else if (((Button)sender).Content.Equals("Stop"))
+            {
+                _cts.Cancel();
+                _changesets.CancelQueryHistorySearch();
+            }
         }
 
         void workerChangesetFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -91,46 +115,53 @@ namespace ChangesetViewer.UI.Test
         }
         void workerChangesetFetch_DoWork(object sender, DoWorkEventArgs e)
         {
-            InitializeTFSChangesetList();
+            GetChangesetAsync(e, _cts.Token);
         }
 
-        public void InitializeTFSChangesetList()
-        {
-            GetChangesetAsync();
-        }
-        public async void GetChangesetAsync()
+
+        public async void GetChangesetAsync(DoWorkEventArgs e, CancellationToken ct)
         {
             TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
-            TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
+            _changesets = new TFS.Reader.Infrastructure.Changesets(tfs);
 
-            IEnumerable<Changeset> changesets = await cs.GetAsync(searchModel);
+            IEnumerable<Changeset> changesets = await _changesets.GetAsync(searchModel);
 
             IObservable<Changeset> changesetToLoad = changesets.ToObservable<Changeset>();
 
             Action<Changeset> AddChangesetToCollection = (changeset) =>
             {
-                
                 this.ChangeSetCollection.Add(changeset);
                 lblTotalCount.Content = this.ChangeSetCollection.Count;
             };
 
+            Action OnErrorOrComplete = () => {
+                App.Current.Dispatcher.Invoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       loader_Gif.Stop();
+                       loader_Gif.Visibility = System.Windows.Visibility.Hidden;
+                       btnSearch.Content = "Search";
+                       //loader_Gif.Source = null;
+                   }));
+            };
+            
             changesetToLoad.Subscribe<Changeset>(c =>
             {
                 App.Current.Dispatcher.Invoke(
                     DispatcherPriority.Background,
                     new Action<Changeset>(AddChangesetToCollection),
                     c);
-            }, () =>
+            }, (ex) =>
             {
+                //this block will execute when there is some error or action cancelled which cause exception
+                OnErrorOrComplete();
+            }, () => {
                 //this block will execute once the iteration is over.
-                App.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                    {
-                        loader_Gif.Stop();
-                        loader_Gif.Source = null;
-                    }));
-            });
+                OnErrorOrComplete();  
+            },
+            ct
+            );
 
             
         }
@@ -161,7 +192,6 @@ namespace ChangesetViewer.UI.Test
             
             if (lstUsers.ItemsSource == null)
             {
-                loaderUser_Gif.Source = new Uri("E://loader01.gif");
                 loaderUser_Gif.Play();
                 loaderUser_Gif.Visibility = System.Windows.Visibility.Visible;
 
@@ -194,7 +224,7 @@ namespace ChangesetViewer.UI.Test
                     new Action(() =>
                     {
                         loaderUser_Gif.Stop();
-                        loaderUser_Gif.Source = null;
+                        loaderUser_Gif.Visibility = System.Windows.Visibility.Hidden;
                     }));
             });
         }
@@ -210,6 +240,39 @@ namespace ChangesetViewer.UI.Test
         private void loader_Gif_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             MessageBox.Show(e.ErrorException.Message);
+        }
+
+
+        private void Test()
+        {
+            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
+            tfs.GetCollection();
+
+            StringBuilder sp = new StringBuilder();
+             
+            //var projectCollection = (ICommonStructureService)tfs.Collection.GetService(typeof(ICommonStructureService));
+
+            VersionControlServer version = tfs.Collection.GetService(typeof(VersionControlServer)) as VersionControlServer;
+
+            ItemSet items = version.GetItems(@"$\ProjectName", RecursionType.Full);
+            //ItemSet items = version.GetItems(@"$\ProjectName\FileName.cs", RecursionType.Full);
+
+            foreach (Item item in items.Items)
+            {
+                MessageBox.Show(item.ItemId.ToString());
+                //System.Console.WriteLine(item.ServerItem);
+                sp.Append(item.ServerItem).Append(",");
+            }
+
+            MessageBox.Show(sp.ToString());
+
+            //projects.DataContext = new
+            //{
+            //    Projects = projectCollection.ListProjects().Select(x => x.Name)
+            //};
+            //projects.ItemsSource = projectCollection.ListProjects();
+
+            //MessageBox.Show(sp.ToString());
         }
 
 
