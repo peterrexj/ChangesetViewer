@@ -1,6 +1,12 @@
-﻿using System;
+﻿using EnvDTE;
+using Microsoft.TeamFoundation.VersionControl.Controls;
+using Microsoft.VisualStudio.TeamFoundation.VersionControl;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,6 +31,8 @@ namespace PeterRexJoseph.ChangesetViewer
             
         }
 
+        public EnvDTE80.DTE2 DTE { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         private void button1_Click(object sender, RoutedEventArgs e)
         {
@@ -33,20 +41,40 @@ namespace PeterRexJoseph.ChangesetViewer
 
         }
 
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
+            tfs.GetCollection();
+            
+            var _changesets = new TFS.Reader.Infrastructure.Changesets(tfs);
+            var c = _changesets.Get(23969);
+
+            EnvDTE.IVsExtensibility extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
+            DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+
+            VersionControlExt vce;
+            vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+            vce.ViewChangesetDetails(c.ChangesetId);
+
+        }
+
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            lstContainer.Items.Clear();
-            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
+            //lstContainer.Items.Clear();
+            //TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
 
-            TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
+            //TFS.Reader.Infrastructure.IChangsets cs = new TFS.Reader.Infrastructure.Changesets(tfs);
 
-            var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
-            foreach (var d in dd)
-            {
-                lstContainer.Items.Add(new { Title = d.ChangesetId, Name = d.Committer });
-            }
+            //var dd = cs.Get(txtSource.Text.Trim(), 1500, txtSearchText.Text.Trim());
+            //foreach (var d in dd)
+            //{
+            //    lstContainer.Items.Add(new { Title = d.ChangesetId, Name = d.Committer });
+            //}
 
             //lblCount.Text = dd.Count().ToString();
+
+            
+            //vstfs:///VersionControl/Changeset/23969
         }
     }
 }

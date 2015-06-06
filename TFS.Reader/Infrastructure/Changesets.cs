@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TFS.Reader.Infrastructure;
@@ -27,6 +28,7 @@ namespace TFS.Reader.Infrastructure
         public int TopN { get; set; }
         public string SearchKeyword { get; set; }
         public string Committer { get; set; }
+        public bool IsSearchBasedOnRegex { get; set; }
     }
     public class Changesets : IChangsets
     {
@@ -82,21 +84,7 @@ namespace TFS.Reader.Infrastructure
         {
             Task<IEnumerable<Changeset>> qryHistory;
 
-            var projectCollection = _tfsServer.GetCollection();
-            if (projectCollection.HasAuthenticated == false)
-                projectCollection.Authenticate();
-
-            // Get the Changeset list from the TFS API.
-            _versionControlServer = projectCollection.GetService<VersionControlServer>();
-            
-
-            qryHistory = Task.Factory.StartNew(() => _versionControlServer.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
-                null, null, null, search.TopN,
-                false, false, false, false)
-                    .OfType<Changeset>()
-                    .Where(p => (string.IsNullOrEmpty(search.SearchKeyword) || p.Comment.Contains(search.SearchKeyword))
-                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer))
-                    );
+            qryHistory = Task.Factory.StartNew(() => BuildQuery(search));
 
             return await qryHistory;
         }
@@ -107,6 +95,37 @@ namespace TFS.Reader.Infrastructure
                 _versionControlServer.Canceled = true;
         }
 
+
+        private IEnumerable<Changeset> BuildQuery(ChangesetSearchModel search)
+        {
+            var projectCollection = _tfsServer.GetCollection();
+            if (projectCollection.HasAuthenticated == false)
+                projectCollection.Authenticate();
+
+            // Get the Changeset list from the TFS API.
+            _versionControlServer = projectCollection.GetService<VersionControlServer>();
+
+
+            var qryHistroy = _versionControlServer.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
+                null, null, null, search.TopN,
+                false, false, false, false)
+                    .OfType<Changeset>();
+
+            if (search.IsSearchBasedOnRegex)
+            {
+                var rx = new Regex(search.SearchKeyword, RegexOptions.IgnoreCase);
+
+                qryHistroy = qryHistroy.Where(p => rx.IsMatch(search.SearchKeyword)
+                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer));
+            }
+            else
+            {
+                qryHistroy = qryHistroy.Where(p => (string.IsNullOrEmpty(search.SearchKeyword) || p.Comment.Contains(search.SearchKeyword))
+                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer));
+            }
+
+            return qryHistroy;
+        }
 
 
         //public async Task<ExtendedMerge> TrackChangesetInAsync(Changeset changeset, string projectPath, string branch)

@@ -8,6 +8,9 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using System.ComponentModel;
+using PeterRexJoseph.ChangesetViewer.SettingsPages;
+using System.Windows.Forms;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -32,6 +35,9 @@ namespace PeterRexJoseph.ChangesetViewer
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     [Guid(GuidList.guidChangesetViewerPkgString)]
+    [ProvideOptionPage(typeof(SourceControlSettingsPage), "Changeset Viewer", "Source Control", 0, 0, true)]
+    [ProvideOptionPage(typeof(SettingsPageModel), "Changeset Viewer", "Custom Page", 0, 0, true)]
+
     public sealed class ChangesetViewerPackage : Package
     {
         /// <summary>
@@ -119,6 +125,5 @@ namespace PeterRexJoseph.ChangesetViewer
                        0,        // false
                        out result));
         }
-
     }
 }

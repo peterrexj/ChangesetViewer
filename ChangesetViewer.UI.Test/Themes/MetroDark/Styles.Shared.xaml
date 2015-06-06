@@ -690,10 +690,10 @@
   <!-- *********************************  ButtonStyle  ********************************* -->
   <Style x:Key="ButtonStyle" TargetType="Button">
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="FontFamily" Value="Segoe UI" />
     <Setter Property="Padding" Value="10,0,10,2" />
-    <Setter Property="MinHeight" Value="30" />
+    <Setter Property="MinHeight" Value="25" />
     <Setter Property="MinWidth" Value="30" />
     <Setter Property="Template">
       <Setter.Value>
