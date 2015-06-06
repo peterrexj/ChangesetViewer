@@ -14,6 +14,11 @@
             <TextBox Height="23" TextWrapping="Wrap" Text="" x:Name="txtSearchText" HorizontalAlignment="Right" Width="114"/>
             <ComboBox x:Name="lstUsers"/>
             <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Margin="124,26,2,1" Width="71" Height="25" HorizontalAlignment="Right"/>
+            <TextBlock>
+                    <Hyperlink NavigateUri="vstfs:///VersionControl/Changeset/23969" RequestNavigate="Hyperlink_RequestNavigate">
+                            <TextBlock Text="Navigate Changeset" />
+                    </Hyperlink>
+            </TextBlock>
             <ListBox Height="249" Name="lstContainer" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,2,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

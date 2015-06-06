@@ -89,7 +89,8 @@ namespace ChangesetViewer.UI.Test
                     ProjectSourcePath = txtSource.Text.Trim(),
                     TopN = System.Int32.MaxValue,
                     SearchKeyword = txtSearchText.Text.Trim(),
-                    Committer = lstUsers.Text
+                    Committer = lstUsers.Text,
+                    IsSearchBasedOnRegex = chkSearchBasedOnRegex.IsChecked.HasValue ? chkSearchBasedOnRegex.IsChecked.Value : false
                 };
                 if (lstContainer.ItemsSource == null)
                 {
@@ -245,6 +246,9 @@ namespace ChangesetViewer.UI.Test
 
         private void Test()
         {
+
+            Changeset s;
+            
             TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
             tfs.GetCollection();
 
