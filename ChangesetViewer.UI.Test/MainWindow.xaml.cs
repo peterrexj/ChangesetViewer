@@ -24,6 +24,7 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading;
+using ChangesetViewer.UI.Test.Infra;
 
 namespace ChangesetViewer.UI.Test
 {
@@ -33,15 +34,7 @@ namespace ChangesetViewer.UI.Test
     public partial class MainWindow : Window
     {
 
-        public IEnumerable<Identity> AllUsersInTfs { get; set; }
-        public ObservableCollection<Identity> UserCollectionInTFS { get; set; }
-        public ObservableCollection<Changeset> ChangeSetCollection { get; set; }
-
-        private readonly BackgroundWorker workerChangesetFetch = new BackgroundWorker();
-        private readonly BackgroundWorker workerUsersFetch = new BackgroundWorker();
-        private CancellationTokenSource _cts;
-        private TFS.Reader.Infrastructure.IChangsets _changesets;
-        private ChangesetSearchModel searchModel;
+        public ChangesetController cController;
 
         public MainWindow()
         {
@@ -53,38 +46,28 @@ namespace ChangesetViewer.UI.Test
 
         public void InitializeWindow()
         {
-            UserCollectionInTFS = new ObservableCollection<Identity>();
-            ChangeSetCollection = new ObservableCollection<Microsoft.TeamFoundation.VersionControl.Client.Changeset>();
+            cController = new ChangesetController();
 
-            searchModel = new ChangesetSearchModel();
-
-            workerChangesetFetch.WorkerSupportsCancellation = true;
-            workerChangesetFetch.WorkerReportsProgress = true;
-            workerChangesetFetch.DoWork += workerChangesetFetch_DoWork;
-            workerChangesetFetch.RunWorkerCompleted += workerChangesetFetch_RunWorkerCompleted;
-
-            workerUsersFetch.DoWork += workerUsersFetch_DoWork;
-            workerUsersFetch.RunWorkerCompleted += workerUsersFetch_RunWorkerCompleted;
+            cController.EnableLoadNotificationUsers = EnableUINotificationUsers;
+            cController.DisableLoadNotificationUsers = DiableUINotificationUsers;
+            cController.EnableLoadNotificationChangeset = EnableUINotificationChangeset;
+            cController.DisableLoadNotificatioChangeset = DisableUINotificationChangeset;
+            cController.SearchButtonTextLoading = SearchButtonTextLoading;
+            cController.SearchButtonTextReset = SearchButtonTextReset;
+            cController.UpdateChangesetCount = UpdateTotalCount;
 
             loaderUser_Gif.Visibility = System.Windows.Visibility.Hidden;
-        }
-        
-
-        private void btnTest_Click(object sender, RoutedEventArgs e)
-        {
-            Test();
+            loader_Gif.Visibility = System.Windows.Visibility.Hidden;
         }
 
 
-        #region Changeset listing
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             if (((Button)sender).Content.Equals("Search"))
             {
-                _cts = new CancellationTokenSource();
                 loader_Gif.Play();
                 loader_Gif.Visibility = System.Windows.Visibility.Visible;
-                searchModel = new ChangesetSearchModel
+                ChangesetSearchModel searchModel = new ChangesetSearchModel
                 {
                     ProjectSourcePath = txtSource.Text.Trim(),
                     TopN = System.Int32.MaxValue,
@@ -92,83 +75,23 @@ namespace ChangesetViewer.UI.Test
                     Committer = lstUsers.Text,
                     IsSearchBasedOnRegex = chkSearchBasedOnRegex.IsChecked.HasValue ? chkSearchBasedOnRegex.IsChecked.Value : false
                 };
+                cController.GetChangesets(searchModel);
+
                 if (lstContainer.ItemsSource == null)
                 {
                     lstContainer.Items.Clear();
-                    lstContainer.ItemsSource = ChangeSetCollection;
+                    lstContainer.ItemsSource = cController._Model.ChangeSetCollection;
                 }
-                ChangeSetCollection.Clear();
+                cController._Model.ChangeSetCollection.Clear();
                 lblTotalCount.Content = "";
                 btnSearch.Content = "Stop";
 
-                workerChangesetFetch.RunWorkerAsync();
             }
             else if (((Button)sender).Content.Equals("Stop"))
             {
-                _cts.Cancel();
-                _changesets.CancelQueryHistorySearch();
+                cController.StopProcessingChangesetFetch();
             }
         }
-
-        void workerChangesetFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            
-        }
-        void workerChangesetFetch_DoWork(object sender, DoWorkEventArgs e)
-        {
-            GetChangesetAsync(e, _cts.Token);
-        }
-
-
-        public async void GetChangesetAsync(DoWorkEventArgs e, CancellationToken ct)
-        {
-            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
-            _changesets = new TFS.Reader.Infrastructure.Changesets(tfs);
-
-            IEnumerable<Changeset> changesets = await _changesets.GetAsync(searchModel);
-
-            IObservable<Changeset> changesetToLoad = changesets.ToObservable<Changeset>();
-
-            Action<Changeset> AddChangesetToCollection = (changeset) =>
-            {
-                this.ChangeSetCollection.Add(changeset);
-                lblTotalCount.Content = this.ChangeSetCollection.Count;
-            };
-
-            Action OnErrorOrComplete = () => {
-                App.Current.Dispatcher.Invoke(
-                   DispatcherPriority.Background,
-                   new Action(() =>
-                   {
-                       loader_Gif.Stop();
-                       loader_Gif.Visibility = System.Windows.Visibility.Hidden;
-                       btnSearch.Content = "Search";
-                       //loader_Gif.Source = null;
-                   }));
-            };
-            
-            changesetToLoad.Subscribe<Changeset>(c =>
-            {
-                App.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Background,
-                    new Action<Changeset>(AddChangesetToCollection),
-                    c);
-            }, (ex) =>
-            {
-                //this block will execute when there is some error or action cancelled which cause exception
-                OnErrorOrComplete();
-            }, () => {
-                //this block will execute once the iteration is over.
-                OnErrorOrComplete();  
-            },
-            ct
-            );
-
-            
-        }
-        #endregion
-
-        #region User List
 
         private void lstUsers_DropDownOpened(object sender, EventArgs e)
         {
@@ -179,57 +102,18 @@ namespace ChangesetViewer.UI.Test
             InitializeUserList();
         }
 
-        void workerUsersFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-
-        }
-        void workerUsersFetch_DoWork(object sender, DoWorkEventArgs e)
-        {
-            LoadUsersInTFSasync();
-        }
-
         public void InitializeUserList()
         {
-            
             if (lstUsers.ItemsSource == null)
             {
                 loaderUser_Gif.Play();
                 loaderUser_Gif.Visibility = System.Windows.Visibility.Visible;
 
-                lstUsers.ItemsSource = UserCollectionInTFS;
-                workerUsersFetch.RunWorkerAsync();
+                lstUsers.ItemsSource = cController._Model.UserCollectionInTFS;
+
+                cController.LoadUsersAsync();
             }
         }
-        public async void LoadUsersInTFSasync()
-        {
-            TfsUsers users = new TfsUsers();
-            Identity[] ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
-            IObservable<Identity> usertoLoad = ident.ToObservable<Identity>();
-
-            Action<Identity> AddUserToCollection = (user) =>
-            {
-                this.UserCollectionInTFS.Add(user);
-            };
-
-            usertoLoad.Subscribe<Identity>(u =>
-            {
-                App.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Background,
-                    new Action<Identity>(AddUserToCollection),
-                    u);
-            }, () =>
-            {
-                //this block will execute once the iteration is over.
-                App.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Background,
-                    new Action(() =>
-                    {
-                        loaderUser_Gif.Stop();
-                        loaderUser_Gif.Visibility = System.Windows.Visibility.Hidden;
-                    }));
-            });
-        }
-        #endregion
 
         private void loader_Gif_MediaEnded(object sender, RoutedEventArgs e)
         {
@@ -237,13 +121,15 @@ namespace ChangesetViewer.UI.Test
             obj.Position = new TimeSpan(0, 0, 1);
             obj.Play();
         }
-
         private void loader_Gif_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             MessageBox.Show(e.ErrorException.Message);
         }
 
-
+        private void btnTest_Click(object sender, RoutedEventArgs e)
+        {
+            Test();
+        }
         private void Test()
         {
 
@@ -279,6 +165,36 @@ namespace ChangesetViewer.UI.Test
             //MessageBox.Show(sp.ToString());
         }
 
+        public void EnableUINotificationUsers()
+        {
+
+        }
+        public void DiableUINotificationUsers()
+        {
+            loaderUser_Gif.Stop();
+            loaderUser_Gif.Visibility = System.Windows.Visibility.Hidden;
+        }
+        public void EnableUINotificationChangeset()
+        {
+
+        }
+        public void DisableUINotificationChangeset()
+        {
+            loader_Gif.Stop();
+            loader_Gif.Visibility = System.Windows.Visibility.Hidden;
+        }
+        public void SearchButtonTextLoading()
+        {
+            btnSearch.Content = "Stop";
+        }
+        public void SearchButtonTextReset()
+        {
+            btnSearch.Content = "Search";
+        }
+        public void UpdateTotalCount(int count)
+        {
+            lblTotalCount.Content = count.ToString();
+        }
 
     }
 
