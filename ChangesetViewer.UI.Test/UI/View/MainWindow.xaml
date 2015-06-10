@@ -24,11 +24,11 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Column="0" Grid.Row="0"
+                    <Button Grid.Column="0" Grid.Row="0" IsEnabled="false"
                             Content="  Server Path ...  "/>
                     <TextBox Grid.Column="2" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
-                                 VerticalContentAlignment="Center" />
+                                 VerticalContentAlignment="Center" BorderThickness="0,0,0,1" />
 
                     <Label Grid.Column="0" Grid.Row="1" 
                            Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"
@@ -36,7 +36,7 @@
                     <TextBox Grid.Column="2" Grid.Row="1" x:Name="txtSearchText"
                                  Height="23" TextWrapping="Wrap" 
                                  VerticalContentAlignment="Center"
-                                 Text="**PJ" />
+                                 Text="**PJ" BorderThickness="0,0,0,1" />
 
                     <Label Grid.Column="0" Grid.Row="2" 
                            Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"
@@ -52,7 +52,7 @@
                     <ComboBox Grid.Column="2" Grid.Row="2" x:Name="lstUsers" 
                           IsEditable="True"
                           TextSearch.TextPath="DisplayName" 
-                          DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus">
+                          DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus" BorderThickness="0,0,0,1">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding DisplayName}" />
@@ -63,11 +63,19 @@
                     <Label Grid.Column="0" Grid.Row="3" 
                            Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"
                            Content="Created Date Between" Width="130" />
-                    <DatePicker Grid.Column="2" Grid.Row="3" 
+                    <Grid Grid.Column="2" Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"  />
+                            <ColumnDefinition Width="2*"  />
+                            <ColumnDefinition Width="5*" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Grid.Column="0"
                                 VerticalContentAlignment="Center"
-                                HorizontalAlignment="Left" x:Name="startDate" Width="150"/>
-                    <Label Grid.Column="2" Grid.Row="3" HorizontalAlignment="Center" Content="~" />
-                    <DatePicker Grid.Column="2" Grid.Row="3" HorizontalAlignment="Right" x:Name="endDate" Width="150"/>
+                                HorizontalAlignment="Left" x:Name="startDate" VerticalAlignment="Center" BorderThickness="0,0,0,1"/>
+                        <Label Grid.Column="1" HorizontalAlignment="Center" Content=" AND "/>
+                        <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" HorizontalAlignment="Right" BorderThickness="0,0,0,1"/>
+
+                    </Grid>
 
                 </Grid>
                 <!--<StackPanel>
@@ -136,9 +144,10 @@
                 <WrapPanel>
                     <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
                     <Button Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
+                    <CheckBox x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
+                              IsEnabled="False"
+                              VerticalAlignment="Center" />
                     <Label x:Name="lblTotalCount" Content="" />
-                    <CheckBox x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" VerticalAlignment="Center" />
-
                     <MediaElement 
                         x:Name="loader_Gif" 
                         Source="Images/loader01.gif"

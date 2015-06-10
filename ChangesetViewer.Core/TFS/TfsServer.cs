@@ -1,13 +1,8 @@
 ﻿using Microsoft.TeamFoundation.Client;
 using System;
 
-namespace TFS.Reader.Infrastructure
+namespace ChangesetViewer.Core.TFS
 {
-    public interface ITfsServer
-    {
-        TfsTeamProjectCollection GetCollection();
-    }
-
     public class TfsServer : ITfsServer
     {
         public TfsTeamProjectCollection Collection { get; set; }
@@ -20,7 +15,5 @@ namespace TFS.Reader.Infrastructure
             Collection.Authenticate();
             return Collection;
         }
-
-
     }
 }
