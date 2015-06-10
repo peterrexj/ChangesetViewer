@@ -1,22 +1,8 @@
-﻿using EnvDTE;
-using Microsoft.TeamFoundation.VersionControl.Controls;
+﻿using ChangesetViewer.Core.TFS;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -43,10 +29,10 @@ namespace PeterRexJoseph.ChangesetViewer
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
+            ITfsServer tfs = new TfsServer();
             tfs.GetCollection();
-            
-            var _changesets = new TFS.Reader.Infrastructure.Changesets(tfs);
+
+            var _changesets = new Changesets(tfs);
             var c = _changesets.Get(23969);
 
             EnvDTE.IVsExtensibility extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
@@ -60,6 +46,7 @@ namespace PeterRexJoseph.ChangesetViewer
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
+            
             //lstContainer.Items.Clear();
             //TFS.Reader.Infrastructure.TfsServer tfs = new TFS.Reader.Infrastructure.TfsServer();
 

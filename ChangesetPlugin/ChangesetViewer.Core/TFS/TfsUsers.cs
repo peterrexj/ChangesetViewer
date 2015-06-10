@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TFS.Reader.Infrastructure
+namespace ChangesetViewer.Core.TFS
 {
-    public class TfsUsers
+    public class TfsUsers : ITfsUsers
     {
         public TfsTeamProjectCollection Collection { get; set; }
 

@@ -9,9 +9,6 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
 
-using System;
-using System.Collections;
-using System.Text;
 using System.Reflection;
 using System.ComponentModel.Design;
 using Microsoft.VsSDK.UnitTestLibrary;

@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TFS.Reader")]
+[assembly: AssemblyTitle("ChangesetViewer.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TFS.Reader")]
+[assembly: AssemblyProduct("ChangesetViewer.Core")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d1e1fe93-4e86-4d58-98f4-8e173e6b84de")]
+[assembly: Guid("eddf2e28-5c34-4de6-9ad2-769eee4c0f6c")]
 
 // Version information for an assembly consists of the following four values:
 //

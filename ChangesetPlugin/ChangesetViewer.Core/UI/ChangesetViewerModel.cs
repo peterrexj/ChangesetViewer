@@ -1,23 +1,17 @@
 ﻿using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.VersionControl.Client;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChangesetViewer.UI.Test.Infra
+namespace ChangesetViewer.Core.UI
 {
-    public class ChangesetModel
+    public class ChangesetViewerModel
     {
-        //public IEnumerable<Identity> AllUsersInTfs { get; set; }
-        public ObservableCollection<Identity> UserCollectionInTFS { get; set; }
+        public ObservableCollection<Identity> UserCollectionInTfs { get; set; }
         public ObservableCollection<Changeset> ChangeSetCollection { get; set; }
 
-        public ChangesetModel()
+        public ChangesetViewerModel()
         {
-            UserCollectionInTFS = new ObservableCollection<Identity>();
+            UserCollectionInTfs = new ObservableCollection<Identity>();
             ChangeSetCollection = new ObservableCollection<Changeset>();
         }
 
@@ -26,6 +20,5 @@ namespace ChangesetViewer.UI.Test.Infra
         {
             return ChangeSetCollection.Count;
         }
-
     }
 }

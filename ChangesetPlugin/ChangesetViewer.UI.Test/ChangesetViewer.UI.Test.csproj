@@ -58,12 +58,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
-    <Reference Include="System.Reactive.Interfaces, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
-    <Reference Include="System.Reactive.Linq, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
-    <Reference Include="System.Reactive.Providers, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
-    <Reference Include="System.Reactive.Windows.Forms, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
-    <Reference Include="System.Reactive.Windows.Threading, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Controls.Input.Toolkit">
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
@@ -90,7 +84,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="UI\View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -99,10 +93,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infra\AnimatedGIFControl.cs" />
-    <Compile Include="Infra\ChangesetController.cs" />
-    <Compile Include="Infra\ChangesetModel.cs" />
     <Compile Include="Infra\RichTextboxCustomized.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="UI\View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -240,13 +232,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ChangesetViewer.Core\ChangesetViewer.Core.csproj">
+      <Project>{4b077f29-bc3c-4c31-805d-d95bc0affc4a}</Project>
+      <Name>ChangesetViewer.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PluginCore\PluginCore.csproj">
       <Project>{3ed5b861-64df-492b-8ff5-dc64527684be}</Project>
       <Name>PluginCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TFS.Reader\TFS.Reader.csproj">
-      <Project>{0300f4d5-a8bd-464c-b076-d966d9112319}</Project>
-      <Name>TFS.Reader</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +257,7 @@
   <ItemGroup>
     <None Include="Resources\loader01.GIF" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
