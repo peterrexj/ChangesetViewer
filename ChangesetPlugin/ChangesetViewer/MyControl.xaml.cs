@@ -1,4 +1,4 @@
-﻿using ChangesetViewer.Core.TFS;
+﻿//using ChangesetViewer.Core.TFS;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,18 +29,18 @@ namespace PeterRexJoseph.ChangesetViewer
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            ITfsServer tfs = new TfsServer();
-            tfs.GetCollection();
+            //ITfsServer tfs = new TfsServer();
+            //tfs.GetCollection();
 
-            var _changesets = new Changesets(tfs);
-            var c = _changesets.Get(23969);
+            //var _changesets = new Changesets(tfs);
+            //var c = _changesets.Get(23969);
 
-            EnvDTE.IVsExtensibility extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
-            DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+            //EnvDTE.IVsExtensibility extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
+            //DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
 
-            VersionControlExt vce;
-            vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-            vce.ViewChangesetDetails(c.ChangesetId);
+            //VersionControlExt vce;
+            //vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+            //vce.ViewChangesetDetails(c.ChangesetId);
 
         }
 

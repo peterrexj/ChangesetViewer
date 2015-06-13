@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace ChangesetViewer.UI.Test
+namespace ChangesetViewer.UI
 {
     public class RichTextboxCustomized : RichTextBox
     {

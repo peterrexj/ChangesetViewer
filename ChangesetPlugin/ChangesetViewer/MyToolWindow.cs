@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using ChangesetViewer;
+using ChangesetViewer.UI.View;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -34,7 +36,10 @@ namespace PeterRexJoseph.ChangesetViewer
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
             // the object returned by the Content property.
-            base.Content = new MyControl();
+            //base.Content = new MyControl();
+            base.Content = new ChangesetViewerMainWindow();
+            
+            
         }
     }
 }
