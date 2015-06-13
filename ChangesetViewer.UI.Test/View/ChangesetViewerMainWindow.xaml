@@ -1,14 +1,28 @@
-﻿<Window x:Class="ChangesetViewer.UI.Test.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:ChangesetViewer.UI.Test"
-        xmlns:wpfTool="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
-        Title="MainWindow" Height="390" Width="482">
+﻿<UserControl x:Class="ChangesetViewer.UI.View.ChangesetViewerMainWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChangesetViewer.UI"
+             xmlns:wpfTool="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="260" d:DesignWidth="625">
+    
+    <!--<UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                --><!--<ResourceDictionary Source="/Themes/Office2013/Office2013.MSControls.Core.Implicit.xaml" />
+                <ResourceDictionary Source="/Themes/Office2013/Office2013.MSControls.Toolkit.Implicit.xaml" />--><!--
+                <ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Core.Implicit.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Toolkit.Implicit.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-
-
+            <SolidColorBrush x:Key="BackgroundKey" Color="#FFFFFF" />
+        </ResourceDictionary>
+    </UserControl.Resources>-->
+    
     <DockPanel>
-        <Grid DockPanel.Dock="Top" Background="{StaticResource BackgroundKey}">
+        <Grid DockPanel.Dock="Top"> <!--Background="{StaticResource BackgroundKey}">-->
             <StackPanel Orientation="Vertical">
                 <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
                 <Grid>
@@ -29,17 +43,17 @@
                     <TextBox Grid.Column="2" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
                                  VerticalContentAlignment="Center" BorderThickness="0,0,0,1" />
-
+                    <!--Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"-->
                     <Label Grid.Column="0" Grid.Row="1" 
-                           Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"
+                           HorizontalAlignment="Left"
                            Content="Search Text" Width="85" />
                     <TextBox Grid.Column="2" Grid.Row="1" x:Name="txtSearchText"
                                  Height="23" TextWrapping="Wrap" 
                                  VerticalContentAlignment="Center"
                                  Text="**PJ" BorderThickness="0,0,0,1" />
-
+                    <!--Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"-->
                     <Label Grid.Column="0" Grid.Row="2" 
-                           Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"
+                           HorizontalAlignment="Left"
                            Content="Users" Width="75" />
                     <MediaElement Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"
                             x:Name="loaderUser_Gif" 
@@ -59,9 +73,9 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-
+                    <!--Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"-->
                     <Label Grid.Column="0" Grid.Row="3" 
-                           Style="{StaticResource LabelStyle}" HorizontalAlignment="Left"
+                           HorizontalAlignment="Left"
                            Content="Created Date Between" Width="130" />
                     <Grid Grid.Column="2" Grid.Row="3">
                         <Grid.ColumnDefinitions>
@@ -78,68 +92,6 @@
                     </Grid>
 
                 </Grid>
-                <!--<StackPanel>
-                    <DockPanel LastChildFill="True">
-                        <Button DockPanel.Dock="Left" Content="  Path ...  " />
-                        <TextBox DockPanel.Dock="Right" Height="23" 
-                                 TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
-                                 VerticalContentAlignment="Center" />
-                    </DockPanel>
-                    <DockPanel LastChildFill="True" >
-                        <Label DockPanel.Dock="Left" Content="Search Text" Width="75" />
-                        <TextBox DockPanel.Dock="Right" x:Name="txtSearchText"
-                                 Height="23" TextWrapping="Wrap" 
-                                 VerticalContentAlignment="Center"
-                                 Text="**PJ" />
-                    </DockPanel>
-                    <DockPanel LastChildFill="True">
-                        <Label DockPanel.Dock="Left" Content="Users" Width="75" />
-                        <MediaElement 
-                            x:Name="loaderUser_Gif" 
-                            Source="Images/loader01.gif" 
-                            MediaEnded="loader_Gif_MediaEnded" 
-                            UnloadedBehavior="Manual" 
-                            LoadedBehavior="Manual"  
-                            Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
-                            Width="20"/>
-                        <ComboBox DockPanel.Dock="Right" x:Name="lstUsers" 
-                          IsEditable="True"
-                          TextSearch.TextPath="DisplayName" 
-                          DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding DisplayName}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-
-                    </DockPanel>
-                    <DockPanel LastChildFill="True">
-
-                        <Label DockPanel.Dock="Left" Content="Dates Between" Width="100" />
-
-                        <WrapPanel DockPanel.Dock="Right">
-
-                            <DatePicker x:Name="startDate" Width="150"/>
-                            <Label Content="~" />
-                            <DatePicker x:Name="endDate" Width="150"/>
-                            <TreeView x:Name="projects" ItemsSource="{Binding Projects}">
-
-                                <TreeView.ItemTemplate>
-                                    <HierarchicalDataTemplate ItemsSource="{Binding Items}">
-                                        <TextBlock Text="{Binding Name}"/>
-                                    </HierarchicalDataTemplate>
-                                </TreeView.ItemTemplate>
-
-
-                            </TreeView>
-                        </WrapPanel>
-
-
-
-                    </DockPanel>
-                </StackPanel>-->
-
 
                 <WrapPanel>
                     <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
@@ -160,8 +112,8 @@
             </StackPanel>
         </Grid>
 
-
-        <ListView DockPanel.Dock="Bottom" x:Name="lstContainer" Background="{StaticResource BackgroundKey}">
+        <!--<ListView DockPanel.Dock="Bottom" x:Name="lstContainer" Background="{StaticResource BackgroundKey}">-->
+        <ListView DockPanel.Dock="Bottom" x:Name="lstContainer">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Id" Width="50">
@@ -185,7 +137,8 @@
                     <GridViewColumn Header="Comment" Width="264">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <local:RichTextboxCustomized Background="{StaticResource BackgroundKey}"
+                                <!--<local:RichTextboxCustomized Background="{StaticResource BackgroundKey}"-->
+                                <local:RichTextboxCustomized 
                                     IsDocumentEnabled="True" BorderThickness="0"
                                     IsReadOnly="True" FormattedText="{Binding Comment}" />
                             </DataTemplate>
@@ -204,5 +157,6 @@
         </ListView>
 
     </DockPanel>
-
-</Window>
+    
+    
+</UserControl>

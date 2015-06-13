@@ -4,23 +4,22 @@ using System.Windows.Controls;
 using ChangesetViewer.Core.TFS;
 using ChangesetViewer.Core.UI;
 
-namespace ChangesetViewer.UI.Test
+namespace ChangesetViewer.UI.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ChangesetViewerMainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ChangesetViewerMainWindow : UserControl
     {
-
-        public ChangesetViewerController _cController;
-
-        public MainWindow()
+        public ChangesetViewerMainWindow()
         {
             InitializeComponent();
 
             InitializeWindow();
 
         }
+
+        public ChangesetViewerController _cController;
 
         public void InitializeWindow()
         {
@@ -152,7 +151,5 @@ namespace ChangesetViewer.UI.Test
         {
             lblTotalCount.Content = count.ToString();
         }
-
     }
-
 }

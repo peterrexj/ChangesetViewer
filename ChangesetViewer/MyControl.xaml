@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              Name="MyToolWindow">
-    <Grid>
+
+    <!--<myUI:ChangesetViewerMainWindow Height="245" />-->
+
+    <!--<Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
             <TextBox Height="23" TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource"/>
@@ -34,6 +35,6 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-    </Grid>
+    </Grid>-->
 
 </UserControl>

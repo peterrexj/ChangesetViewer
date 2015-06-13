@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_Integration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_UnitTests", "ChangesetViewer\ChangesetViewer_UnitTests\ChangesetViewer_UnitTests.csproj", "{35E0D0B0-8407-420A-A682-215F3DCEB1E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.UI.Test", "ChangesetViewer.UI.Test\ChangesetViewer.UI.Test.csproj", "{08127934-1E88-4BDE-B612-87BB9616CDCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.UI", "ChangesetViewer.UI.Test\ChangesetViewer.UI.csproj", "{08127934-1E88-4BDE-B612-87BB9616CDCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginCore", "PluginCore\PluginCore.csproj", "{3ED5B861-64DF-492B-8FF5-DC64527684BE}"
 EndProject
@@ -36,15 +36,15 @@ Global
 		SccProjectUniqueName3 = ChangesetViewer\\ChangesetViewer_UnitTests\\ChangesetViewer_UnitTests.csproj
 		SccProjectName3 = ChangesetViewer/ChangesetViewer_UnitTests
 		SccLocalPath3 = ChangesetViewer\\ChangesetViewer_UnitTests
-		SccProjectUniqueName4 = ChangesetViewer.UI.Test\\ChangesetViewer.UI.Test.csproj
-		SccProjectName4 = ChangesetViewer.UI.Test
-		SccLocalPath4 = ChangesetViewer.UI.Test
-		SccProjectUniqueName5 = PluginCore\\PluginCore.csproj
-		SccProjectName5 = PluginCore
-		SccLocalPath5 = PluginCore
-		SccProjectUniqueName6 = ChangesetViewer.Core\\ChangesetViewer.Core.csproj
-		SccProjectName6 = ChangesetViewer.Core
-		SccLocalPath6 = ChangesetViewer.Core
+		SccProjectUniqueName4 = PluginCore\\PluginCore.csproj
+		SccProjectName4 = PluginCore
+		SccLocalPath4 = PluginCore
+		SccProjectUniqueName5 = ChangesetViewer.Core\\ChangesetViewer.Core.csproj
+		SccProjectName5 = ChangesetViewer.Core
+		SccLocalPath5 = ChangesetViewer.Core
+		SccProjectUniqueName6 = ChangesetViewer.UI.Test\\ChangesetViewer.UI.csproj
+		SccProjectName6 = ChangesetViewer.UI.Test
+		SccLocalPath6 = ChangesetViewer.UI.Test
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

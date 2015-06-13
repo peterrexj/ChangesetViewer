@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ChangesetViewer.UI.Test
+namespace ChangesetViewer.UI
 {
     /// <summary>
     /// Interaction logic for App.xaml
