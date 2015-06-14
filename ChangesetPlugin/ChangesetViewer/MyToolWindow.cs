@@ -39,7 +39,6 @@ namespace PeterRexJoseph.ChangesetViewer
             //base.Content = new MyControl();
             base.Content = new ChangesetViewerMainWindow();
             
-            
         }
     }
 }
