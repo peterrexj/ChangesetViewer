@@ -10,16 +10,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer", "ChangesetViewer\ChangesetViewer.csproj", "{3335130B-CF57-44B4-87EE-01F0F8DBBD98}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A} = {4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}
+		{08127934-1E88-4BDE-B612-87BB9616CDCB} = {08127934-1E88-4BDE-B612-87BB9616CDCB}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_IntegrationTests", "ChangesetViewer\ChangesetViewer_IntegrationTests\ChangesetViewer_IntegrationTests.csproj", "{A198E8A2-EDC4-4EC2-A122-F420419DC734}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_UnitTests", "ChangesetViewer\ChangesetViewer_UnitTests\ChangesetViewer_UnitTests.csproj", "{35E0D0B0-8407-420A-A682-215F3DCEB1E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.UI", "ChangesetViewer.UI.Test\ChangesetViewer.UI.csproj", "{08127934-1E88-4BDE-B612-87BB9616CDCB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A} = {4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginCore", "PluginCore\PluginCore.csproj", "{3ED5B861-64DF-492B-8FF5-DC64527684BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.Core", "ChangesetViewer.Core\ChangesetViewer.Core.csproj", "{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE} = {3ED5B861-64DF-492B-8FF5-DC64527684BE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution

@@ -12,7 +12,7 @@
 
   <!-- *********************************  RESOURCES  ********************************* -->
   <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Themes/Office2013/Styles.WPF.xaml" />
+        <ResourceDictionary Source="Styles.WPF.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
   <!-- *********************************  BRUSHES  ********************************* -->

@@ -108,7 +108,7 @@ namespace ChangesetViewer.UI.View
         }
         private void loader_Gif_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            MessageBox.Show(e.ErrorException.Message);
+            //MessageBox.Show(e.ErrorException.Message);
         }
 
         private void btnTest_Click(object sender, RoutedEventArgs e)

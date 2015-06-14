@@ -7,8 +7,8 @@
 
   <!-- *********************************  RESOURCES  ********************************* -->
   <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Themes/Office2013/Theme.Colors.xaml" />
-        <ResourceDictionary Source="/Themes/Office2013/Styles.Shared.xaml" />
+        <ResourceDictionary Source="Theme.Colors.xaml" />
+        <ResourceDictionary Source="Styles.Shared.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <!-- ******************************************************** WPF SPECIFIC INLINE-CONTROLS RESOURCES ***********************************************************
