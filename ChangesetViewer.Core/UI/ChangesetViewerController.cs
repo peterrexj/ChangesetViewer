@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using System.Reactive.Linq;
+using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 
 namespace ChangesetViewer.Core.UI
@@ -17,6 +18,9 @@ namespace ChangesetViewer.Core.UI
         private IChangsets _changesets;
 
         public ChangesetViewerModel Model { get; set; }
+
+        public EnvDTE80.DTE2 DTE { get; set; }
+        public EnvDTE.IVsExtensibility Extensibility { get; set; }
 
         public Action EnableLoadNotificationUsers { get; set; }
         public Action DisableLoadNotificationUsers { get; set; }
@@ -74,6 +78,8 @@ namespace ChangesetViewer.Core.UI
 
         #endregion
 
+        #region Changeset fetch
+
         void workerChangesetFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
@@ -130,5 +136,29 @@ namespace ChangesetViewer.Core.UI
 
 
         }
+
+        #endregion
+
+
+        public void OpenChangesetWindow(string changesetId)
+        {
+            if (string.IsNullOrEmpty(changesetId))
+                return;
+
+            if (Extensibility == null)
+                return;
+
+            var cId = int.Parse(changesetId);
+            if (cId == 0)
+                return;
+
+
+            DTE = Extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+
+            VersionControlExt vce;
+            vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+            vce.ViewChangesetDetails(cId);
+        }
+
     }
 }

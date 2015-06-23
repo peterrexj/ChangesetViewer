@@ -1,4 +1,5 @@
-﻿namespace ChangesetViewer.Core.TFS
+﻿using System.Collections.Generic;
+namespace ChangesetViewer.Core.TFS
 {
     public class ChangesetSearchOptions
     {
@@ -7,5 +8,13 @@
         public string SearchKeyword { get; set; }
         public string Committer { get; set; }
         public bool IsSearchBasedOnRegex { get; set; }
+
+        public IEnumerable<string> SearchKeywordSplitMode
+        {
+            get
+            {
+                return SearchKeyword.Split(" ".ToCharArray());
+            }
+        }
     }
 }

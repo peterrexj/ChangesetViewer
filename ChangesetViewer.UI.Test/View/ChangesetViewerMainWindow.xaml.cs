@@ -151,5 +151,15 @@ namespace ChangesetViewer.UI.View
         {
             lblTotalCount.Content = count.ToString();
         }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            _cController.OpenChangesetWindow(e.Target);
+        }
+
+        private void btnExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
