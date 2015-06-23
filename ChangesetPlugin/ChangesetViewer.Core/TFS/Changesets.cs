@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using PluginCore.Extensions;
 
 namespace ChangesetViewer.Core.TFS
 {
@@ -95,6 +96,7 @@ namespace ChangesetViewer.Core.TFS
             }
             else
             {
+                
                 qryHistroy = qryHistroy.Where(p => (string.IsNullOrEmpty(search.SearchKeyword) || p.Comment.Contains(search.SearchKeyword))
                                 && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer));
             }

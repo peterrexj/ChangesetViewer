@@ -21,5 +21,41 @@ namespace PluginCore.Extensions
         {
             return items ?? Enumerable.Empty<T>();
         }
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public static bool ContainsUsingOr<T>(this IEnumerable<T> items, T value)
+        {
+            return items.EmptyIfNull().Contains(value);
+        }
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public static bool ContainsUsingOr<T>(this IEnumerable<T> items, T value, bool treatValuesAsConstants)
+        {
+            return items.ContainsUsingOr(value);
+        }
+
+        [System.Diagnostics.DebuggerStepThrough]
+        public static bool VariableSeqContainsUsingOr<T>(this IEnumerable<T> items, T value)
+        {
+            return items.ContainsUsingOr(value);
+        }
+
+        public static IEnumerable<IEnumerable<T>> InBatches<T>(this IEnumerable<T> items, int batchSize)
+        {
+            using (var enumerator = items.GetEnumerator())
+            {
+                for (; ; )
+                {
+                    var batch = new List<T>(batchSize);
+                    while (batch.Count < batchSize && enumerator.MoveNext())
+                        batch.Add(enumerator.Current);
+
+                    if (batch.Count == 0)
+                        yield break;
+
+                    yield return batch;
+                }
+            }
+        }
     }
 }

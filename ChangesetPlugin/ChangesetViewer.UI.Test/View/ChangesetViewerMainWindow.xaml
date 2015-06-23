@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChangesetViewer.UI"
-             mc:Ignorable="d" 
-             d:DesignHeight="260" d:DesignWidth="625">
+             mc:Ignorable="d">
     <!--<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,6 +17,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Themes/MetroDark/MetroDark.MSControls.Core.Implicit.xaml" />
+                <ResourceDictionary Source="../Themes/StaticStyles.xaml" />
+
                 <!--<ResourceDictionary Source="../Themes/MetroDark/MetroDark.MSControls.Toolkit.Implicit.xaml" />-->
                 <!--<ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Core.Implicit.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Toolkit.Implicit.xaml" />-->
@@ -33,6 +34,7 @@
                 <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="140" />
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition />
@@ -44,24 +46,24 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Column="0" Grid.Row="0" IsEnabled="false"
+                    <Button Grid.Column="1" Grid.Row="0" IsEnabled="false"
                             Content="  Server Path ...  "/>
-                    <TextBox Grid.Column="2" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
+                    <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
                                  VerticalContentAlignment="Center" BorderThickness="0,0,0,1" />
-                    <Label Grid.Column="0" Grid.Row="1" 
+                    <Label Grid.Column="1" Grid.Row="1" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
                            Content="Search Text" Width="85" />
-                    <TextBox Grid.Column="2" Grid.Row="1" x:Name="txtSearchText"
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtSearchText"
                                  Height="23" TextWrapping="Wrap" 
                                  VerticalContentAlignment="Center"
                                  Text="**PJ" BorderThickness="0,0,0,1" />
-                    <Label Grid.Column="0" Grid.Row="2" 
+                    <Label Grid.Column="1" Grid.Row="2" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
-                           Content="Users" Width="75" />
-                    <MediaElement Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"
+                           Content="By user" Width="75" />
+                    <MediaElement Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right"
                             x:Name="loaderUser_Gif" 
                             Source="Images/loader01.gif" 
                             MediaEnded="loader_Gif_MediaEnded" 
@@ -69,7 +71,7 @@
                             LoadedBehavior="Manual"  
                             Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
                             Width="20"/>
-                    <ComboBox Grid.Column="2" Grid.Row="2" x:Name="lstUsers" 
+                    <ComboBox Grid.Column="3" Grid.Row="2" x:Name="lstUsers" 
                           IsEditable="True"
                           TextSearch.TextPath="DisplayName" 
                           DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus" BorderThickness="0,0,0,1">
@@ -79,11 +81,11 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <Label Grid.Column="0" Grid.Row="3" 
+                    <Label Grid.Column="1" Grid.Row="3" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
                            Content="Created Date Between" Width="130" />
-                    <Grid Grid.Column="2" Grid.Row="3">
+                    <Grid Grid.Column="3" Grid.Row="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5*"  />
                             <ColumnDefinition Width="2*"  />
@@ -101,6 +103,7 @@
 
                 <WrapPanel>
                     <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
+                    <Button Content="Export to Excel" x:Name="btnExportToExcel" Width="71" Height="25" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
                     <Button Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
                     <CheckBox x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
                               IsEnabled="False"
@@ -126,7 +129,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Grid.Column="1">
-                                    <Hyperlink NavigateUri="{Binding ArtifactUri}">
+                                    <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
                                         <TextBlock Text="{Binding ChangesetId}" />
                                     </Hyperlink>
                                 </TextBlock>
@@ -136,7 +139,7 @@
                     <GridViewColumn Header="Name" Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Grid.Column="2" Text="{Binding CommitterDisplayName}" />
+                                <TextBlock Grid.Column="2" Text="{Binding CommitterDisplayName}" Foreground="White" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -147,7 +150,7 @@
                                 <local:RichTextboxCustomized 
                                     Background="{StaticResource BackgroundKey}"
                                     IsDocumentEnabled="True" BorderThickness="0"
-                                    IsReadOnly="True" FormattedText="{Binding Comment}" />
+                                    IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
