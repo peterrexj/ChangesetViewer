@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChangesetViewer.UI"
+             xmlns:changesetcore="clr-namespace:ChangesetViewer.Core.UI"
              mc:Ignorable="d">
     <!--<UserControl.Resources>
         <ResourceDictionary>
@@ -108,7 +109,9 @@
                     <CheckBox x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
                               IsEnabled="False"
                               VerticalAlignment="Center" />
+                    
                     <Label x:Name="lblTotalCount" Content="" />
+                    <ComboBox x:Name="cboSearchType" SelectedIndex="0"></ComboBox>
                     <MediaElement 
                         x:Name="loader_Gif" 
                         Source="Images/loader01.gif"

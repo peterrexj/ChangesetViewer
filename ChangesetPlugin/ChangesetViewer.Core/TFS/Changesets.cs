@@ -87,19 +87,30 @@ namespace ChangesetViewer.Core.TFS
                 false, false, false, false)
                     .OfType<Changeset>();
 
-            if (search.IsSearchBasedOnRegex)
+            if(search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
             {
                 var rx = new Regex(search.SearchKeyword, RegexOptions.IgnoreCase);
-
-                qryHistroy = qryHistroy.Where(p => rx.IsMatch(search.SearchKeyword)
-                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer));
+                qryHistroy = qryHistroy.Where(p => rx.IsMatch(search.SearchKeyword));
             }
-            else
+            else if (!search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
             {
-                
-                qryHistroy = qryHistroy.Where(p => (string.IsNullOrEmpty(search.SearchKeyword) || p.Comment.Contains(search.SearchKeyword))
-                                && (string.IsNullOrEmpty(search.Committer) || p.CommitterDisplayName == search.Committer));
+                if (search.SearchCommentType == UI.Consts.SearchCommentType.Exact)
+                    qryHistroy = qryHistroy.Where(c => c.Comment.Contains(search.SearchKeyword));
+                else if (search.SearchCommentType == UI.Consts.SearchCommentType.Keyword)
+                    qryHistroy = qryHistroy.Where(c => search.SearchKeywordSplitMode.Any(s => c.Comment.Contains(s)));
             }
+
+
+            if (!string.IsNullOrEmpty(search.Committer))
+                qryHistroy = qryHistroy.Where(c => c.CommitterDisplayName == search.Committer);
+
+            if (search.StartDate.HasValue)
+                qryHistroy = qryHistroy.Where(c => c.CreationDate > search.StartDate.Value);
+
+            if (search.EndDate.HasValue)
+                qryHistroy = qryHistroy.Where(c => c.CreationDate < search.EndDate.Value);
+
+
 
             return qryHistroy;
         }

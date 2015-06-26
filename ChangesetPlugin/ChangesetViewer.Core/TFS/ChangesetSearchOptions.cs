@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using PluginCore.Extensions;
+using System.Linq;
+using System;
+using ChangesetViewer.Core.UI;
+
 namespace ChangesetViewer.Core.TFS
 {
     public class ChangesetSearchOptions
@@ -9,12 +15,18 @@ namespace ChangesetViewer.Core.TFS
         public string Committer { get; set; }
         public bool IsSearchBasedOnRegex { get; set; }
 
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
+        public Consts.SearchCommentType SearchCommentType { get; set; }
+
         public IEnumerable<string> SearchKeywordSplitMode
         {
             get
             {
-                return SearchKeyword.Split(" ".ToCharArray());
+                return (IEnumerable<string>)SearchKeyword.Split(" ".ToCharArray()).Select(s => s.Trim());
             }
         }
+
     }
 }

@@ -3,6 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using ChangesetViewer.Core.TFS;
 using ChangesetViewer.Core.UI;
+using System.Collections.Generic;
+using PluginCore.Extensions;
 
 namespace ChangesetViewer.UI.View
 {
@@ -17,6 +19,7 @@ namespace ChangesetViewer.UI.View
 
             InitializeWindow();
 
+            cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
         }
 
         public ChangesetViewerController _cController;
@@ -40,6 +43,19 @@ namespace ChangesetViewer.UI.View
 
         private int _cancelHit;
 
+        private ChangesetSearchOptions ReadOptionsValueFromUI()
+        {
+            return new ChangesetSearchOptions
+            {
+                ProjectSourcePath = txtSource.Text.Trim(),
+                TopN = Int32.MaxValue,
+                SearchKeyword = txtSearchText.Text.Trim(),
+                Committer = lstUsers.Text,
+                IsSearchBasedOnRegex = chkSearchBasedOnRegex.IsChecked.HasValue && chkSearchBasedOnRegex.IsChecked.Value,
+                SearchCommentType = (Consts.SearchCommentType)Enum.Parse(typeof(Consts.SearchCommentType), cboSearchType.SelectedValue.ToString())
+            };
+        }
+
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             if (((Button)sender).Content.Equals("Search"))
@@ -47,14 +63,7 @@ namespace ChangesetViewer.UI.View
                 _cancelHit = 0;
                 loader_Gif.Play();
                 loader_Gif.Visibility = Visibility.Visible;
-                var searchModel = new ChangesetSearchOptions
-                {
-                    ProjectSourcePath = txtSource.Text.Trim(),
-                    TopN = Int32.MaxValue,
-                    SearchKeyword = txtSearchText.Text.Trim(),
-                    Committer = lstUsers.Text,
-                    IsSearchBasedOnRegex = chkSearchBasedOnRegex.IsChecked.HasValue && chkSearchBasedOnRegex.IsChecked.Value
-                };
+                var searchModel = ReadOptionsValueFromUI();
                 _cController.GetChangesets(searchModel);
 
                 if (lstContainer.ItemsSource == null)

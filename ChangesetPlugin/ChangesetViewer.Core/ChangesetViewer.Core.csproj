@@ -102,6 +102,7 @@
     <Compile Include="TFS\TfsUsers.cs" />
     <Compile Include="UI\ChangesetViewerController.cs" />
     <Compile Include="UI\ChangesetViewerModel.cs" />
+    <Compile Include="UI\Consts.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangesetViewer.snk" />
