@@ -26,13 +26,15 @@
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="BackgroundKey" Color="#FF181818" />
+            <SolidColorBrush x:Key="ForegroundKey" Color="#FFEFEFEF" />
+
         </ResourceDictionary>
     </UserControl.Resources>
     
     <DockPanel>
         <Grid DockPanel.Dock="Top" Background="{StaticResource BackgroundKey}"> 
             <StackPanel Orientation="Vertical">
-                <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
+                <TextBlock Margin="2" HorizontalAlignment="Center" Foreground="{StaticResource ForegroundKey}" >Changesets Viewer</TextBlock>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="10" />
@@ -42,7 +44,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="100" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -51,15 +53,32 @@
                             Content="  Server Path ...  "/>
                     <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
-                                 VerticalContentAlignment="Center" BorderThickness="0,0,0,1" />
+                                 VerticalContentAlignment="Center" BorderThickness="0,0,0,1" FontSize="12" />
                     <Label Grid.Column="1" Grid.Row="1" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
                            Content="Search Text" Width="85" />
-                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtSearchText"
-                                 Height="23" TextWrapping="Wrap" 
-                                 VerticalContentAlignment="Center"
-                                 Text="**PJ" BorderThickness="0,0,0,1" />
+                    <DockPanel Grid.Column="3" Grid.Row="1">
+                        <TextBox  x:Name="txtSearchText" DockPanel.Dock="Top"
+                                 TextWrapping="Wrap" 
+                                 VerticalContentAlignment="Top"
+                                 Text="**PJ" BorderThickness="0,0,0,1"
+                                 VerticalAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="70" FontSize="12"
+                             />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"  />
+                                <ColumnDefinition Width="4*"  />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0" Grid.Row="1" x:Name="cboSearchType" DockPanel.Dock="Bottom" SelectedIndex="0" FontSize="12"></ComboBox>
+                            <GridSplitter ></GridSplitter>
+                            <CheckBox Grid.Column="1" Grid.Row="1" x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
+                                IsEnabled="False" FontSize="12" HorizontalAlignment="Center" />
+                        </Grid>
+                        
+                    </DockPanel>
+                    
+
                     <Label Grid.Column="1" Grid.Row="2" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
@@ -93,10 +112,9 @@
                             <ColumnDefinition Width="5*" />
                         </Grid.ColumnDefinitions>
                         <DatePicker Grid.Column="0"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Left" x:Name="startDate" VerticalAlignment="Center" BorderThickness="0,0,0,1"/>
+                                VerticalContentAlignment="Center" x:Name="startDate" BorderThickness="0,0,0,1"/>
                         <Label Grid.Column="1" HorizontalAlignment="Center" Content=" AND "/>
-                        <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" HorizontalAlignment="Right" BorderThickness="0,0,0,1"/>
+                        <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" BorderThickness="0,0,0,1"/>
 
                     </Grid>
 
@@ -106,12 +124,9 @@
                     <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
                     <Button Content="Export to Excel" x:Name="btnExportToExcel" Width="71" Height="25" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
                     <Button Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
-                    <CheckBox x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
-                              IsEnabled="False"
-                              VerticalAlignment="Center" />
+                    
                     
                     <Label x:Name="lblTotalCount" Content="" />
-                    <ComboBox x:Name="cboSearchType" SelectedIndex="0"></ComboBox>
                     <MediaElement 
                         x:Name="loader_Gif" 
                         Source="Images/loader01.gif"
