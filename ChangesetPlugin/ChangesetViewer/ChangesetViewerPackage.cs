@@ -5,7 +5,9 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
-using PeterRexJoseph.ChangesetViewer.SettingsPages;
+using ChangesetViewer.Core.Settings;
+using Microsoft.VisualStudio.Settings;
+using Microsoft.VisualStudio.Shell.Settings;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -30,7 +32,7 @@ namespace PeterRexJoseph.ChangesetViewer
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     [Guid(GuidList.guidChangesetViewerPkgString)]
-    [ProvideOptionPage(typeof(SourceControlSettingsPage), "Changeset Viewer", "Source Control", 0, 0, true)]
+    //[ProvideOptionPage(typeof(SourceControlSettingsPage), "Changeset Viewer", "Source Control", 0, 0, true)]
     [ProvideOptionPage(typeof(SettingsPageModel), "Changeset Viewer", "Custom Page", 0, 0, true)]
 
     public sealed class ChangesetViewerPackage : Package
@@ -103,6 +105,15 @@ namespace PeterRexJoseph.ChangesetViewer
         /// </summary>
         private void MenuItemCallback(object sender, EventArgs e)
         {
+            //Get the settings value from the store
+            //SettingsManager settingsManager = new ShellSettingsManager(this);
+            //SettingsStore configurationSettingsStore = settingsManager.GetReadOnlySettingsStore(SettingsScope.Configuration);
+
+
+            SettingsPageModel page = (SettingsPageModel)GetDialogPage(typeof(SettingsPageModel));
+
+
+
             // Show a Message Box to prove we were here
             IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;

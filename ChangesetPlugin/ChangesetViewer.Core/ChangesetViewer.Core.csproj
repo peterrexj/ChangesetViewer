@@ -67,6 +67,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packages\VS SDK\V12\v2.0\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.TeamFoundation.VersionControl, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packages\VS IDE\12\TeamFoundation\Team Explorer\Microsoft.VisualStudio.TeamFoundation.VersionControl.dll</HintPath>
@@ -79,10 +80,12 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive.Core, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
     <Reference Include="System.Reactive.Interfaces, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
     <Reference Include="System.Reactive.Linq, Version=2.0.20823.0, Culture=neutral, PublicKeyToken=f300afd708cefcd3, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -93,6 +96,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\SettingsDefaultUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\SettingsDefaultUI.Designer.cs">
+      <DependentUpon>SettingsDefaultUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\SettingsPageModel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TFS\Changesets.cs" />
     <Compile Include="TFS\ChangesetSearchOptions.cs" />
     <Compile Include="TFS\IChangsets.cs" />
@@ -106,6 +118,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangesetViewer.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Settings\SettingsDefaultUI.resx">
+      <DependentUpon>SettingsDefaultUI.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

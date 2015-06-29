@@ -3,13 +3,12 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace PeterRexJoseph.ChangesetViewer.SettingsPages
+namespace ChangesetViewer.Core.Settings
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [Guid("1D9ECCF3-5D2F-4112-9B25-264596873DC9")]
     public class SettingsPageModel : DialogPage
     {
-
         private string _defaultSearchPath = @"$/";
 
         public bool UseTFSconnectedServer { get; set; }
@@ -34,7 +33,7 @@ namespace PeterRexJoseph.ChangesetViewer.SettingsPages
         {
             get
             {
-                SettingsPageUI page = new SettingsPageUI();
+                SettingsDefaultUI page = new SettingsDefaultUI();
                 page.optionsPage = this;
                 page.Initialize();
                 return page;

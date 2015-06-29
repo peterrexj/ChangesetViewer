@@ -190,15 +190,6 @@
     <Compile Include="MyControl.xaml.cs">
       <DependentUpon>MyControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingsPages\SettingsPageModel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SettingsPages\SettingsPageUI.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="SettingsPages\SettingsPageUI.Designer.cs">
-      <DependentUpon>SettingsPageUI.cs</DependentUpon>
-    </Compile>
     <Compile Include="SourceControlSettingsPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -219,9 +210,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SettingsPages\SettingsPageUI.resx">
-      <DependentUpon>SettingsPageUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
