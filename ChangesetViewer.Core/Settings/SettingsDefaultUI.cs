@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PeterRexJoseph.ChangesetViewer.SettingsPages
+namespace ChangesetViewer.Core.Settings
 {
-    public partial class SettingsPageUI : UserControl
+    public partial class SettingsDefaultUI : UserControl
     {
-        internal SettingsPageModel optionsPage;
-
-        public SettingsPageUI()
+        public SettingsDefaultUI()
         {
             InitializeComponent();
             txtDefaultSearchPath.Leave += txtDefaultSearchPath_Leave;
             chkUseVStfsInfo.CheckedChanged += chkUseVStfsInfo_CheckedChanged;
         }
+
+        internal SettingsPageModel optionsPage;
 
         void chkUseVStfsInfo_CheckedChanged(object sender, EventArgs e)
         {
@@ -28,8 +35,5 @@ namespace PeterRexJoseph.ChangesetViewer.SettingsPages
         {
             txtDefaultSearchPath.Text = optionsPage.DefaultSearchPath;
         }
-
-
-
     }
 }

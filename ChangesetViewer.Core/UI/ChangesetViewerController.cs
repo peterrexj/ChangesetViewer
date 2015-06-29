@@ -142,6 +142,8 @@ namespace ChangesetViewer.Core.UI
 
         public void OpenChangesetWindow(string changesetId)
         {
+
+           
             if (string.IsNullOrEmpty(changesetId))
                 return;
 

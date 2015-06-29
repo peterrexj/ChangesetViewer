@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Shell;
 using ChangesetViewer;
 using ChangesetViewer.UI.View;
+using ChangesetViewer.Core.Settings;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
