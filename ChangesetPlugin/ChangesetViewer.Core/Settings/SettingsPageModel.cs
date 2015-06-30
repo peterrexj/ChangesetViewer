@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -7,6 +8,7 @@ namespace ChangesetViewer.Core.Settings
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [Guid("1D9ECCF3-5D2F-4112-9B25-264596873DC9")]
+    [CLSCompliant(false), ComVisible(true)]  
     public class SettingsPageModel : DialogPage
     {
         private string _defaultSearchPath = @"$/";
