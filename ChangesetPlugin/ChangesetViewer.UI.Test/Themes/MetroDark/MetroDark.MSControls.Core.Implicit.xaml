@@ -67,6 +67,7 @@
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
     <Setter Property="FontSize" Value="13.333" />
     <Setter Property="FontFamily" Value="Segoe UI" />
+    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}"/>
   </Style>
   
   <!-- *********************************  TextBlock Style  ********************************* -->
