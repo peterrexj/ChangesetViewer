@@ -3,12 +3,22 @@
     <Style x:Key="LabelStyle" TargetType="Label">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="Foreground" Value="#FF00AADE" />
+        <Setter Property="Foreground" Value="Gray" />
     </Style>
 
     <Style x:Key="ButtonStyle" TargetType="Button">
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontFamily" Value="Calibri" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="Black" />
+    </Style>
+    <Style x:Key="TextblockStyle" TargetType="TextBox">
         <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="Foreground" Value="#FF00AADE" />
+        <Setter Property="FontSize" Value="13.333" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 </ResourceDictionary>

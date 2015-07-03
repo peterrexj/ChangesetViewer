@@ -188,7 +188,7 @@
 
   <!-- *********************************  ComboBoxToggleButton Style   ********************************* -->
   <Style x:Key="ComboBoxToggleButtonStyle" TargetType="ToggleButton">
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="FontFamily" Value="Segoe UI" />
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource ComboBoxToggleButtonBorderBrush}" />
@@ -271,7 +271,7 @@
 
   <!-- *********************************  ComboBoxItem Style  ********************************* -->
   <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="FontFamily" Value="Segoe UI" />
     <Setter Property="MinHeight" Value="30" />
     <Setter Property="Padding" Value="6,0" />
@@ -513,7 +513,7 @@
   <!-- ********************************** CheckBoxStyle **********************************-->
   <Style x:Key="CheckBoxStyle" TargetType="CheckBox">
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="13.333" />
     <Setter Property="FontFamily" Value="Segoe UI" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -599,6 +599,7 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
   </Style>
 
   <!-- ********************************** RadioButton Style **********************************-->

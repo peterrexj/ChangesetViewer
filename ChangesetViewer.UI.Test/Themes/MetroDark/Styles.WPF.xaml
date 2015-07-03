@@ -386,7 +386,7 @@
   <!-- *********************************  ComboBoxEditableTextBox Style  ********************************* -->
   <Style x:Key="ComboBoxEditableTextBoxStyle" TargetType="{x:Type TextBox}">
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="FontFamily" Value="Segoe UI" />
     <Setter Property="OverridesDefaultStyle" Value="true" />
     <Setter Property="AllowDrop" Value="true" />
@@ -493,7 +493,7 @@
           </ScrollViewer>
         </Border>
       </Popup>
-      <ToggleButton BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" Grid.Column="0" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButtonStyle}" />
+      <ToggleButton BorderBrush="{TemplateBinding BorderBrush}" Grid.Column="0" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButtonStyle}" />
       <TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxEditableTextBoxStyle}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Margin="0,0,31,0" />
       <Rectangle x:Name="focused" Stroke="{StaticResource ComboBoxFocusedBorderBrush}" StrokeThickness="1" Visibility="Collapsed" Grid.ColumnSpan="2" />
       <Rectangle x:Name="disabled" Fill="{StaticResource ComboBoxDisabledBackgroundBrush}" Visibility="Collapsed" Grid.ColumnSpan="2" />
@@ -507,11 +507,11 @@
 
   <!-- *********************************  ComboBox Style  ********************************* -->
   <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
-    <Setter Property="Padding" Value="6,1,6,3" />
+    <!--<Setter Property="Padding" Value="6,1,6,3" />-->
     <Setter Property="Margin" Value="0" />
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="FontFamily" Value="Segoe UI" />
-    <Setter Property="MinHeight" Value="30" />
+    <!--<Setter Property="MinHeight" Value="30" />-->
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
     <Setter Property="Background" Value="{StaticResource TransparentBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource ComboBoxBorderBrush}" />
@@ -638,7 +638,7 @@
   <Style x:Key="TextBoxStyle" TargetType="TextBox">
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-    <Setter Property="FontSize" Value="14.667" />
+    <Setter Property="FontSize" Value="12" />
     <Setter Property="FontFamily" Value="Segoe UI" />
     <Setter Property="Background" Value="{StaticResource TextBoxBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{StaticResource TextBoxBorderBrush}" />
