@@ -60,7 +60,7 @@
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
                            Content="Search Text" Width="85" />
-                        <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtSearchText" DockPanel.Dock="Top"
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtSearchText" DockPanel.Dock="Top"
                                  Style="{StaticResource TextblockStyle}"
                                  TextWrapping="Wrap" 
                                  VerticalContentAlignment="Top"
@@ -68,16 +68,16 @@
                                  VerticalAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="70" FontSize="12"
                              />
                     <Grid Grid.Column="3" Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*"  />
-                                <ColumnDefinition Width="1*"  />
-                                <ColumnDefinition Width="8*" />
-                            </Grid.ColumnDefinitions>
-                            <ComboBox Grid.Column="0" Grid.Row="1" x:Name="cboSearchType" DockPanel.Dock="Bottom" SelectedIndex="0" FontSize="12" Background="{DynamicResource BackgroundKey}"></ComboBox>
-                            <GridSplitter Grid.Column="1" Grid.Row="1"/>
-                            <CheckBox Grid.Column="2" Grid.Row="1" x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*"  />
+                            <ColumnDefinition Width="1*"  />
+                            <ColumnDefinition Width="8*" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Grid.Column="0" Grid.Row="1" x:Name="cboSearchType" DockPanel.Dock="Bottom" SelectedIndex="0" FontSize="12" Background="{DynamicResource BackgroundKey}"></ComboBox>
+                        <GridSplitter Grid.Column="1" Grid.Row="1"/>
+                        <CheckBox Grid.Column="2" Grid.Row="1" x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
                                 IsEnabled="False" FontSize="12" HorizontalAlignment="Center" />
-                        </Grid>
+                    </Grid>
 
 
                     <Label Grid.Column="1" Grid.Row="3" 
@@ -142,7 +142,30 @@
 
         <!--<ListView DockPanel.Dock="Bottom" x:Name="lstContainer" Background="{StaticResource BackgroundKey}">-->
         <ListView DockPanel.Dock="Bottom" x:Name="lstContainer" Background="{StaticResource BackgroundKey}">
-            <ListView.View>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Background="Aqua">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"  />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock>
+                                    <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <TextBlock Text="{Binding ChangesetId}" />
+                                    </Hyperlink>
+                            </TextBlock>
+                            <Label Content="{Binding CommitterDisplayName}" Foreground="White" FontSize="14" BorderThickness="0" />
+                            <Label Content="{Binding CreationDate}" BorderThickness="0" />
+                        </StackPanel>
+                        <local:RichTextboxCustomized Grid.Column="1" Width="264" FontSize="12"
+                                    Background="{StaticResource BackgroundKey}"
+                                    IsDocumentEnabled="True" BorderThickness="0"
+                                    IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <!--<ListView.View>
                 <GridView>
                     <GridViewColumn Header="Id" Width="50">
                         <GridViewColumn.CellTemplate>
@@ -165,7 +188,9 @@
                     <GridViewColumn Header="Comment" Width="264">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <!--<local:RichTextboxCustomized Background="{StaticResource BackgroundKey}"-->
+                                -->
+            <!--<local:RichTextboxCustomized Background="{StaticResource BackgroundKey}"-->
+            <!--
                                 <local:RichTextboxCustomized 
                                     Background="{StaticResource BackgroundKey}"
                                     IsDocumentEnabled="True" BorderThickness="0"
@@ -181,8 +206,8 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
-            </ListView.View>
-            <TextBlock Text="{Binding CommitterName}"></TextBlock>
+            </ListView.View>-->
+            <!--<TextBlock Text="{Binding CommitterName}"></TextBlock>-->
         </ListView>
 
     </DockPanel>
