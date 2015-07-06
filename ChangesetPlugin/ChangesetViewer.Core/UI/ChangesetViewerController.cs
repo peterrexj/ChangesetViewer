@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Reactive.Linq;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
+using ChangesetViewer.Core.Settings;
 
 
 namespace ChangesetViewer.Core.UI
@@ -16,8 +17,25 @@ namespace ChangesetViewer.Core.UI
     {
         private ChangesetSearchOptions _searchOptions;
         private IChangsets _changesets;
-
+        private SettingsModelWrapper _globalSettings;
+        
         public ChangesetViewerModel Model { get; set; }
+        
+        
+        public SettingsModelWrapper GlobalSettings
+        {
+            get
+            {
+                if (_globalSettings == null)
+                    _globalSettings = new SettingsModelWrapper();
+
+                if (_globalSettings.DTE == null)
+                    if (Extensibility != null)
+                        _globalSettings.DTE = Extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+
+                return _globalSettings;
+            }
+        }
 
         public EnvDTE80.DTE2 DTE { get; set; }
         public EnvDTE.IVsExtensibility Extensibility { get; set; }
@@ -37,6 +55,7 @@ namespace ChangesetViewer.Core.UI
         public ChangesetViewerController()
         {
             Model = new ChangesetViewerModel();
+            //Settings = new SettingsModelWrapper();
             _searchOptions = new ChangesetSearchOptions();
 
             _workerUsersFetch.DoWork += workerUsersFetch_DoWork;
@@ -139,11 +158,8 @@ namespace ChangesetViewer.Core.UI
 
         #endregion
 
-
         public void OpenChangesetWindow(string changesetId)
         {
-
-           
             if (string.IsNullOrEmpty(changesetId))
                 return;
 
@@ -153,7 +169,6 @@ namespace ChangesetViewer.Core.UI
             var cId = int.Parse(changesetId);
             if (cId == 0)
                 return;
-
 
             DTE = Extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
 

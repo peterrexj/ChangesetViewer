@@ -5,6 +5,8 @@ using ChangesetViewer.Core.TFS;
 using ChangesetViewer.Core.UI;
 using System.Collections.Generic;
 using PluginCore.Extensions;
+using ChangesetViewer.Core.Settings;
+using ChangesetViewer.Core;
 
 namespace ChangesetViewer.UI.View
 {
@@ -39,8 +41,12 @@ namespace ChangesetViewer.UI.View
 
             loaderUser_Gif.Visibility = Visibility.Hidden;
             loader_Gif.Visibility = Visibility.Hidden;
+
+            txtSource.Text = _cController.GlobalSettings.DefaultSearchPath;
+
         }
 
+        
         private int _cancelHit;
 
         private ChangesetSearchOptions ReadOptionsValueFromUI()

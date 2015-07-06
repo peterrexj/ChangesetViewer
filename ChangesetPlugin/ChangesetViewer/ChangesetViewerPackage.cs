@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell;
 using ChangesetViewer.Core.Settings;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
+using ChangesetViewer.Core;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -33,7 +34,7 @@ namespace PeterRexJoseph.ChangesetViewer
     [ProvideToolWindow(typeof(MyToolWindow))]
     [Guid(GuidList.guidChangesetViewerPkgString)]
     //[ProvideOptionPage(typeof(SourceControlSettingsPage), "Changeset Viewer", "Source Control", 0, 0, true)]
-    [ProvideOptionPage(typeof(SettingsPageModel), "Changeset Viewer", "Custom Page", 0, 0, true)]
+    [ProvideOptionPage(typeof(SettingsPageModel), Consts.__PLUGINNAME, Consts.__SETTINGSPAGE_SERVER, 0, 0, true)]
 
     public sealed class ChangesetViewerPackage : Package
     {

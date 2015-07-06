@@ -11,14 +11,13 @@ namespace ChangesetViewer.Core.Settings
     [CLSCompliant(false), ComVisible(true)]  
     public class SettingsPageModel : DialogPage
     {
-        private string _defaultSearchPath = @"$/";
-
         public bool UseTFSconnectedServer { get; set; }
 
         public string ServerURL { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
 
+        [Category(Consts.__PLUGINNAME)]
         public string DefaultSearchPath { get; set; }
 
         private string optionValue = "alpha";

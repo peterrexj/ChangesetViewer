@@ -9,7 +9,21 @@ namespace ChangesetViewer.Core.TFS
 {
     public class ChangesetSearchOptions
     {
-        public string ProjectSourcePath { get; set; }
+        private string _projectSourcePath;
+
+        public string ProjectSourcePath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_projectSourcePath))
+                    _projectSourcePath = @"$\";
+                return _projectSourcePath;
+            }
+            set
+            {
+                _projectSourcePath = value;
+            }
+        }
         public int TopN { get; set; }
         public string SearchKeyword { get; set; }
         public string Committer { get; set; }

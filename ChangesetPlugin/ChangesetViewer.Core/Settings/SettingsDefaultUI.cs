@@ -35,5 +35,11 @@ namespace ChangesetViewer.Core.Settings
         {
             txtDefaultSearchPath.Text = optionsPage.DefaultSearchPath;
         }
+
+        private void btnJIRAdefault_Click(object sender, EventArgs e)
+        {
+            txtDefaultSearchPath.Text = "";
+            txtJiraSearchRegex.Text = "";
+        }
     }
 }
