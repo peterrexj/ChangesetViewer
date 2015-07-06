@@ -81,7 +81,6 @@ namespace ChangesetViewer.Core.TFS
             // Get the Changeset list from the TFS API.
             _versionControlServer = projectCollection.GetService<VersionControlServer>();
 
-
             var qryHistroy = _versionControlServer.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
                 null, null, null, search.TopN,
                 false, false, false, false)
@@ -94,9 +93,9 @@ namespace ChangesetViewer.Core.TFS
             }
             else if (!search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
             {
-                if (search.SearchCommentType == UI.Consts.SearchCommentType.Exact)
+                if (search.SearchCommentType == Consts.SearchCommentType.Exact)
                     qryHistroy = qryHistroy.Where(c => c.Comment.Contains(search.SearchKeyword));
-                else if (search.SearchCommentType == UI.Consts.SearchCommentType.Keyword)
+                else if (search.SearchCommentType == Consts.SearchCommentType.Keyword)
                     qryHistroy = qryHistroy.Where(c => search.SearchKeywordSplitMode.Any(s => c.Comment.Contains(s)));
             }
 

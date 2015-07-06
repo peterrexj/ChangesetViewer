@@ -102,6 +102,7 @@
     <Compile Include="Settings\SettingsDefaultUI.Designer.cs">
       <DependentUpon>SettingsDefaultUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings\SettingsModelWrapper.cs" />
     <Compile Include="Settings\SettingsPageModel.cs">
       <SubType>Component</SubType>
     </Compile>

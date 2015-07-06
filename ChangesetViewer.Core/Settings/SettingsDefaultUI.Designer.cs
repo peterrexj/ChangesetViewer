@@ -39,10 +39,12 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.chkUseVStfsInfo = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.btnJIRAdefault = new System.Windows.Forms.Button();
+            this.txtJiraSearchRegex = new System.Windows.Forms.TextBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.txtJiraTicketLink = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.grpServerCredentials.SuspendLayout();
             this.SuspendLayout();
@@ -157,23 +159,24 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Default Server path";
             // 
-            // button1
+            // btnJIRAdefault
             // 
-            this.button1.Location = new System.Drawing.Point(237, 231);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Use Default";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnJIRAdefault.Location = new System.Drawing.Point(237, 255);
+            this.btnJIRAdefault.Name = "btnJIRAdefault";
+            this.btnJIRAdefault.Size = new System.Drawing.Size(75, 23);
+            this.btnJIRAdefault.TabIndex = 10;
+            this.btnJIRAdefault.Text = "Use Default";
+            this.btnJIRAdefault.UseVisualStyleBackColor = true;
+            this.btnJIRAdefault.Click += new System.EventHandler(this.btnJIRAdefault_Click);
             // 
-            // textBox4
+            // txtJiraSearchRegex
             // 
-            this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtJiraSearchRegex.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox4.Location = new System.Drawing.Point(119, 205);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(193, 20);
-            this.textBox4.TabIndex = 9;
+            this.txtJiraSearchRegex.Location = new System.Drawing.Point(119, 205);
+            this.txtJiraSearchRegex.Name = "txtJiraSearchRegex";
+            this.txtJiraSearchRegex.Size = new System.Drawing.Size(193, 20);
+            this.txtJiraSearchRegex.TabIndex = 9;
             // 
             // checkBox2
             // 
@@ -194,17 +197,37 @@
             this.label5.TabIndex = 7;
             this.label5.Text = "JIRA search Regex";
             // 
+            // txtJiraTicketLink
+            // 
+            this.txtJiraTicketLink.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtJiraTicketLink.Location = new System.Drawing.Point(119, 231);
+            this.txtJiraTicketLink.Name = "txtJiraTicketLink";
+            this.txtJiraTicketLink.Size = new System.Drawing.Size(193, 20);
+            this.txtJiraTicketLink.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(17, 234);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(82, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "JIRA Ticket link";
+            // 
             // SettingsDefaultUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.txtJiraTicketLink);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.btnJIRAdefault);
+            this.Controls.Add(this.txtJiraSearchRegex);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.label5);
             this.Name = "SettingsDefaultUI";
-            this.Size = new System.Drawing.Size(342, 274);
+            this.Size = new System.Drawing.Size(342, 308);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.grpServerCredentials.ResumeLayout(false);
@@ -227,9 +250,11 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.CheckBox chkUseVStfsInfo;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button btnJIRAdefault;
+        private System.Windows.Forms.TextBox txtJiraSearchRegex;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtJiraTicketLink;
+        private System.Windows.Forms.Label label6;
     }
 }

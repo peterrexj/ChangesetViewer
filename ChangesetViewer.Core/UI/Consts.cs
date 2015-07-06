@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChangesetViewer.Core.UI
+namespace ChangesetViewer.Core
 {
     public static class Consts
     {
@@ -13,5 +13,15 @@ namespace ChangesetViewer.Core.UI
             Exact,
             Keyword
         }
+
+        #region default values
+        public const  string __DEFAULT_SEARCHPATH = @"$/";
+        public const  string __DEFAULT_JIRATICKETSEARCHREGEX = @"[a-zA-Z]+[-]\d+";
+        public const  string __DEFAULT_JIRATICKETBROWSEURL = "https://janisoncls.atlassian.net/browse/";
+
+        public const string __PLUGINNAME = "Changeset Viewer";
+        public const string __SETTINGSPAGE_SERVER = "ServerPage";
+        
+        #endregion
     }
 }
