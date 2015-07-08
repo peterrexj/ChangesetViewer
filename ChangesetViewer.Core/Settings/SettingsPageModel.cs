@@ -11,22 +11,17 @@ namespace ChangesetViewer.Core.Settings
     [CLSCompliant(false), ComVisible(true)]  
     public class SettingsPageModel : DialogPage
     {
-        public bool UseTFSconnectedServer { get; set; }
+        public bool FindJiraTicketsInComment { get; set; }
+        public string JiraSearchRegexPattern { get; set; }
+        public string JiraTicketBrowseLink { get; set; }
 
-        public string ServerURL { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
 
-        [Category(Consts.__PLUGINNAME)]
-        public string DefaultSearchPath { get; set; }
+        public bool UseVisualStudioEnvironmentTfsConnection { get; set; }
+        public string TFSServerURL { get; set; }
+        public string TFSUsername { get; set; }
+        public string TFSPassword { get; set; }
 
-        private string optionValue = "alpha";
-
-        public string OptionString
-        {
-            get { return optionValue; }
-            set { optionValue = value; }
-        }
+        public string DefaultTFSSearchPath { get; set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

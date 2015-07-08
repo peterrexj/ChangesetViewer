@@ -5,6 +5,17 @@ namespace ChangesetViewer.Core.TFS
 {
     public class TfsServer : ITfsServer
     {
+        private string _serverUrl;
+
+        public TfsServer()
+        {
+
+        }
+        public TfsServer(string tfsServerUrl)
+        {
+            _serverUrl = tfsServerUrl;
+
+        }
         public TfsTeamProjectCollection Collection { get; set; }
         public TfsTeamProjectCollection GetCollection()
         {

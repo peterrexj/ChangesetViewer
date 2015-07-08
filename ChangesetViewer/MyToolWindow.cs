@@ -41,6 +41,8 @@ namespace PeterRexJoseph.ChangesetViewer
 
             var content = new ChangesetViewerMainWindow();
             content._cController.Extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
+            content.InitializeWindow();
+
 
             base.Content = content;
             
