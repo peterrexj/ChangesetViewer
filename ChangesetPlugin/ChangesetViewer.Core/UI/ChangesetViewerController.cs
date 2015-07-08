@@ -15,10 +15,11 @@ namespace ChangesetViewer.Core.UI
 {
     public class ChangesetViewerController
     {
-        private ChangesetSearchOptions _searchOptions;
+
         private IChangsets _changesets;
+
+        private ChangesetSearchOptions _searchOptions;
         private SettingsModelWrapper _globalSettings;
-        
         public ChangesetViewerModel Model { get; set; }
         
         

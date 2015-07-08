@@ -19,14 +19,12 @@ namespace ChangesetViewer.UI.View
         {
             InitializeComponent();
 
-            InitializeWindow();
-
-            cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
+            InitializeInternalComponents();
         }
 
         public ChangesetViewerController _cController;
 
-        public void InitializeWindow()
+        private void InitializeInternalComponents()
         {
             _cController = new ChangesetViewerController
             {
@@ -38,12 +36,16 @@ namespace ChangesetViewer.UI.View
                 SearchButtonTextReset = SearchButtonTextReset,
                 UpdateChangesetCount = UpdateTotalCount
             };
+        }
 
+
+        public void InitializeWindow()
+        {
             loaderUser_Gif.Visibility = Visibility.Hidden;
             loader_Gif.Visibility = Visibility.Hidden;
 
-            txtSource.Text = _cController.GlobalSettings.DefaultSearchPath;
-
+            cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
+            txtSource.Text = _cController.GlobalSettings.DefaultTFSSearchPath;
         }
 
         
