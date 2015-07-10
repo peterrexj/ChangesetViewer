@@ -71,6 +71,9 @@ namespace ChangesetViewer.UI.View
         {
             if (((Button)sender).Content.Equals("Search"))
             {
+                if (!_cController.IsVisualStudioIsConnectedToTFS())
+                    return;
+
                 _cancelHit = 0;
                 loader_Gif.Play();
                 loader_Gif.Visibility = Visibility.Visible;
@@ -184,7 +187,6 @@ namespace ChangesetViewer.UI.View
 
         private void btnGoToChangeet_Click(object sender, RoutedEventArgs e)
         {
-            //_cController.Opena();
             _cController.OpenChangesetWindow(txtChangesetId.Text, true);
         }
 
