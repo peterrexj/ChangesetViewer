@@ -177,7 +177,7 @@ namespace ChangesetViewer.Core.UI
             if (!changesetId.Equals(intChangesetID.ToString()))
                 return;
 
-            if (!EnsureVisualStudioIsConnectedToTFS())
+            if (!IsVisualStudioIsConnectedToTFS())
                 return;
 
             if (requiresVerification)
@@ -198,7 +198,7 @@ namespace ChangesetViewer.Core.UI
         }
 
 
-        public bool EnsureVisualStudioIsConnectedToTFS()
+        public bool IsVisualStudioIsConnectedToTFS()
         {
 
             var tfsExt = (TeamFoundationServerExt)DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
