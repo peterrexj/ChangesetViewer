@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TeamFoundation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,15 @@ namespace ChangesetViewer.Core.Settings
             if (_dteInstance != null)
             {
                 var props = DTE.get_Properties(Consts.__PLUGINNAME, Consts.__SETTINGSPAGE_SERVER);
-                return props.Item(propName).Value == "" ? null : props.Item(propName).Value;
+
+                //System.IO.File.WriteAllText(@"D:\1.txt", props.Item(propName).Value.ToString());
+
+                if (props.Item(propName).Value != null && props.Item(propName).Value.GetType().Name == "String")
+                {
+                    return props.Item(propName).Value == "" ? null : props.Item(propName).Value;
+                }
+
+                return props.Item(propName).Value;
             }
             return string.Empty;
         }
@@ -44,7 +53,17 @@ namespace ChangesetViewer.Core.Settings
         {
             get
             {
-                return getProperties("TFSServerURL") as string;
+                var tfsUrl = getProperties("TFSServerURL") as string;
+
+                if (UseVisualStudioEnvironmentTfsConnection || string.IsNullOrEmpty(tfsUrl))
+                {
+                    TeamFoundationServerExt tfsExt = (TeamFoundationServerExt)DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
+                    if (tfsExt != null)
+                    {
+                        return tfsExt.ActiveProjectContext.DomainUri;
+                    }
+                }
+                return tfsUrl;
             }
         }
 

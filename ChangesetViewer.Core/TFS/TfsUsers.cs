@@ -17,6 +17,12 @@ namespace ChangesetViewer.Core.TFS
             Collection = (new TfsServer()).GetCollection();
         }
 
+        public TfsUsers(string tfsServerUrl, string username, string password)
+        {
+            Collection = (new TfsServer(tfsServerUrl, username, password)).GetCollection();
+        }
+        
+
         public IEnumerable<TeamFoundationIdentity> GetAllUsersInTFSBasedOnProjectCollection()
         {
             var css4 = Collection.GetService<Microsoft.TeamFoundation.Server.ICommonStructureService4>();
@@ -42,7 +48,13 @@ namespace ChangesetViewer.Core.TFS
             Collection.EnsureAuthenticated();
             IGroupSecurityService gss = Collection.GetService<IGroupSecurityService>();
             Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
-            var readUsersTask = Task.Factory.StartNew(() => gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None).OrderBy(u => u.DisplayName).Select(u => u).ToArray());
+            var readUsersTask = Task.Factory.StartNew(() => 
+                    gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None)
+                        .Where(u => u != null)
+                        .OrderBy(u => u.DisplayName)
+                        .Select(u => u)
+                        .ToArray()
+                    );
             return await readUsersTask;
         }
 

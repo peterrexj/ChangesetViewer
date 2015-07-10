@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using ChangesetViewer;
 using ChangesetViewer.UI.View;
 using ChangesetViewer.Core.Settings;
+using Microsoft.TeamFoundation.Controls;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -40,9 +41,12 @@ namespace PeterRexJoseph.ChangesetViewer
             //base.Content = new MyControl();
 
             var content = new ChangesetViewerMainWindow();
-            content._cController.Extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
-            content.InitializeWindow();
 
+            var extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
+            content._cController.DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+            content._cController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
+
+            content.InitializeWindow();
 
             base.Content = content;
             

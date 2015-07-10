@@ -20,6 +20,9 @@ namespace ChangesetViewer.UI.View
             InitializeComponent();
 
             InitializeInternalComponents();
+
+            //Remove this line
+            //InitializeWindow();
         }
 
         public ChangesetViewerController _cController;
@@ -177,6 +180,17 @@ namespace ChangesetViewer.UI.View
         private void btnExportToExcel_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void btnGoToChangeet_Click(object sender, RoutedEventArgs e)
+        {
+            //_cController.Opena();
+            _cController.OpenChangesetWindow(txtChangesetId.Text, true);
+        }
+
+        private void btnSelectServerPath_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

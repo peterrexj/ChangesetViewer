@@ -9,6 +9,10 @@ using System.Windows.Threading;
 using System.Reactive.Linq;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using ChangesetViewer.Core.Settings;
+using Microsoft.VisualStudio.TeamFoundation;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Controls;
+using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 
 namespace ChangesetViewer.Core.UI
@@ -21,8 +25,8 @@ namespace ChangesetViewer.Core.UI
         private ChangesetSearchOptions _searchOptions;
         private SettingsModelWrapper _globalSettings;
         public ChangesetViewerModel Model { get; set; }
-        
-        
+
+
         public SettingsModelWrapper GlobalSettings
         {
             get
@@ -31,15 +35,15 @@ namespace ChangesetViewer.Core.UI
                     _globalSettings = new SettingsModelWrapper();
 
                 if (_globalSettings.DTE == null)
-                    if (Extensibility != null)
-                        _globalSettings.DTE = Extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+                    if (DTE != null)
+                        _globalSettings.DTE = DTE;
 
                 return _globalSettings;
             }
         }
 
         public EnvDTE80.DTE2 DTE { get; set; }
-        public EnvDTE.IVsExtensibility Extensibility { get; set; }
+        public ITeamExplorer TeamExplorer { get; set; }
 
         public Action EnableLoadNotificationUsers { get; set; }
         public Action DisableLoadNotificationUsers { get; set; }
@@ -80,7 +84,7 @@ namespace ChangesetViewer.Core.UI
 
         private async void LoadUsersInTfsAsync()
         {
-            var users = new TfsUsers();
+            var users = new TfsUsers(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
             var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
             var usertoLoad = ident.ToObservable();
 
@@ -123,7 +127,7 @@ namespace ChangesetViewer.Core.UI
 
         private async void GetChangesetAsync(CancellationToken ct)
         {
-            ITfsServer tfs = new TfsServer();
+            ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
             _changesets = new Changesets(tfs);
 
             var changesets = await _changesets.GetAsync(_searchOptions);
@@ -159,24 +163,81 @@ namespace ChangesetViewer.Core.UI
 
         #endregion
 
-        public void OpenChangesetWindow(string changesetId)
+        public void OpenChangesetWindow(string changesetId, bool requiresVerification = false)
         {
             if (string.IsNullOrEmpty(changesetId))
                 return;
 
-            if (Extensibility == null)
+            if (changesetId == "0")
                 return;
+
+            int intChangesetID;
+            int.TryParse(changesetId, out intChangesetID);
+
+            if (!changesetId.Equals(intChangesetID.ToString()))
+                return;
+
+            if (!EnsureVisualStudioIsConnectedToTFS())
+                return;
+
+            if (requiresVerification)
+            {
+                ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
+                _changesets = new Changesets(tfs);
+                var changeset = _changesets.Get(int.Parse(changesetId));
+                if (changeset == null)
+                    return;
+            }
 
             var cId = int.Parse(changesetId);
             if (cId == 0)
                 return;
 
-            DTE = Extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
-
-            VersionControlExt vce;
-            vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-            vce.ViewChangesetDetails(cId);
+            var pendingChangesPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
+            
         }
 
+
+        public bool EnsureVisualStudioIsConnectedToTFS()
+        {
+
+            var tfsExt = (TeamFoundationServerExt)DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
+
+            if (string.IsNullOrEmpty(tfsExt.ActiveProjectContext.DomainUri))
+            {
+                var connectPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.Connect), null);
+                return false;
+            }
+
+            return true;
+        }
+
+        public void Opena()
+        {
+            //TeamProjectPicker pp = new TeamProjectPicker(TeamProjectPickerMode.SingleProject, false);
+            //pp.ShowDialog();
+
+            //VersionControlExt vce;
+            //vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+            //vce.ViewChangesetDetails(cId);
+
+
+            //var tfsExt = (TeamFoundationServerExt)DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
+            //var tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri(tfsExt.ActiveProjectContext.DomainUri));
+            //var pendingChangesPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
+
+            //var teamExplorer = (ITeamExplorer)GetService(typeof(ITeamExplorer));
+            //var pendingChangesPage = (TeamExplorerPageBase)teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.PendingChanges), null);
+
+            //var workItemStore = tfs.GetService<WorkItemStore>();
+            //var workItem = workItemStore.GetWorkItem(24065); // workItem is not null!
+
+            //var model = (IPendingCheckin)pendingChangesPage.Model;
+            //model.PendingChanges.Comment = "Hello, World!"; // Comment saved
+            //model.WorkItems.CheckedWorkItems = new[]
+            //{
+            //    new WorkItemCheckinInfo(workItem, WorkItemCheckinAction.Associate),
+            //}; // CheckedWorkItems not saved =(
+        }
     }
 }
