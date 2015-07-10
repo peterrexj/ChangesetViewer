@@ -113,6 +113,9 @@ namespace ChangesetViewer.UI.View
 
         public void InitializeUserList()
         {
+            if (!_cController.IsVisualStudioIsConnectedToTFS())
+                return;
+
             if (lstUsers.ItemsSource != null) return;
 
             loaderUser_Gif.Play();
