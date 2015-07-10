@@ -43,9 +43,11 @@ namespace ChangesetViewer.Core.Settings
             txtJiraTicketLink.Text = optionsPage.JiraTicketBrowseLink;
             txtJiraSearchRegex.Text = optionsPage.JiraSearchRegexPattern;
 
+            chkUseVStfsInfo.Enabled = false;
+            grpServerCredentials.Enabled = false;
         }
 
-        void txtLeaveEvent(object sender, EventArgs e)
+        private void UpdateSettingsModelBasedonUI()
         {
             optionsPage.TFSServerURL = txtServerUrl.Text;
             optionsPage.TFSUsername = txtServerCredUserName.Text;
@@ -55,23 +57,32 @@ namespace ChangesetViewer.Core.Settings
             optionsPage.JiraTicketBrowseLink = txtJiraTicketLink.Text;
             optionsPage.JiraSearchRegexPattern = txtJiraSearchRegex.Text;
 
+            optionsPage.FindJiraTicketsInComment = chkFindJiraTicketsInComment.Checked;
+            optionsPage.UseVisualStudioEnvironmentTfsConnection = chkUseVStfsInfo.Checked;
+
+        }
+
+        void txtLeaveEvent(object sender, EventArgs e)
+        {
+            UpdateSettingsModelBasedonUI();
         }
 
         void chkUseVStfsInfo_CheckedChanged(object sender, EventArgs e)
         {
             grpServerCredentials.Enabled = !chkUseVStfsInfo.Checked;
-            optionsPage.UseVisualStudioEnvironmentTfsConnection = !chkUseVStfsInfo.Checked;
+            UpdateSettingsModelBasedonUI();
         }
         private void chkFindJiraTicketsInComment_CheckedChanged(object sender, EventArgs e)
         {
             grpJiraSettings.Enabled = chkFindJiraTicketsInComment.Checked;
-            optionsPage.FindJiraTicketsInComment = chkFindJiraTicketsInComment.Checked;
+            UpdateSettingsModelBasedonUI();
         }
 
         private void btnJIRAdefault_Click(object sender, EventArgs e)
         {
             txtJiraSearchRegex.Text = Consts.__DEFAULT_JIRATICKETSEARCHREGEX;
             txtJiraTicketLink.Text = Consts.__DEFAULT_JIRATICKETBROWSEURL;
+            UpdateSettingsModelBasedonUI();
         }
 
         

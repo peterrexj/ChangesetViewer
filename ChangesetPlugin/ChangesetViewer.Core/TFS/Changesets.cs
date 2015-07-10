@@ -86,7 +86,7 @@ namespace ChangesetViewer.Core.TFS
                 false, false, false, false)
                     .OfType<Changeset>();
 
-            if(search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
+            if (search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
             {
                 var rx = new Regex(search.SearchKeyword, RegexOptions.IgnoreCase);
                 qryHistroy = qryHistroy.Where(p => rx.IsMatch(search.SearchKeyword));
@@ -94,9 +94,9 @@ namespace ChangesetViewer.Core.TFS
             else if (!search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
             {
                 if (search.SearchCommentType == Consts.SearchCommentType.Exact)
-                    qryHistroy = qryHistroy.Where(c => c.Comment.Contains(search.SearchKeyword));
+                    qryHistroy = qryHistroy.Where(c => c.Comment != null && c.Comment.Contains(search.SearchKeyword));
                 else if (search.SearchCommentType == Consts.SearchCommentType.Keyword)
-                    qryHistroy = qryHistroy.Where(c => search.SearchKeywordSplitMode.Any(s => c.Comment.Contains(s)));
+                    qryHistroy = qryHistroy.Where(c => c.Comment != null && search.SearchKeywordSplitMode.Any(s => c.Comment.Contains(s)));
             }
 
 
@@ -122,8 +122,17 @@ namespace ChangesetViewer.Core.TFS
 
             var server = projectCollection.GetService<VersionControlServer>();
 
-            var changeset = server.GetChangeset(changesetId);
-            return changeset;
+            try
+            {
+                var changeset = server.GetChangeset(changesetId);
+                return changeset;
+            }
+            catch (Exception ex)
+            {
+                if (ex is ChangesetNotFoundException)
+                    return null;
+                throw ex;
+            }
         }
     }
 }

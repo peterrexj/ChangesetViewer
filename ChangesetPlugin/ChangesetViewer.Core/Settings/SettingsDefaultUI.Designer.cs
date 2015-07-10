@@ -121,6 +121,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServerCredPassword.Location = new System.Drawing.Point(223, 45);
             this.txtServerCredPassword.Name = "txtServerCredPassword";
+            this.txtServerCredPassword.PasswordChar = '*';
             this.txtServerCredPassword.Size = new System.Drawing.Size(72, 20);
             this.txtServerCredPassword.TabIndex = 2;
             // 

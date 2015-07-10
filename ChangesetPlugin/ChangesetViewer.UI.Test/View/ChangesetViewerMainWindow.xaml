@@ -48,10 +48,11 @@
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button Grid.Column="1" Grid.Row="0" IsEnabled="false"
-                            Content="  Server Path ...  "/>
+                    <Button x:Name="btnSelectServerPath" Grid.Column="1" Grid.Row="0" IsEnabled="false"
+                            Content="  Server Path ...  " Click="btnSelectServerPath_Click"/>
                     <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
                              Style="{StaticResource TextblockStyle}"
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
@@ -118,13 +119,19 @@
                         <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
 
                     </Grid>
+                    <DockPanel Grid.Column="3" Grid.Row="5">
+                        <TextBox x:Name="txtChangesetId" Width="100" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                        <Button x:Name="btnGoToChangeet" Content="  Go to Changeset  " HorizontalAlignment="Left" Click="btnGoToChangeet_Click"/>
+
+                    </DockPanel>
+                   
 
                 </Grid>
 
                 <WrapPanel>
-                    <Button Style="{StaticResource ButtonStyle}" Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
-                    <Button Style="{StaticResource ButtonStyle}" Content="Export to Excel" x:Name="btnExportToExcel" Width="139" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
-                    <Button Style="{StaticResource ButtonStyle}" Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
+                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
+                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="139" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
+                    <Button  Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
 
 
                     <Label x:Name="lblTotalCount" Content="" />
