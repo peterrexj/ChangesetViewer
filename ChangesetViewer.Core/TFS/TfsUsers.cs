@@ -2,7 +2,11 @@
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Server;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using PluginCore.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,7 +25,7 @@ namespace ChangesetViewer.Core.TFS
         {
             Collection = (new TfsServer(tfsServerUrl, username, password)).GetCollection();
         }
-        
+
 
         public IEnumerable<TeamFoundationIdentity> GetAllUsersInTFSBasedOnProjectCollection()
         {
@@ -45,17 +49,34 @@ namespace ChangesetViewer.Core.TFS
 
         public async Task<Identity[]> GetAllUsersInTFSBasedOnIdentityAsync()
         {
-            Collection.EnsureAuthenticated();
-            IGroupSecurityService gss = Collection.GetService<IGroupSecurityService>();
-            Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
-            var readUsersTask = Task.Factory.StartNew(() => 
-                    gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None)
-                        .Where(u => u != null)
-                        .OrderBy(u => u.DisplayName)
-                        .Select(u => u)
-                        .ToArray()
-                    );
+            var readUsersTask = Task.Factory.StartNew(() =>
+                {
+                    Collection.EnsureAuthenticated();
+
+                    IGroupSecurityService gss = Collection.GetService<IGroupSecurityService>();
+                    ReadOnlyCollection<CatalogNode> teamProjectCollections = Collection.CatalogNode.QueryChildren(
+                        new Guid[] { CatalogResourceTypes.TeamProject },
+                        false,
+                        CatalogQueryOptions.None);
+
+                    if (teamProjectCollections.Any())
+                    {
+                        Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName,
+                                teamProjectCollections.FirstOrDefault().Resource.DisplayName + " Team",
+                                QueryMembership.Expanded);
+
+                        return gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None)
+                            .Where(u => u != null)
+                            .OrderBy(u => u.DisplayName)
+                            .Select(u => u)
+                            .ToArray();
+                    }
+                    else
+                        return EnumerableExtensions.Empty<Identity>().ToArray();
+                });
+
             return await readUsersTask;
+
         }
 
     }
