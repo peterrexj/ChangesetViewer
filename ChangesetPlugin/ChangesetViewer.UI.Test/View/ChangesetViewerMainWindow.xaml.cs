@@ -39,7 +39,18 @@ namespace ChangesetViewer.UI.View
                 SearchButtonTextReset = SearchButtonTextReset,
                 UpdateChangesetCount = UpdateTotalCount
             };
+
+            _cController.TfsServerContextChanged += _cController_TfsServerContextChanged;
         }
+
+        void _cController_TfsServerContextChanged(object sender, EventArgs e)
+        {
+            _cController.Model.UserCollectionInTfs.Clear();
+            //lstUsers.Items.Clear();
+            //lstUsers.ItemsSource = null;
+        }
+
+        
 
 
         public void InitializeWindow()
@@ -116,7 +127,13 @@ namespace ChangesetViewer.UI.View
             if (!_cController.IsVisualStudioIsConnectedToTFS())
                 return;
 
-            if (lstUsers.ItemsSource != null) return;
+            //if (_cController.GlobalSettings.IsTfsServerChanged())
+            //{
+            //    lstUsers.ItemsSource = null;
+            //    lstUsers.Items.Clear();
+            //}
+
+            if (lstUsers.ItemsSource != null && _cController.Model.UserCollectionInTfs.Count > 0) return;
 
             loaderUser_Gif.Play();
             loaderUser_Gif.Visibility = Visibility.Visible;

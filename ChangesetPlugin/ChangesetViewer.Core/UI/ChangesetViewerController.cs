@@ -24,6 +24,10 @@ namespace ChangesetViewer.Core.UI
 
         private ChangesetSearchOptions _searchOptions;
         private SettingsModelWrapper _globalSettings;
+        private TeamFoundationServerExt _tfsServerContext;
+        private EnvDTE80.DTE2 _dte;
+        private bool _loadingUsers = false;
+
         public ChangesetViewerModel Model { get; set; }
 
 
@@ -42,7 +46,16 @@ namespace ChangesetViewer.Core.UI
             }
         }
 
-        public EnvDTE80.DTE2 DTE { get; set; }
+        public EnvDTE80.DTE2 DTE
+        {
+            get { return _dte; }
+            set
+            { 
+                _dte = value;
+                _tfsServerContext = (TeamFoundationServerExt)_dte.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
+                _tfsServerContext.ProjectContextChanged += tfsServerContext_ProjectContextChanged;
+            }
+        }
         public ITeamExplorer TeamExplorer { get; set; }
 
         public Action EnableLoadNotificationUsers { get; set; }
@@ -64,6 +77,7 @@ namespace ChangesetViewer.Core.UI
             _searchOptions = new ChangesetSearchOptions();
 
             _workerUsersFetch.DoWork += workerUsersFetch_DoWork;
+            _workerUsersFetch.RunWorkerCompleted += _workerUsersFetch_RunWorkerCompleted;
 
             _workerChangesetFetch.WorkerSupportsCancellation = true;
             _workerChangesetFetch.WorkerReportsProgress = true;
@@ -71,10 +85,17 @@ namespace ChangesetViewer.Core.UI
             _workerChangesetFetch.RunWorkerCompleted += workerChangesetFetch_RunWorkerCompleted;
         }
 
+        void _workerUsersFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _loadingUsers = false;
+        }
+
         #region User load
         public void LoadUsersAsync()
         {
-            _workerUsersFetch.RunWorkerAsync();
+            if (!_loadingUsers)
+                if (!_workerUsersFetch.IsBusy)
+                    _workerUsersFetch.RunWorkerAsync();
         }
 
         void workerUsersFetch_DoWork(object sender, DoWorkEventArgs e)
@@ -84,11 +105,16 @@ namespace ChangesetViewer.Core.UI
 
         private async void LoadUsersInTfsAsync()
         {
+            _loadingUsers = true;
             var users = new TfsUsers(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
             var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
             var usertoLoad = ident.ToObservable();
 
-            Action<Identity> addUserToCollection = user => Model.UserCollectionInTfs.Add(user);
+            Action<Identity> addUserToCollection = (user) => 
+            {
+                if (!Model.UserCollectionInTfs.Contains(user))
+                    Model.UserCollectionInTfs.Add(user);
+            };
 
             usertoLoad.Subscribe(u =>
                 Application.Current.Dispatcher.Invoke(
@@ -106,7 +132,7 @@ namespace ChangesetViewer.Core.UI
 
         void workerChangesetFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+           
         }
         void workerChangesetFetch_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -115,9 +141,12 @@ namespace ChangesetViewer.Core.UI
 
         public void GetChangesets(ChangesetSearchOptions changesetSearchModel)
         {
-            _searchOptions = changesetSearchModel;
-            _cts = new CancellationTokenSource();
-            _workerChangesetFetch.RunWorkerAsync();
+            if (!_workerChangesetFetch.IsBusy)
+            {
+                _searchOptions = changesetSearchModel;
+                _cts = new CancellationTokenSource();
+                _workerChangesetFetch.RunWorkerAsync();
+            }
         }
         public void StopProcessingChangesetFetch()
         {
@@ -200,16 +229,27 @@ namespace ChangesetViewer.Core.UI
 
         public bool IsVisualStudioIsConnectedToTFS()
         {
-
-            var tfsExt = (TeamFoundationServerExt)DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
-
-            if (string.IsNullOrEmpty(tfsExt.ActiveProjectContext.DomainUri))
+            if (string.IsNullOrEmpty(_tfsServerContext.ActiveProjectContext.DomainUri))
             {
                 var connectPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.Connect), null);
                 return false;
             }
 
             return true;
+        }
+
+        public event EventHandler TfsServerContextChanged;
+
+        protected virtual void OnTfsServerContextChanged(EventArgs e)
+        {
+            EventHandler handler = TfsServerContextChanged;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        void tfsServerContext_ProjectContextChanged(object sender, EventArgs e)
+        {
+            OnTfsServerContextChanged(EventArgs.Empty);
         }
 
         public void Opena()
