@@ -45,7 +45,8 @@ namespace ChangesetViewer.Core.Settings
         {
             get
             {
-                return getProperties("UseVisualStudioEnvironmentTfsConnection") ?? true;
+                var _t = getProperties("UseVisualStudioEnvironmentTfsConnection");
+                return _t != null && !string.IsNullOrEmpty(_t.ToString()) ? _t : false;
             }
         }
 
@@ -95,7 +96,8 @@ namespace ChangesetViewer.Core.Settings
         {
             get
             {
-                return getProperties("FindJiraTicketsInComment") ?? true;
+                var _t = getProperties("FindJiraTicketsInComment");
+                return _t != null && !string.IsNullOrEmpty(_t.ToString()) ? _t : false;
             }
         }
 
@@ -115,5 +117,12 @@ namespace ChangesetViewer.Core.Settings
             }
         }
 
+    }
+
+    public static class SettingsStaticModelWrapper
+    {
+        public static bool FindJiraTicketsInComment { get; set; }
+        public static string JiraSearchRegexPattern { get; set; }
+        public static string JiraTicketBrowseLink { get; set; }
     }
 }

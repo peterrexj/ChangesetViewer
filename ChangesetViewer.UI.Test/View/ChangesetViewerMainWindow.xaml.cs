@@ -86,6 +86,7 @@ namespace ChangesetViewer.UI.View
                     return;
 
                 _cancelHit = 0;
+                //loader_Gif.Source = new System.Uri("ChangesetViewer.UI;resource\\loader01.gif", UriKind.RelativeOrAbsolute);
                 loader_Gif.Play();
                 loader_Gif.Visibility = Visibility.Visible;
                 var searchModel = ReadOptionsValueFromUI();
@@ -156,7 +157,7 @@ namespace ChangesetViewer.UI.View
 
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
-            Test();
+            _cController.UpdateSettingModel();
         }
         private void Test()
         {

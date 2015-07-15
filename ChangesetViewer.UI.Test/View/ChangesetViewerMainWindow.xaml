@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChangesetViewer.UI"
-             xmlns:changesetcore="clr-namespace:ChangesetViewer.Core.UI"
              mc:Ignorable="d">
     <!--<UserControl.Resources>
         <ResourceDictionary>
@@ -65,7 +64,7 @@
                                  Style="{StaticResource TextblockStyle}"
                                  TextWrapping="Wrap" 
                                  VerticalContentAlignment="Top"
-                                 Text="**PJ" BorderThickness="0,0,0,1"
+                                 BorderThickness="0,0,0,1"
                                  VerticalAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="70" FontSize="12"
                              />
                     <Grid Grid.Column="3" Grid.Row="2">
@@ -124,7 +123,7 @@
                         <Button x:Name="btnGoToChangeet" Content="  Go to Changeset  " HorizontalAlignment="Left" Click="btnGoToChangeet_Click"/>
 
                     </DockPanel>
-                   
+
 
                 </Grid>
 
@@ -137,7 +136,7 @@
                     <Label x:Name="lblTotalCount" Content="" />
                     <MediaElement 
                         x:Name="loader_Gif" 
-                        Source="Images/loader01.gif"
+                        Source="Resources/loader01.gif"
                         MediaEnded="loader_Gif_MediaEnded" 
                         UnloadedBehavior="Manual"
                         LoadedBehavior="Manual"  
@@ -147,29 +146,46 @@
             </StackPanel>
         </Grid>
 
-        <!--<ListView DockPanel.Dock="Bottom" x:Name="lstContainer" Background="{StaticResource BackgroundKey}">-->
         <ListView DockPanel.Dock="Bottom" x:Name="lstContainer" Background="{StaticResource BackgroundKey}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Background="Aqua">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Left" Width="150">
+                            <TextBlock>
+                                <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <TextBlock Text="{Binding ChangesetId}" />
+                                </Hyperlink>
+                            </TextBlock>
+                            <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" />
+                            <TextBlock Text="{Binding CreationDate}"  FontSize="9" Foreground="White" />
+                            
+                        </StackPanel>
+                        <local:RichTextboxCustomized DockPanel.Dock="Right" FontSize="14" 
+                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+                            Background="{StaticResource BackgroundKey}"
+                            IsDocumentEnabled="True" BorderThickness="0"
+                            IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
+                    </DockPanel>
+
+                    <!--<Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"  />
-                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock>
+                            <Label>
                                     <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
                                         <TextBlock Text="{Binding ChangesetId}" />
                                     </Hyperlink>
-                            </TextBlock>
-                            <Label Content="{Binding CommitterDisplayName}" Foreground="White" FontSize="14" BorderThickness="0" />
-                            <Label Content="{Binding CreationDate}" BorderThickness="0" />
+                            </Label>
+                            <Label Content="{Binding CommitterDisplayName}" Foreground="White" FontSize="12" BorderThickness="0" />
+                            <Label Content="{Binding CreationDate}" BorderThickness="0" FontSize="9" />
                         </StackPanel>
-                        <local:RichTextboxCustomized Grid.Column="1" Width="264" FontSize="12"
-                                    Background="{StaticResource BackgroundKey}"
-                                    IsDocumentEnabled="True" BorderThickness="0"
-                                    IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
-                    </Grid>
+
+                        <local:RichTextboxCustomized Grid.Column="0" FontSize="12" MinWidth="300" HorizontalAlignment="Stretch"
+                                Background="{StaticResource BackgroundKey}"
+                                IsDocumentEnabled="True" BorderThickness="0"
+                                IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
+                    </Grid>-->
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<ListView.View>

@@ -46,6 +46,15 @@ namespace ChangesetViewer.Core.UI
             }
         }
 
+        public void UpdateSettingModel()
+        {
+            _globalSettings = new SettingsModelWrapper();
+            _globalSettings.DTE = DTE;
+            SettingsStaticModelWrapper.FindJiraTicketsInComment = _globalSettings.FindJiraTicketsInComment;
+            SettingsStaticModelWrapper.JiraTicketBrowseLink = _globalSettings.JiraTicketBrowseLink;
+            SettingsStaticModelWrapper.JiraSearchRegexPattern = _globalSettings.JiraSearchRegexPattern;
+        }
+
         public EnvDTE80.DTE2 DTE
         {
             get { return _dte; }
@@ -83,6 +92,7 @@ namespace ChangesetViewer.Core.UI
             _workerChangesetFetch.WorkerReportsProgress = true;
             _workerChangesetFetch.DoWork += workerChangesetFetch_DoWork;
             _workerChangesetFetch.RunWorkerCompleted += workerChangesetFetch_RunWorkerCompleted;
+            UpdateSettingModel();
         }
 
         void _workerUsersFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
