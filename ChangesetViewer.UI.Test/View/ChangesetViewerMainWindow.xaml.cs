@@ -50,8 +50,21 @@ namespace ChangesetViewer.UI.View
             //lstUsers.ItemsSource = null;
         }
 
-        
 
+        private void HandleErrorInUI(Exception ex = null)
+        {
+            if (ex == null)
+            {
+                txtErrors.Visibility = System.Windows.Visibility.Collapsed;
+                txtErrors.Text = string.Empty;
+            }
+            else
+            {
+                txtErrors.Visibility = System.Windows.Visibility.Visible;
+                txtErrors.Text = ex.Message;
+            }
+        }
+        
 
         public void InitializeWindow()
         {
@@ -60,6 +73,7 @@ namespace ChangesetViewer.UI.View
 
             cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
             txtSource.Text = _cController.GlobalSettings.DefaultTFSSearchPath;
+            HandleErrorInUI();
         }
 
         
@@ -80,37 +94,53 @@ namespace ChangesetViewer.UI.View
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (((Button)sender).Content.Equals("Search"))
+            try
             {
-                if (!_cController.IsVisualStudioIsConnectedToTFS())
-                    return;
-
-                _cancelHit = 0;
-                //loader_Gif.Source = new System.Uri("ChangesetViewer.UI;resource\\loader01.gif", UriKind.RelativeOrAbsolute);
-                loader_Gif.Play();
-                loader_Gif.Visibility = Visibility.Visible;
-                var searchModel = ReadOptionsValueFromUI();
-                _cController.GetChangesets(searchModel);
-
-                if (lstContainer.ItemsSource == null)
+                var processChangesetsPull = ActionExtensions.Create(() =>
                 {
-                    lstContainer.Items.Clear();
-                    lstContainer.ItemsSource = _cController.Model.ChangeSetCollection;
+                    if (!_cController.IsVisualStudioIsConnectedToTFS())
+                        return;
+
+                    _cancelHit = 0;
+                    //loader_Gif.Source = new System.Uri("ChangesetViewer.UI;resource\\loader01.gif", UriKind.RelativeOrAbsolute);
+                    loader_Gif.Play();
+                    loader_Gif.Visibility = Visibility.Visible;
+                    var searchModel = ReadOptionsValueFromUI();
+                    _cController.GetChangesets(searchModel);
+
+                    if (lstContainer.ItemsSource == null)
+                    {
+                        lstContainer.Items.Clear();
+                        lstContainer.ItemsSource = _cController.Model.ChangeSetCollection;
+                    }
+                    _cController.Model.ChangeSetCollection.Clear();
+                    lblTotalCount.Content = "";
+                    btnSearch.Content = "Stop";
+                });
+
+                var requestProcessingBreak = ActionExtensions.Create(() =>
+                {
+                    _cController.StopProcessingChangesetFetch();
+                    _cancelHit = _cancelHit + 1;
+
+                    if (_cancelHit <= 2) return;
+
+                    _cController.DisableLoadNotificatioChangeset.Invoke();
+                    _cController.SearchButtonTextReset.Invoke();
+                });
+
+                if (((Button)sender).Content.Equals("Search"))
+                {
+                    processChangesetsPull();
                 }
-                _cController.Model.ChangeSetCollection.Clear();
-                lblTotalCount.Content = "";
-                btnSearch.Content = "Stop";
-
+                else if (((Button)sender).Content.Equals("Stop"))
+                {
+                    requestProcessingBreak();
+                }
             }
-            else if (((Button)sender).Content.Equals("Stop"))
+            catch (Exception ex)
             {
-                _cController.StopProcessingChangesetFetch();
-                _cancelHit = _cancelHit + 1;
-
-                if (_cancelHit <= 2) return;
-
-                _cController.DisableLoadNotificatioChangeset.Invoke();
-                _cController.SearchButtonTextReset.Invoke();
+                HandleErrorInUI(ex);
             }
         }
 
@@ -152,6 +182,7 @@ namespace ChangesetViewer.UI.View
         }
         private void loader_Gif_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
+            HandleErrorInUI(e.ErrorException);
             //MessageBox.Show(e.ErrorException.Message);
         }
 

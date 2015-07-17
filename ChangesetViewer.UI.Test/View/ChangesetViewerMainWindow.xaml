@@ -26,6 +26,7 @@
 
             <SolidColorBrush x:Key="BackgroundKey" Color="#FF181818" />
             <SolidColorBrush x:Key="ForegroundKey" Color="#FFEFEFEF" />
+            <SolidColorBrush x:Key="ForegroundKeyError" Color="#FFB24848" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -46,6 +47,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -124,6 +126,7 @@
 
                     </DockPanel>
 
+                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" />
 
                 </Grid>
 
