@@ -51,6 +51,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Output\ChangesetViewer.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Hammer.SpinningWheel, Version=2.1.0.0, Culture=neutral, PublicKeyToken=1eac4c3b642fb444, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Output\Hammer.SpinningWheel.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packages\VS SDK\V12\v2.0\Microsoft.TeamFoundation.Client.dll</HintPath>
@@ -93,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\MetroDark\MetroDark.MSControls.Core.Implicit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -126,6 +134,8 @@
     </Compile>
     <Compile Include="Infra\AnimatedGIFControl.cs" />
     <Compile Include="Infra\RichTextboxCustomized.cs" />
+    <Compile Include="SpinningWheel\RotateDirection.cs" />
+    <Compile Include="SpinningWheel\SpinningWheel.cs" />
     <Compile Include="View\ChangesetViewerMainWindow.xaml.cs">
       <DependentUpon>ChangesetViewerMainWindow.xaml</DependentUpon>
     </Compile>
@@ -189,6 +199,10 @@
   <ItemGroup>
     <None Include="Resources\loader01.GIF" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1.jpg" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

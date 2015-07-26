@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChangesetViewer.UI"
+             xmlns:hammer="clr-namespace:Hammer.SpinningWheel"
              mc:Ignorable="d">
     <!--<UserControl.Resources>
         <ResourceDictionary>
@@ -81,19 +82,11 @@
                                 IsEnabled="False" FontSize="12" HorizontalAlignment="Center" />
                     </Grid>
 
+                    <DockPanel Grid.Column="1" Grid.Row="3">
+                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelStyle}" HorizontalAlignment="Left" Content="By user" Width="75" />
+                        <hammer:SpinningWheel x:Name="spinnerUser" DockPanel.Dock="Right" IsSpinning="False" Height="20" Width="20" />
+                    </DockPanel>
 
-                    <Label Grid.Column="1" Grid.Row="3" 
-                           Style="{StaticResource LabelStyle}"
-                           HorizontalAlignment="Left"
-                           Content="By user" Width="75" />
-                    <MediaElement Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right"
-                            x:Name="loaderUser_Gif" 
-                            Source="Images/loader01.gif" 
-                            MediaEnded="loader_Gif_MediaEnded" 
-                            UnloadedBehavior="Manual" 
-                            LoadedBehavior="Manual"  
-                            Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
-                            Width="20"/>
                     <ComboBox Grid.Column="3" Grid.Row="3" x:Name="lstUsers" 
                           IsEditable="True"
                           TextSearch.TextPath="DisplayName" 
@@ -114,8 +107,7 @@
                             <ColumnDefinition Width="2*"  />
                             <ColumnDefinition Width="5*" />
                         </Grid.ColumnDefinitions>
-                        <DatePicker Grid.Column="0"
-                                VerticalContentAlignment="Center" x:Name="startDate" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
+                        <DatePicker Grid.Column="0" VerticalContentAlignment="Center" x:Name="startDate" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
                         <Label Grid.Column="1" HorizontalAlignment="Center" Content=" AND "/>
                         <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
 
@@ -126,26 +118,19 @@
 
                     </DockPanel>
 
-                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" />
+                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" 
+                               Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" />
 
                 </Grid>
 
-                <WrapPanel>
+                <StackPanel Orientation="Horizontal">
                     <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
                     <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="139" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
-                    <Button  Content="Test" Click="btnTest_Click" x:Name="btnTest" Width="71" Height="25" HorizontalAlignment="Left" />
-
-
+                    <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="139" Height="25" HorizontalAlignment="Left" />
                     <Label x:Name="lblTotalCount" Content="" />
-                    <MediaElement 
-                        x:Name="loader_Gif" 
-                        Source="Resources/loader01.gif"
-                        MediaEnded="loader_Gif_MediaEnded" 
-                        UnloadedBehavior="Manual"
-                        LoadedBehavior="Manual"  
-                        Stretch="Fill" Height="20" MediaFailed="loader_Gif_MediaFailed" 
-                        Width="20"/>
-                </WrapPanel>
+
+                    <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="20,0,0,0" />
+                </StackPanel>
             </StackPanel>
         </Grid>
 
@@ -159,9 +144,9 @@
                                     <TextBlock Text="{Binding ChangesetId}" />
                                 </Hyperlink>
                             </TextBlock>
-                            <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" />
-                            <TextBlock Text="{Binding CreationDate}"  FontSize="9" Foreground="White" />
-                            
+                            <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
+                            <TextBlock Text="{Binding CreationDate}"  FontSize="10" Foreground="White" />
+
                         </StackPanel>
                         <local:RichTextboxCustomized DockPanel.Dock="Right" FontSize="14" 
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
@@ -169,71 +154,8 @@
                             IsDocumentEnabled="True" BorderThickness="0"
                             IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
                     </DockPanel>
-
-                    <!--<Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"  />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <Label>
-                                    <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
-                                        <TextBlock Text="{Binding ChangesetId}" />
-                                    </Hyperlink>
-                            </Label>
-                            <Label Content="{Binding CommitterDisplayName}" Foreground="White" FontSize="12" BorderThickness="0" />
-                            <Label Content="{Binding CreationDate}" BorderThickness="0" FontSize="9" />
-                        </StackPanel>
-
-                        <local:RichTextboxCustomized Grid.Column="0" FontSize="12" MinWidth="300" HorizontalAlignment="Stretch"
-                                Background="{StaticResource BackgroundKey}"
-                                IsDocumentEnabled="True" BorderThickness="0"
-                                IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
-                    </Grid>-->
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <!--<ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Id" Width="50">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Grid.Column="1">
-                                    <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
-                                        <TextBlock Text="{Binding ChangesetId}" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="150">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Grid.Column="2" Text="{Binding CommitterDisplayName}" Foreground="White" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Comment" Width="264">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                -->
-            <!--<local:RichTextboxCustomized Background="{StaticResource BackgroundKey}"-->
-            <!--
-                                <local:RichTextboxCustomized 
-                                    Background="{StaticResource BackgroundKey}"
-                                    IsDocumentEnabled="True" BorderThickness="0"
-                                    IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Committed Date" Width="150">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Grid.Column="4" Text="{Binding CreationDate}" TextWrapping="Wrap" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>-->
-            <!--<TextBlock Text="{Binding CommitterName}"></TextBlock>-->
         </ListView>
 
     </DockPanel>

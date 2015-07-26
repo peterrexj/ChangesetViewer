@@ -104,10 +104,10 @@ namespace ChangesetViewer.Core.TFS
                 qryHistroy = qryHistroy.Where(c => c.CommitterDisplayName == search.Committer);
 
             if (search.StartDate.HasValue)
-                qryHistroy = qryHistroy.Where(c => c.CreationDate > search.StartDate.Value);
+                qryHistroy = qryHistroy.Where(c => c.CreationDate >= search.StartDate.Value);
 
             if (search.EndDate.HasValue)
-                qryHistroy = qryHistroy.Where(c => c.CreationDate < search.EndDate.Value);
+                qryHistroy = qryHistroy.Where(c => c.CreationDate <= search.EndDate.Value);
 
 
 
