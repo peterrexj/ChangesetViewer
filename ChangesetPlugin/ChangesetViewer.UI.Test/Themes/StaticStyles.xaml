@@ -10,7 +10,7 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="Foreground" Value="WhiteSmoke" />
-        <Setter Property="Background" Value="Gray" />
+        <Setter Property="Background" Value="#FF54545C" />
         <Setter Property="BorderBrush" Value="WhiteSmoke" />
         <Setter Property="Margin" Value="4,2" />
         <Setter Property="Template">

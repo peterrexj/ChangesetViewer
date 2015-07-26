@@ -41,6 +41,8 @@ namespace ChangesetViewer.UI.View
             };
 
             _cController.TfsServerContextChanged += _cController_TfsServerContextChanged;
+
+            Hammer.SpinningWheel.SpinningWheel sp = new Hammer.SpinningWheel.SpinningWheel();
         }
 
         void _cController_TfsServerContextChanged(object sender, EventArgs e)
@@ -68,8 +70,8 @@ namespace ChangesetViewer.UI.View
 
         public void InitializeWindow()
         {
-            loaderUser_Gif.Visibility = Visibility.Hidden;
-            loader_Gif.Visibility = Visibility.Hidden;
+            spinnerchangeset.Visibility = Visibility.Hidden;
+            spinnerUser.Visibility = Visibility.Hidden;
 
             cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
             txtSource.Text = _cController.GlobalSettings.DefaultTFSSearchPath;
@@ -81,15 +83,22 @@ namespace ChangesetViewer.UI.View
 
         private ChangesetSearchOptions ReadOptionsValueFromUI()
         {
-            return new ChangesetSearchOptions
+            var options = new ChangesetSearchOptions
             {
                 ProjectSourcePath = txtSource.Text.Trim(),
                 TopN = Int32.MaxValue,
                 SearchKeyword = txtSearchText.Text.Trim(),
                 Committer = lstUsers.Text,
                 IsSearchBasedOnRegex = chkSearchBasedOnRegex.IsChecked.HasValue && chkSearchBasedOnRegex.IsChecked.Value,
-                SearchCommentType = (Consts.SearchCommentType)Enum.Parse(typeof(Consts.SearchCommentType), cboSearchType.SelectedValue.ToString())
+                SearchCommentType = (Consts.SearchCommentType)Enum.Parse(typeof(Consts.SearchCommentType), cboSearchType.SelectedValue.ToString()),
+                StartDate = startDate.SelectedDate
             };
+
+            //End date should have time till the end of the day
+            if (endDate.SelectedDate.HasValue)
+                options.EndDate = new DateTime(endDate.SelectedDate.Value.Year, endDate.SelectedDate.Value.Month, endDate.SelectedDate.Value.Day, 23, 59, 59);
+
+            return options;
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
@@ -102,9 +111,8 @@ namespace ChangesetViewer.UI.View
                         return;
 
                     _cancelHit = 0;
-                    //loader_Gif.Source = new System.Uri("ChangesetViewer.UI;resource\\loader01.gif", UriKind.RelativeOrAbsolute);
-                    loader_Gif.Play();
-                    loader_Gif.Visibility = Visibility.Visible;
+                    spinnerchangeset.IsSpinning = true;
+                    spinnerchangeset.Visibility = Visibility.Visible;
                     var searchModel = ReadOptionsValueFromUI();
                     _cController.GetChangesets(searchModel);
 
@@ -166,8 +174,8 @@ namespace ChangesetViewer.UI.View
 
             if (lstUsers.ItemsSource != null && _cController.Model.UserCollectionInTfs.Count > 0) return;
 
-            loaderUser_Gif.Play();
-            loaderUser_Gif.Visibility = Visibility.Visible;
+            spinnerUser.IsSpinning = true;
+            spinnerUser.Visibility = Visibility.Visible;
 
             lstUsers.ItemsSource = _cController.Model.UserCollectionInTfs;
 
@@ -202,8 +210,8 @@ namespace ChangesetViewer.UI.View
         }
         public void DiableUINotificationUsers()
         {
-            loaderUser_Gif.Stop();
-            loaderUser_Gif.Visibility = System.Windows.Visibility.Hidden;
+            spinnerUser.IsSpinning = false;
+            spinnerUser.Visibility = System.Windows.Visibility.Hidden;
         }
         public void EnableUINotificationChangeset()
         {
@@ -211,8 +219,8 @@ namespace ChangesetViewer.UI.View
         }
         public void DisableUINotificationChangeset()
         {
-            loader_Gif.Stop();
-            loader_Gif.Visibility = System.Windows.Visibility.Hidden;
+            spinnerchangeset.IsSpinning = false;
+            spinnerchangeset.Visibility = System.Windows.Visibility.Hidden;
         }
         public void SearchButtonTextLoading()
         {
