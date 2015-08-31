@@ -10,6 +10,9 @@ namespace ChangesetViewer.UI
 {
     public class RichTextboxCustomized : RichTextBox
     {
+        private TextTypes _formattexttype;
+        private string _textToApply;
+        private bool _textFormatted = false;
 
         #region FormattedText Dependency Property
 
@@ -19,7 +22,8 @@ namespace ChangesetViewer.UI
         private static void FormattedTextChangedCallback(
             DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            (obj as RichTextboxCustomized).Document = GetCustomDocument(e.NewValue as string);
+            (obj as RichTextboxCustomized)._textToApply = e.NewValue as string;
+            ApplyFormatting(obj as RichTextboxCustomized);
         }
 
         private static bool FormattedTextValidateCallback(object value)
@@ -40,6 +44,61 @@ namespace ChangesetViewer.UI
         }
 
         #endregion
+
+        #region FormattedTextType Dependency Property
+
+        public enum TextTypes
+        {
+            None,
+            Comment,
+            WorkItem
+        }
+
+        public static readonly DependencyProperty FormattedTextTypeProperty = DependencyProperty.Register("FormattedTextType", typeof(TextTypes), typeof(RichTextboxCustomized),
+            new PropertyMetadata(TextTypes.None, FormattedTextTypeChangedCallback), FormattedTextTypeValidateCallback);
+
+        private static void FormattedTextTypeChangedCallback(
+            DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            (obj as RichTextboxCustomized)._formattexttype = (TextTypes)e.NewValue;
+            ApplyFormatting(obj as RichTextboxCustomized);
+        }
+
+        private static bool FormattedTextTypeValidateCallback(object value)
+        {
+            return value != null;
+        }
+
+        public TextTypes FormattedTextType
+        {
+            get
+            {
+                return (TextTypes)GetValue(FormattedTextTypeProperty);
+            }
+            set
+            {
+                SetValue(FormattedTextTypeProperty, value);
+            }
+        }
+
+        #endregion
+
+        private static void ApplyFormatting(RichTextboxCustomized obj)
+        {
+            if (obj._formattexttype == TextTypes.Comment && !string.IsNullOrEmpty(obj._textToApply) && !obj._textFormatted)
+            {
+                obj.Document = GetCustomDocument(obj._textToApply);
+                obj._textFormatted = true;
+                return;
+            }
+
+            if (obj._formattexttype == TextTypes.WorkItem && !string.IsNullOrEmpty(obj._textToApply) && !obj._textFormatted)
+            {
+                obj.Document = GenerateWorkItemsDocument(obj._textToApply);
+                obj._textFormatted = true;
+                return;
+            }
+        }
 
         private static FlowDocument GetCustomDocument(string text)
         {
@@ -92,6 +151,16 @@ namespace ChangesetViewer.UI
                 document.Blocks.Add(para);
             }
             return document;
+        }
+
+        private static FlowDocument GenerateWorkItemsDocument(string text)
+        {
+            FlowDocument document = new FlowDocument();
+            
+            document.Blocks.Add(new Paragraph(new Run(text)));
+
+            return document;
+
         }
     }
 }

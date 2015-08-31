@@ -117,13 +117,16 @@
     <Compile Include="Settings\SettingsPageModel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TFS\Changesets.cs" />
+    <Compile Include="TFS\TfsChangesets.cs" />
     <Compile Include="TFS\ChangesetSearchOptions.cs" />
-    <Compile Include="TFS\IChangsets.cs" />
+    <Compile Include="TFS\ChangesetViewModel.cs" />
+    <Compile Include="TFS\ITfsChangsets.cs" />
     <Compile Include="TFS\ITfsServer.cs" />
     <Compile Include="TFS\ITfsUsers.cs" />
+    <Compile Include="TFS\ITFSWorkItem.cs" />
     <Compile Include="TFS\TfsServer.cs" />
     <Compile Include="TFS\TfsUsers.cs" />
+    <Compile Include="TFS\TFSWorkItem.cs" />
     <Compile Include="UI\ChangesetViewerController.cs" />
     <Compile Include="UI\ChangesetViewerModel.cs" />
     <Compile Include="UI\Consts.cs" />
