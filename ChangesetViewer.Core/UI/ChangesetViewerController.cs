@@ -19,17 +19,14 @@ namespace ChangesetViewer.Core.UI
 {
     public class ChangesetViewerController
     {
-
-        private IChangsets _changesets;
-
         private ChangesetSearchOptions _searchOptions;
         private SettingsModelWrapper _globalSettings;
         private TeamFoundationServerExt _tfsServerContext;
         private EnvDTE80.DTE2 _dte;
         private bool _loadingUsers = false;
-
-        public ChangesetViewerModel Model { get; set; }
-
+        private ITfsServer _tfsServer;
+        private ITfsUsers _tfsUsers;
+        private ITfsChangsets _changesets;
 
         public SettingsModelWrapper GlobalSettings
         {
@@ -46,14 +43,32 @@ namespace ChangesetViewer.Core.UI
             }
         }
 
-        public void UpdateSettingModel()
+        private ITfsServer __TFSServer
         {
-            _globalSettings = new SettingsModelWrapper();
-            _globalSettings.DTE = DTE;
-            SettingsStaticModelWrapper.FindJiraTicketsInComment = _globalSettings.FindJiraTicketsInComment;
-            SettingsStaticModelWrapper.JiraTicketBrowseLink = _globalSettings.JiraTicketBrowseLink;
-            SettingsStaticModelWrapper.JiraSearchRegexPattern = _globalSettings.JiraSearchRegexPattern;
+            get
+            {
+                if (_tfsServer == null)
+                    _tfsServer = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
+
+                return _tfsServer;
+            }
         }
+        private ITfsUsers __TFSUsers
+        {
+            get
+            {
+                if (_tfsUsers == null)
+                    _tfsUsers = new TfsUsers(__TFSServer);
+
+                return _tfsUsers;
+            }
+        }
+
+        private readonly BackgroundWorker _workerUsersFetch;
+        private readonly BackgroundWorker _workerChangesetFetch;
+        private CancellationTokenSource _cts;
+
+        public ChangesetViewerModel Model { get; set; }
 
         public EnvDTE80.DTE2 DTE
         {
@@ -75,15 +90,14 @@ namespace ChangesetViewer.Core.UI
         public Action SearchButtonTextReset { get; set; }
         public Action<int> UpdateChangesetCount { get; set; }
 
-        private readonly BackgroundWorker _workerUsersFetch = new BackgroundWorker();
-        private readonly BackgroundWorker _workerChangesetFetch = new BackgroundWorker();
-        private CancellationTokenSource _cts;
-
         public ChangesetViewerController()
         {
             Model = new ChangesetViewerModel();
             //Settings = new SettingsModelWrapper();
             _searchOptions = new ChangesetSearchOptions();
+
+            _workerUsersFetch = new BackgroundWorker();
+            _workerChangesetFetch = new BackgroundWorker();
 
             _workerUsersFetch.DoWork += workerUsersFetch_DoWork;
             _workerUsersFetch.RunWorkerCompleted += _workerUsersFetch_RunWorkerCompleted;
@@ -95,10 +109,15 @@ namespace ChangesetViewer.Core.UI
             UpdateSettingModel();
         }
 
-        void _workerUsersFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        public void UpdateSettingModel()
         {
-            _loadingUsers = false;
+            _globalSettings = new SettingsModelWrapper();
+            _globalSettings.DTE = DTE;
+            SettingsStaticModelWrapper.FindJiraTicketsInComment = _globalSettings.FindJiraTicketsInComment;
+            SettingsStaticModelWrapper.JiraTicketBrowseLink = _globalSettings.JiraTicketBrowseLink;
+            SettingsStaticModelWrapper.JiraSearchRegexPattern = _globalSettings.JiraSearchRegexPattern;
         }
+
 
         #region User load
         public void LoadUsersAsync()
@@ -112,14 +131,22 @@ namespace ChangesetViewer.Core.UI
         {
             LoadUsersInTfsAsync();
         }
+        void _workerUsersFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _loadingUsers = false;
+        }
 
         private async void LoadUsersInTfsAsync()
         {
             _loadingUsers = true;
-            var users = new TfsUsers(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
-            var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
+            //var users = new TfsUsers(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
+            //var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
+            //var usertoLoad = ident.ToObservable();
+
+            var ident = await __TFSUsers.GetAllUsersInTFSBasedOnIdentityAsync();
             var usertoLoad = ident.ToObservable();
 
+            
             Action<Identity> addUserToCollection = (user) => 
             {
                 if (!Model.UserCollectionInTfs.Contains(user))
@@ -167,13 +194,13 @@ namespace ChangesetViewer.Core.UI
         private async void GetChangesetAsync(CancellationToken ct)
         {
             ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
-            _changesets = new Changesets(tfs);
+            _changesets = new TfsChangesets(tfs);
 
             var changesets = await _changesets.GetAsync(_searchOptions);
 
             var changesetToLoad = changesets.ToObservable();
 
-            Action<Changeset> addChangesetToCollection = changeset =>
+            Action<ChangesetViewModel> addChangesetToCollection = changeset =>
             {
                 Model.ChangeSetCollection.Add(changeset);
                 UpdateChangesetCount.Invoke(Model.ChangeSetCollectionCount());
@@ -190,7 +217,7 @@ namespace ChangesetViewer.Core.UI
             changesetToLoad.Subscribe(c =>
                 Application.Current.Dispatcher.Invoke(
                     DispatcherPriority.Background,
-                    new Action<Changeset>(addChangesetToCollection),
+                    new Action<ChangesetViewModel>(addChangesetToCollection),
                     c),
                 ex => onErrorOrComplete(),
                 onErrorOrComplete,
@@ -201,6 +228,10 @@ namespace ChangesetViewer.Core.UI
         }
 
         #endregion
+
+        #region Visual Studio Operations
+
+        public event EventHandler TfsServerContextChanged;
 
         public void OpenChangesetWindow(string changesetId, bool requiresVerification = false)
         {
@@ -222,7 +253,7 @@ namespace ChangesetViewer.Core.UI
             if (requiresVerification)
             {
                 ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
-                _changesets = new Changesets(tfs);
+                _changesets = new TfsChangesets(tfs);
                 var changeset = _changesets.Get(int.Parse(changesetId));
                 if (changeset == null)
                     return;
@@ -233,9 +264,7 @@ namespace ChangesetViewer.Core.UI
                 return;
 
             var pendingChangesPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
-            
         }
-
 
         public bool IsVisualStudioIsConnectedToTFS()
         {
@@ -248,13 +277,14 @@ namespace ChangesetViewer.Core.UI
             return true;
         }
 
-        public event EventHandler TfsServerContextChanged;
-
         protected virtual void OnTfsServerContextChanged(EventArgs e)
         {
             EventHandler handler = TfsServerContextChanged;
             if (handler != null)
                 handler(this, e);
+
+            _tfsServer = null;
+            _tfsUsers = null;
         }
 
         void tfsServerContext_ProjectContextChanged(object sender, EventArgs e)
@@ -262,32 +292,7 @@ namespace ChangesetViewer.Core.UI
             OnTfsServerContextChanged(EventArgs.Empty);
         }
 
-        public void Opena()
-        {
-            //TeamProjectPicker pp = new TeamProjectPicker(TeamProjectPickerMode.SingleProject, false);
-            //pp.ShowDialog();
-
-            //VersionControlExt vce;
-            //vce = DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-            //vce.ViewChangesetDetails(cId);
-
-
-            //var tfsExt = (TeamFoundationServerExt)DTE.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
-            //var tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri(tfsExt.ActiveProjectContext.DomainUri));
-            //var pendingChangesPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
-
-            //var teamExplorer = (ITeamExplorer)GetService(typeof(ITeamExplorer));
-            //var pendingChangesPage = (TeamExplorerPageBase)teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.PendingChanges), null);
-
-            //var workItemStore = tfs.GetService<WorkItemStore>();
-            //var workItem = workItemStore.GetWorkItem(24065); // workItem is not null!
-
-            //var model = (IPendingCheckin)pendingChangesPage.Model;
-            //model.PendingChanges.Comment = "Hello, World!"; // Comment saved
-            //model.WorkItems.CheckedWorkItems = new[]
-            //{
-            //    new WorkItemCheckinInfo(workItem, WorkItemCheckinAction.Associate),
-            //}; // CheckedWorkItems not saved =(
-        }
+        #endregion
+        
     }
 }

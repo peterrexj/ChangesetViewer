@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChangesetViewer.UI"
              xmlns:hammer="clr-namespace:Hammer.SpinningWheel"
+             xmlns:converters="clr-namespace:ChangesetViewer.UI.Infra"
              mc:Ignorable="d">
     <!--<UserControl.Resources>
         <ResourceDictionary>
@@ -124,12 +125,13 @@
                 </Grid>
 
                 <StackPanel Orientation="Horizontal">
+                    <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="10,0,10,0" />
                     <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
                     <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="139" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
                     <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="139" Height="25" HorizontalAlignment="Left" />
                     <Label x:Name="lblTotalCount" Content="" />
 
-                    <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="20,0,0,0" />
+
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -138,21 +140,24 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel LastChildFill="True">
-                        <StackPanel DockPanel.Dock="Left" Width="150">
+                        <StackPanel DockPanel.Dock="Left" Width="130">
                             <TextBlock>
                                 <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
-                                    <TextBlock Text="{Binding ChangesetId}" />
+                                    <TextBlock Text="{Binding ChangesetId}" FontSize="13" Background="#FFACC6C7" />
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
                             <TextBlock Text="{Binding CreationDate}"  FontSize="10" Foreground="White" />
-
                         </StackPanel>
-                        <local:RichTextboxCustomized DockPanel.Dock="Right" FontSize="14" 
-                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+                        
+                        <local:RichTextboxCustomized  FontSize="12"  FormattedTextType="Comment"
+                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.60'}"
                             Background="{StaticResource BackgroundKey}"
                             IsDocumentEnabled="True" BorderThickness="0"
                             IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
+                        <!--<local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.08'}"
+                                Background="{StaticResource BackgroundKey}" Foreground="White"/>-->
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

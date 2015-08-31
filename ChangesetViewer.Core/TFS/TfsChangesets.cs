@@ -8,12 +8,12 @@ using PluginCore.Extensions;
 
 namespace ChangesetViewer.Core.TFS
 {
-    public class Changesets : IChangsets
+    public class TfsChangesets : ITfsChangsets
     {
         private readonly ITfsServer _tfsServer;
         private VersionControlServer _versionControlServer;
 
-        public Changesets(ITfsServer tfsServer)
+        public TfsChangesets(ITfsServer tfsServer)
         {
             _tfsServer = tfsServer;
         }
@@ -57,9 +57,9 @@ namespace ChangesetViewer.Core.TFS
             return projectHistory;
         }
 
-        public async Task<IEnumerable<Changeset>> GetAsync(ChangesetSearchOptions search)
+        public async Task<IEnumerable<ChangesetViewModel>> GetAsync(ChangesetSearchOptions search)
         {
-            Task<IEnumerable<Changeset>> qryHistory;
+            Task<IEnumerable<ChangesetViewModel>> qryHistory;
 
             qryHistory = Task.Factory.StartNew(() => BuildQuery(search));
 
@@ -72,7 +72,7 @@ namespace ChangesetViewer.Core.TFS
                 _versionControlServer.Canceled = true;
         }
 
-        private IEnumerable<Changeset> BuildQuery(ChangesetSearchOptions search)
+        private IEnumerable<ChangesetViewModel> BuildQuery(ChangesetSearchOptions search)
         {
             var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
@@ -109,12 +109,10 @@ namespace ChangesetViewer.Core.TFS
             if (search.EndDate.HasValue)
                 qryHistroy = qryHistroy.Where(c => c.CreationDate <= search.EndDate.Value);
 
-
-
-            return qryHistroy;
+            return qryHistroy.Select(c => ToViewModel(c));
         }
 
-        public Changeset Get(int changesetId)
+        public ChangesetViewModel Get(int changesetId)
         {
             var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
@@ -125,7 +123,7 @@ namespace ChangesetViewer.Core.TFS
             try
             {
                 var changeset = server.GetChangeset(changesetId);
-                return changeset;
+                return ToViewModel(changeset);
             }
             catch (Exception ex)
             {
@@ -133,6 +131,39 @@ namespace ChangesetViewer.Core.TFS
                     return null;
                 throw ex;
             }
+        }
+
+        private ChangesetViewModel ToViewModel(Changeset c)
+        {
+            return new ChangesetViewModel
+            {
+                ChangesetId = c.ChangesetId,
+                Comment = c.Comment,
+                CommitterDisplayName = c.CommitterDisplayName,
+                CreationDate = c.CreationDate,
+                WorkItemIds = "", //string.Join(", ", c.WorkItems.Select(w => w.Id))
+                ArtifactUri = c.ArtifactUri,
+         
+            };
+        }
+
+
+        private async Task<ChangesetViewModel> ToViewModelAsync(Changeset c)
+        {
+            return new ChangesetViewModel
+            {
+                ChangesetId = c.ChangesetId,
+                Comment = c.Comment,
+                CommitterDisplayName = c.CommitterDisplayName,
+                CreationDate = c.CreationDate,
+                WorkItemIds = await GetWorkItemsFromChangeset(c), //string.Join(", ", c.WorkItems.Select(w => w.Id))
+                ArtifactUri = c.ArtifactUri,
+            };
+        }
+
+        private async Task<string> GetWorkItemsFromChangeset(Changeset c)
+        {
+            return await Task.Factory.StartNew(() => string.Join(", ", c.WorkItems.Select(w => w.Id)));
         }
     }
 }

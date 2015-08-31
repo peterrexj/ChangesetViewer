@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="1.0" Language="en-US" Publisher="PeterRexJoseph" />
+    <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="1.0" Language="en-US" Publisher="Peter Rex Joseph" />
     <DisplayName>ChangesetViewer</DisplayName>
-    <Description>Gives information about the changesets and ability to list and search all the changesets applying filters</Description>
+    <Description xml:space="preserve">Gives information about the changesets and ability to list and search all the changesets applying filters.
+Highlight any links based on regex match which will appear as hyperlink in the search result's comment section.</Description>
+    <Icon>logo.png</Icon>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />

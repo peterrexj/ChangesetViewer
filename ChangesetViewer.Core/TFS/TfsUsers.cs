@@ -14,35 +14,29 @@ namespace ChangesetViewer.Core.TFS
 {
     public class TfsUsers : ITfsUsers
     {
-        public TfsTeamProjectCollection Collection { get; set; }
-
-        public TfsUsers()
+        private readonly ITfsServer _tfsServer;
+        
+        public TfsUsers(ITfsServer tfsServer)
         {
-            Collection = (new TfsServer()).GetCollection();
+            _tfsServer = tfsServer;
         }
-
-        public TfsUsers(string tfsServerUrl, string username, string password)
-        {
-            Collection = (new TfsServer(tfsServerUrl, username, password)).GetCollection();
-        }
-
 
         public IEnumerable<TeamFoundationIdentity> GetAllUsersInTFSBasedOnProjectCollection()
         {
-            var css4 = Collection.GetService<Microsoft.TeamFoundation.Server.ICommonStructureService4>();
-            TfsTeamService teamService = Collection.GetService<TfsTeamService>();
+            var css4 = _tfsServer.GetCollection().GetService<Microsoft.TeamFoundation.Server.ICommonStructureService4>();
+            TfsTeamService teamService = _tfsServer.GetCollection().GetService<TfsTeamService>();
 
             return from p in css4.ListProjects()
                    let allTeams = teamService.QueryTeams(p.Uri)
                    from a in allTeams
-                   let ppls = a.GetMembers(Collection, MembershipQuery.Direct)
+                   let ppls = a.GetMembers(_tfsServer.GetCollection(), MembershipQuery.Direct)
                    from ppl in ppls
                    select ppl;
         }
         public IEnumerable<Identity> GetAllUsersInTFSBasedOnIdentity()
         {
-            Collection.EnsureAuthenticated();
-            IGroupSecurityService gss = Collection.GetService<IGroupSecurityService>();
+            _tfsServer.GetCollection().EnsureAuthenticated();
+            IGroupSecurityService gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
             Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
             return gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None);
         }
@@ -51,10 +45,10 @@ namespace ChangesetViewer.Core.TFS
         {
             var readUsersTask = Task.Factory.StartNew(() =>
                 {
-                    Collection.EnsureAuthenticated();
+                    _tfsServer.GetCollection().EnsureAuthenticated();
 
-                    IGroupSecurityService gss = Collection.GetService<IGroupSecurityService>();
-                    ReadOnlyCollection<CatalogNode> teamProjectCollections = Collection.CatalogNode.QueryChildren(
+                    IGroupSecurityService gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
+                    ReadOnlyCollection<CatalogNode> teamProjectCollections = _tfsServer.GetCollection().CatalogNode.QueryChildren(
                         new Guid[] { CatalogResourceTypes.TeamProject },
                         false,
                         CatalogQueryOptions.None);

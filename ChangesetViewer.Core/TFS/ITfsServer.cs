@@ -5,5 +5,6 @@ namespace ChangesetViewer.Core.TFS
     public interface ITfsServer
     {
         TfsTeamProjectCollection GetCollection();
+
     }
 }
