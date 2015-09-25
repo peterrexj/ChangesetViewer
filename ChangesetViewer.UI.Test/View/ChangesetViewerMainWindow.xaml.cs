@@ -24,6 +24,8 @@ namespace ChangesetViewer.UI.View
             //Remove this line
             //InitializeWindow();
             txtSourceControlName.DataContext = _cController.Model;
+            btnExportToExcel.DataContext = _cController.Model;
+            btnSearch.DataContext = _cController.Model;
 
         }
 

@@ -147,8 +147,25 @@
 
                 <StackPanel Orientation="Horizontal">
                     <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="10,0,10,0" />
-                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="70" Height="25" HorizontalAlignment="Right"/>
-                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
+                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="70" Height="25" HorizontalAlignment="Right">
+                        <Button.ToolTip>
+                            <ToolTip Visibility="{Binding SearchTooltipRequired}">
+                                <StackPanel>
+                                    <TextBlock FontWeight="Bold" FontSize="14" Margin="0,0,0,5">Search Option - Disabled</TextBlock>
+                                    <TextBlock>
+                                        The search option is disabled <LineBreak />
+                                        since it is not connected to any <LineBreak />Team Foundation Server.
+                                    </TextBlock>
+                                    <Border BorderBrush="Silver" BorderThickness="0,1,0,0" Margin="0,8" />
+                                    <WrapPanel>
+                                        <TextBlock>Click on the search button <LineBreak />to automatically connect to <LineBreak />one of the Team Collection</TextBlock>
+                                    </WrapPanel>
+                                </StackPanel>
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click"
+                             IsEnabled="{Binding SearchResultedChangesets}"/>
                     <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="139" Height="25" HorizontalAlignment="Left" />
                     <Label x:Name="lblTotalCount" Content="" />
 
