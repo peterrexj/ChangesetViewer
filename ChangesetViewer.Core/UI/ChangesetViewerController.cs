@@ -13,6 +13,9 @@ using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+using System.Threading.Tasks;
+using PluginCore.Extensions;
+using System.Reflection;
 
 
 namespace ChangesetViewer.Core.UI
@@ -68,7 +71,7 @@ namespace ChangesetViewer.Core.UI
         private readonly BackgroundWorker _workerChangesetFetch;
         private CancellationTokenSource _cts;
 
-        public ChangesetViewerModel Model { get; set; }
+        public ChangesetUIModel Model { get; set; }
 
         public EnvDTE80.DTE2 DTE
         {
@@ -92,7 +95,7 @@ namespace ChangesetViewer.Core.UI
 
         public ChangesetViewerController()
         {
-            Model = new ChangesetViewerModel();
+            Model = new ChangesetUIModel();
             //Settings = new SettingsModelWrapper();
             _searchOptions = new ChangesetSearchOptions();
 
@@ -106,6 +109,8 @@ namespace ChangesetViewer.Core.UI
             _workerChangesetFetch.WorkerReportsProgress = true;
             _workerChangesetFetch.DoWork += workerChangesetFetch_DoWork;
             _workerChangesetFetch.RunWorkerCompleted += workerChangesetFetch_RunWorkerCompleted;
+
+
             UpdateSettingModel();
         }
 
@@ -214,7 +219,9 @@ namespace ChangesetViewer.Core.UI
                     SearchButtonTextReset.Invoke();
                 }));
 
-            changesetToLoad.Subscribe(c =>
+            try
+            {
+                changesetToLoad.Subscribe(c =>
                 Application.Current.Dispatcher.Invoke(
                     DispatcherPriority.Background,
                     new Action<ChangesetViewModel>(addChangesetToCollection),
@@ -223,6 +230,13 @@ namespace ChangesetViewer.Core.UI
                 onErrorOrComplete,
                 ct
             );
+            }
+            catch (QueryCancelRequest) { } //do nothing
+            catch (Exception ex)
+            {
+                //Print error to UI
+            }
+            
 
 
         }
@@ -266,8 +280,10 @@ namespace ChangesetViewer.Core.UI
             var pendingChangesPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
         }
 
+        //Any operation on tfs should pass through the this call
         public bool IsVisualStudioIsConnectedToTFS()
         {
+
             if (string.IsNullOrEmpty(_tfsServerContext.ActiveProjectContext.DomainUri))
             {
                 var connectPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.Connect), null);
@@ -289,10 +305,27 @@ namespace ChangesetViewer.Core.UI
 
         void tfsServerContext_ProjectContextChanged(object sender, EventArgs e)
         {
+            Model.NotifyModel.SourceControlName = _tfsServerContext.ActiveProjectContext.ProjectName;
             OnTfsServerContextChanged(EventArgs.Empty);
         }
 
         #endregion
-        
+
+        public static void OpenWorkItemInWindow()
+        {
+            
+        }
+
+        public async void ExportToExcel(Action enableUiControlsLevel1, Action enableUiControlsLevel2)
+        {
+            //Check the grid with some values then export that
+            var s = new ChangesetExportHelper(new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword));
+
+            s.ExportToExcel(Model.ChangeSetCollection, enableUiControlsLevel1, enableUiControlsLevel2);
+
+
+            //AsyncHelpers.RunSync(() =>
+            //    s.ExportToExcel(Model.ChangeSetCollection.ToObservable().Select(c => c).ToEnumerable()));
+        }
     }
 }

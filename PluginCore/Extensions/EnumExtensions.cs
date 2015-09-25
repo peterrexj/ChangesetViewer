@@ -24,7 +24,7 @@ namespace PluginCore.Extensions
     //        .Memoize(threadSafe: true);
 
     //    /// <summary>
-    //    /// (IS) Returns the display name for the given enum value
+    //    ///  Returns the display name for the given enum value
     //    /// </summary>
     //    /// <param name="val">enum value (can be null)</param>
     //    /// <param name="val">by default enum value names are translated to the current culture; when false, the translation doesnt take place and English name is returned</param>
@@ -137,7 +137,7 @@ namespace PluginCore.Extensions
         }
 
         /// <summary>
-        /// (IS) attempts to convert the given string to the given TEnum enum type; returns null if the conversion failed
+        ///  attempts to convert the given string to the given TEnum enum type; returns null if the conversion failed
         /// </summary>
         /// <typeparam name="TEnum">enum type</typeparam>
         /// <param name="value">string to convert to the TEnum enum type</param>

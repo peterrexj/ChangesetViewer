@@ -29,6 +29,7 @@
             <SolidColorBrush x:Key="BackgroundKey" Color="#FF181818" />
             <SolidColorBrush x:Key="ForegroundKey" Color="#FFEFEFEF" />
             <SolidColorBrush x:Key="ForegroundKeyError" Color="#FFB24848" />
+            <SolidColorBrush x:Key="ForegroundKeyLight" Color="#FF999999" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -36,7 +37,11 @@
     <DockPanel>
         <Grid DockPanel.Dock="Top" Background="{StaticResource BackgroundKey}">
             <StackPanel Orientation="Vertical">
-                <TextBlock Margin="5" HorizontalAlignment="Left" Foreground="{StaticResource ForegroundKey}" FontSize="16" >Changesets Viewer</TextBlock>
+                <WrapPanel>
+                    <TextBlock Margin="5" HorizontalAlignment="Left" Foreground="{StaticResource ForegroundKey}" FontSize="16" FontFamily="Calibri" >Changesets Viewer | </TextBlock>
+                    <TextBlock x:Name="txtSourceControlName" Margin="5,6,5,5" HorizontalAlignment="Center" Foreground="{StaticResource ForegroundKeyLight}" FontSize="13" 
+                               Text="{Binding Path=SourceControlName}" ></TextBlock>
+                </WrapPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="10" />
@@ -45,10 +50,11 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -56,7 +62,7 @@
 
                     <Button x:Name="btnSelectServerPath" Grid.Column="1" Grid.Row="0" IsEnabled="false"
                             Content="  Server Path ...  " Click="btnSelectServerPath_Click"/>
-                    <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="23" 
+                    <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="30" 
                              Style="{StaticResource TextblockStyle}"
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
                                  VerticalContentAlignment="Center" BorderThickness="0,0,0,1" FontSize="12" />
@@ -78,8 +84,7 @@
                             <ColumnDefinition Width="8*" />
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0" Grid.Row="1" x:Name="cboSearchType" DockPanel.Dock="Bottom" SelectedIndex="0" FontSize="12" Background="{DynamicResource BackgroundKey}"></ComboBox>
-                        <GridSplitter Grid.Column="1" Grid.Row="1"/>
-                        <CheckBox Grid.Column="2" Grid.Row="1" x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" 
+                        <CheckBox Grid.Column="2" Grid.Row="1" x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" Margin="0,6,0,0"
                                 IsEnabled="False" FontSize="12" HorizontalAlignment="Center" />
                     </Grid>
 
@@ -113,21 +118,37 @@
                         <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
 
                     </Grid>
-                    <DockPanel Grid.Column="3" Grid.Row="5">
+                    <Grid Grid.Column="3" Grid.Row="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25" />
+                        </Grid.RowDefinitions>
+                        <CheckBox Grid.Column="0" x:Name="chkToday" Margin="0,4,0,0" Checked="chkToday_Checked">Today</CheckBox>
+                        <CheckBox Grid.Column="1" x:Name="chkWeek" Margin="0,4,0,0" Checked="chkWeek_Checked">Week</CheckBox>
+                        <CheckBox Grid.Column="2" x:Name="chkMonth" Margin="0,4,0,0" Checked="chkMonth_Checked">Month</CheckBox>
+                    </Grid>
+                    
+                    <DockPanel Grid.Column="3" Grid.Row="6">
                         <TextBox x:Name="txtChangesetId" Width="100" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
                         <Button x:Name="btnGoToChangeet" Content="  Go to Changeset  " HorizontalAlignment="Left" Click="btnGoToChangeet_Click"/>
 
                     </DockPanel>
 
-                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" 
+                    
+
+                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="4" 
                                Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" />
 
                 </Grid>
 
                 <StackPanel Orientation="Horizontal">
                     <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="10,0,10,0" />
-                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="71" Height="25" HorizontalAlignment="Right"/>
-                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="139" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
+                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="70" Height="25" HorizontalAlignment="Right"/>
+                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click" />
                     <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="139" Height="25" HorizontalAlignment="Left" />
                     <Label x:Name="lblTotalCount" Content="" />
 
@@ -148,16 +169,19 @@
                             </TextBlock>
                             <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
                             <TextBlock Text="{Binding CreationDate}"  FontSize="10" Foreground="White" />
+                            <!--<TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />-->
+                            <local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
+                                BorderThickness="0" Background="{StaticResource BackgroundKey}" Foreground="White">
+                                
+                            </local:RichTextboxCustomized>
                         </StackPanel>
                         
                         <local:RichTextboxCustomized  FontSize="12"  FormattedTextType="Comment"
-                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.60'}"
+                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.6'}"
                             Background="{StaticResource BackgroundKey}"
                             IsDocumentEnabled="True" BorderThickness="0"
-                            IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" />
-                        <!--<local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
-                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.08'}"
-                                Background="{StaticResource BackgroundKey}" Foreground="White"/>-->
+                            IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" MouseUp="RichTextboxCustomized_MouseUp" />
+                        
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

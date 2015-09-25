@@ -13,6 +13,7 @@ namespace ChangesetViewer.Core.TFS
         public string CommitterDisplayName { get; set; }
         public DateTime CreationDate { get; set; }
         public string WorkItemIds { get; set; }
+        public string WorkItemTitles { get; set; }
         public Uri ArtifactUri { get; set; }
     }
 }
