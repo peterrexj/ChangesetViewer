@@ -27,7 +27,7 @@ namespace ChangesetViewer.UI.View
 
         }
 
-        public ChangesetViewerController _cController;
+        public ChangesetViewerUIController _cController;
         public enum DateFilterType
         {
             Today,
@@ -37,7 +37,7 @@ namespace ChangesetViewer.UI.View
 
         private void InitializeInternalComponents()
         {
-            _cController = new ChangesetViewerController
+            _cController = new ChangesetViewerUIController
             {
                 EnableLoadNotificationUsers = EnableUINotificationUsers,
                 DisableLoadNotificationUsers = DiableUINotificationUsers,

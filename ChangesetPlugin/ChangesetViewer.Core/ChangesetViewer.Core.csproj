@@ -132,7 +132,7 @@
     <Compile Include="TFS\TfsUsers.cs" />
     <Compile Include="TFS\TfsWorkItem.cs" />
     <Compile Include="UI\ChangesetExportHelper.cs" />
-    <Compile Include="UI\ChangesetViewerController.cs" />
+    <Compile Include="UI\ChangesetViewerUIController.cs" />
     <Compile Include="UI\ChangesetUIModel.cs" />
     <Compile Include="UI\Consts.cs" />
   </ItemGroup>
