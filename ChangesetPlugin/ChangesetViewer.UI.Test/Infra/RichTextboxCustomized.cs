@@ -13,6 +13,7 @@ namespace ChangesetViewer.UI
         private TextTypes _formattexttype;
         private string _textToApply;
         private bool _textFormatted = false;
+        private Action _actionToInvoke;
 
         #region FormattedText Dependency Property
 
@@ -83,6 +84,38 @@ namespace ChangesetViewer.UI
 
         #endregion
 
+        //#region ActionToInvoke Dependency Property
+
+        //public static readonly DependencyProperty ActionToInvokeProperty = DependencyProperty.Register("ActionToInvoke", typeof(Action), typeof(RichTextboxCustomized),
+        //    new PropertyMetadata(null, ActionToInvokeChangedCallback), ActionToInvokeValidateCallback);
+
+        //private static void ActionToInvokeChangedCallback(
+        //    DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        //{
+        //    (obj as RichTextboxCustomized)._actionToInvoke = (Action)e.NewValue;
+        //    ApplyFormatting(obj as RichTextboxCustomized);
+        //}
+
+        //private static bool ActionToInvokeValidateCallback(object value)
+        //{
+        //    return value != null;
+        //}
+
+        //public Action ActionToInvoke
+        //{
+        //    get
+        //    {
+        //        return (Action)GetValue(ActionToInvokeProperty);
+        //    }
+        //    set
+        //    {
+        //        SetValue(ActionToInvokeProperty, value);
+        //    }
+        //}
+
+        //#endregion
+
+
         private static void ApplyFormatting(RichTextboxCustomized obj)
         {
             if (obj._formattexttype == TextTypes.Comment && !string.IsNullOrEmpty(obj._textToApply) && !obj._textFormatted)
@@ -127,7 +160,7 @@ namespace ChangesetViewer.UI
                         para.Inlines.Add(text.Substring(closeIndex, closeIndex > 0 ? m.Groups[0].Index - closeIndex : m.Groups[0].Index));
 
                         Hyperlink link = new Hyperlink();
-                        link.Foreground = System.Windows.Media.Brushes.Green;
+                        link.Foreground = System.Windows.Media.Brushes.SkyBlue;
                         link.FontWeight = FontWeights.Bold;
                         link.IsEnabled = true;
                         link.Inlines.Add(m.Groups[0].ToString());
@@ -157,7 +190,25 @@ namespace ChangesetViewer.UI
         {
             FlowDocument document = new FlowDocument();
             
-            document.Blocks.Add(new Paragraph(new Run(text)));
+            if (!string.IsNullOrEmpty(text))
+            {
+                Paragraph para = new Paragraph();
+                para.Margin = new Thickness(0); // remove indent between paragraphs
+
+                foreach (var workitem in text.Split(",".ToCharArray()))
+                {
+                    Hyperlink link = new Hyperlink();
+                    link.Foreground = System.Windows.Media.Brushes.SkyBlue;
+                    link.FontWeight = FontWeights.Bold;
+                    link.IsEnabled = true;
+                    link.Inlines.Add(workitem);
+                    link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink);
+                    link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+
+                    para.Inlines.Add(link);
+                }
+                document.Blocks.Add(para);
+            }
 
             return document;
 

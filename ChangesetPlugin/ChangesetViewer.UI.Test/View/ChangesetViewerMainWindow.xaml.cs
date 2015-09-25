@@ -23,9 +23,17 @@ namespace ChangesetViewer.UI.View
 
             //Remove this line
             //InitializeWindow();
+            txtSourceControlName.DataContext = _cController.Model.NotifyModel;
+
         }
 
         public ChangesetViewerController _cController;
+        public enum DateFilterType
+        {
+            Today,
+            Week,
+            Month
+        }
 
         private void InitializeInternalComponents()
         {
@@ -42,16 +50,14 @@ namespace ChangesetViewer.UI.View
 
             _cController.TfsServerContextChanged += _cController_TfsServerContextChanged;
 
-            Hammer.SpinningWheel.SpinningWheel sp = new Hammer.SpinningWheel.SpinningWheel();
+            DiableUINotificationUsers();
+            DisableUINotificationChangeset();
         }
 
         void _cController_TfsServerContextChanged(object sender, EventArgs e)
         {
             _cController.Model.UserCollectionInTfs.Clear();
-            //lstUsers.Items.Clear();
-            //lstUsers.ItemsSource = null;
         }
-
 
         private void HandleErrorInUI(Exception ex = null)
         {
@@ -66,18 +72,13 @@ namespace ChangesetViewer.UI.View
                 txtErrors.Text = ex.Message;
             }
         }
-        
 
         public void InitializeWindow()
         {
-            spinnerchangeset.Visibility = Visibility.Hidden;
-            spinnerUser.Visibility = Visibility.Hidden;
-
             cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
             txtSource.Text = _cController.GlobalSettings.DefaultTFSSearchPath;
             HandleErrorInUI();
         }
-
         
         private int _cancelHit;
 
@@ -96,7 +97,23 @@ namespace ChangesetViewer.UI.View
 
             //End date should have time till the end of the day
             if (endDate.SelectedDate.HasValue)
-                options.EndDate = new DateTime(endDate.SelectedDate.Value.Year, endDate.SelectedDate.Value.Month, endDate.SelectedDate.Value.Day, 23, 59, 59);
+                options.EndDate = DateExtensions.GetEndOfDay(endDate.SelectedDate.Value);
+
+            if (chkToday.IsChecked.HasValue && chkToday.IsChecked.Value)
+            {
+                options.StartDate = DateExtensions.GetStartOfDay(System.DateTime.Now);
+                options.EndDate = DateExtensions.GetEndOfDay(System.DateTime.Now);
+            }
+            else if (chkWeek.IsChecked.HasValue && chkWeek.IsChecked.Value)
+            {
+                options.StartDate = DateExtensions.GetStartOfDay(System.DateTime.Now.AddDays(-7));
+                options.EndDate = DateExtensions.GetEndOfDay(System.DateTime.Now);
+            }
+            else if (chkMonth.IsChecked.HasValue && chkMonth.IsChecked.Value)
+            {
+                options.StartDate = DateExtensions.GetStartOfDay(System.DateTime.Now.AddDays(-30));
+                options.EndDate = DateExtensions.GetEndOfDay(System.DateTime.Now);
+            }
 
             return options;
         }
@@ -111,8 +128,7 @@ namespace ChangesetViewer.UI.View
                         return;
 
                     _cancelHit = 0;
-                    spinnerchangeset.IsSpinning = true;
-                    spinnerchangeset.Visibility = Visibility.Visible;
+                    EnableUINotificationChangeset();
                     var searchModel = ReadOptionsValueFromUI();
                     _cController.GetChangesets(searchModel);
 
@@ -182,18 +198,8 @@ namespace ChangesetViewer.UI.View
             _cController.LoadUsersAsync();
         }
 
-        private void loader_Gif_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            var obj = (MediaElement)sender;
-            obj.Position = new TimeSpan(0, 0, 1);
-            obj.Play();
-        }
-        private void loader_Gif_MediaFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            HandleErrorInUI(e.ErrorException);
-            //MessageBox.Show(e.ErrorException.Message);
-        }
-
+       
+       
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
             _cController.UpdateSettingModel();
@@ -211,16 +217,17 @@ namespace ChangesetViewer.UI.View
         public void DiableUINotificationUsers()
         {
             spinnerUser.IsSpinning = false;
-            spinnerUser.Visibility = System.Windows.Visibility.Hidden;
+            spinnerUser.Visibility = System.Windows.Visibility.Collapsed;
         }
         public void EnableUINotificationChangeset()
         {
-
+            spinnerchangeset.IsSpinning = true;
+            spinnerchangeset.Visibility = Visibility.Visible;
         }
         public void DisableUINotificationChangeset()
         {
             spinnerchangeset.IsSpinning = false;
-            spinnerchangeset.Visibility = System.Windows.Visibility.Hidden;
+            spinnerchangeset.Visibility = System.Windows.Visibility.Collapsed;
         }
         public void SearchButtonTextLoading()
         {
@@ -242,7 +249,33 @@ namespace ChangesetViewer.UI.View
 
         private void btnExportToExcel_Click(object sender, RoutedEventArgs e)
         {
+            var disableControls = ActionExtensions.Create(() =>
+            {
+                btnExportToExcel.IsEnabled = false;
+                btnSearch.IsEnabled = false;
+                btnExportToExcel.Content = "Exporting..";
+            });
 
+            var enableControls1 = ActionExtensions.Create(() =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    btnSearch.IsEnabled = true;
+                });
+            });
+
+            var enableControls2 = ActionExtensions.Create(() =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    btnExportToExcel.IsEnabled = true;
+                    btnExportToExcel.Content = "Export to Excel";
+                });
+            });
+
+            disableControls();
+
+            _cController.ExportToExcel(enableControls1, enableControls2);
         }
 
         private void btnGoToChangeet_Click(object sender, RoutedEventArgs e)
@@ -254,5 +287,59 @@ namespace ChangesetViewer.UI.View
         {
             
         }
+
+        private void RichTextboxCustomized_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            MessageBox.Show("inside");
+        }
+
+        #region Checkbox change event handler
+
+        private void chkToday_Checked(object sender, RoutedEventArgs e)
+        {
+            if (chkToday.IsChecked.HasValue && chkToday.IsChecked.Value)
+                HandleCheckDateField(DateFilterType.Today);
+        }
+        private void chkWeek_Checked(object sender, RoutedEventArgs e)
+        {
+            if (chkWeek.IsChecked.HasValue && chkWeek.IsChecked.Value)
+                HandleCheckDateField(DateFilterType.Week);
+        }
+        private void chkMonth_Checked(object sender, RoutedEventArgs e)
+        {
+            if (chkMonth.IsChecked.HasValue && chkMonth.IsChecked.Value)
+                HandleCheckDateField(DateFilterType.Month);
+        }
+        private void HandleCheckDateField(DateFilterType dtType) {
+            
+            if (dtType != null)
+                ClearDateRangeUIFields();
+
+            switch (dtType)
+            {
+                case DateFilterType.Today:
+                    chkWeek.IsChecked = false;
+                    chkMonth.IsChecked = false;
+                    break;
+                case DateFilterType.Week:
+                    chkToday.IsChecked = false;
+                    chkMonth.IsChecked = false;
+                    break;
+                case DateFilterType.Month:
+                    chkWeek.IsChecked = false;
+                    chkToday.IsChecked = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void ClearDateRangeUIFields()
+        {
+            startDate.SelectedDate = null;
+            endDate.SelectedDate = null;
+        }
+        #endregion
+
+
     }
 }

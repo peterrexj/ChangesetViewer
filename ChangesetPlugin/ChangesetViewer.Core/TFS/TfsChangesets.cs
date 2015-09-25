@@ -62,14 +62,23 @@ namespace ChangesetViewer.Core.TFS
             Task<IEnumerable<ChangesetViewModel>> qryHistory;
 
             qryHistory = Task.Factory.StartNew(() => BuildQuery(search));
-
-            return await qryHistory;
+            try
+            {
+                return await qryHistory;
+            }
+            catch (Exception) {
+                return null;
+            }
+                
         }
 
         public void CancelAsyncQueryHistorySearch()
         {
             if (_versionControlServer != null)
+            {
                 _versionControlServer.Canceled = true;
+                _versionControlServer = null;
+            }
         }
 
         private IEnumerable<ChangesetViewModel> BuildQuery(ChangesetSearchOptions search)
@@ -109,10 +118,15 @@ namespace ChangesetViewer.Core.TFS
             if (search.EndDate.HasValue)
                 qryHistroy = qryHistroy.Where(c => c.CreationDate <= search.EndDate.Value);
 
-            return qryHistroy.Select(c => ToViewModel(c));
+            try
+            {
+                return qryHistroy.Select(c => ToViewModel(c)).Where(c => c != null);
+            }
+            catch (Exception e) { return EnumerableExtensions.Empty<ChangesetViewModel>(); }
+
         }
 
-        public ChangesetViewModel Get(int changesetId)
+        public ChangesetViewModel GetWithMinimalInfo(int changesetId)
         {
             var projectCollection = _tfsServer.GetCollection();
             if (projectCollection.HasAuthenticated == false)
@@ -135,16 +149,20 @@ namespace ChangesetViewer.Core.TFS
 
         private ChangesetViewModel ToViewModel(Changeset c)
         {
-            return new ChangesetViewModel
-            {
-                ChangesetId = c.ChangesetId,
-                Comment = c.Comment,
-                CommitterDisplayName = c.CommitterDisplayName,
-                CreationDate = c.CreationDate,
-                WorkItemIds = "", //string.Join(", ", c.WorkItems.Select(w => w.Id))
-                ArtifactUri = c.ArtifactUri,
-         
-            };
+            if (_versionControlServer != null)
+                return new ChangesetViewModel
+                {
+                    ChangesetId = c.ChangesetId,
+                    Comment = c.Comment,
+                    CommitterDisplayName = c.CommitterDisplayName,
+                    CreationDate = c.CreationDate,
+                    WorkItemIds = string.Join(", ", c.AssociatedWorkItems.Select(w => w.Id)),
+                    //WorkItemTitles = string.Join(", ", c.AssociatedWorkItems.Select(w => w.Title)),
+                    ArtifactUri = c.ArtifactUri,
+                };
+            else
+                return null;
+                //throw new QueryCancelRequest("Cancel Requested");
         }
 
 
@@ -164,6 +182,27 @@ namespace ChangesetViewer.Core.TFS
         private async Task<string> GetWorkItemsFromChangeset(Changeset c)
         {
             return await Task.Factory.StartNew(() => string.Join(", ", c.WorkItems.Select(w => w.Id)));
+        }
+
+
+        public Changeset Get(int changesetId)
+        {
+            var projectCollection = _tfsServer.GetCollection();
+            if (projectCollection.HasAuthenticated == false)
+                projectCollection.Authenticate();
+
+            var server = projectCollection.GetService<VersionControlServer>();
+
+            try
+            {
+                return server.GetChangeset(changesetId);
+            }
+            catch (Exception ex)
+            {
+                if (ex is ChangesetNotFoundException)
+                    return null;
+                throw ex;
+            }
         }
     }
 }

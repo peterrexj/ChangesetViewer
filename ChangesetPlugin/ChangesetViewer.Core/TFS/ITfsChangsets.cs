@@ -13,6 +13,7 @@ namespace ChangesetViewer.Core.TFS
         Task<IEnumerable<ChangesetViewModel>> GetAsync(ChangesetSearchOptions search);
         void CancelAsyncQueryHistorySearch();
 
-        ChangesetViewModel Get(int changesetId);
+        ChangesetViewModel GetWithMinimalInfo(int changesetId);
+        Changeset Get(int changesetId);
     }
 }
