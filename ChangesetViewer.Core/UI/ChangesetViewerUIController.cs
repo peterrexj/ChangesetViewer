@@ -20,7 +20,7 @@ using System.Reflection;
 
 namespace ChangesetViewer.Core.UI
 {
-    public class ChangesetViewerController
+    public class ChangesetViewerUIController
     {
         private ChangesetSearchOptions _searchOptions;
         private SettingsModelWrapper _globalSettings;
@@ -93,7 +93,7 @@ namespace ChangesetViewer.Core.UI
         public Action SearchButtonTextReset { get; set; }
         public Action<int> UpdateChangesetCount { get; set; }
 
-        public ChangesetViewerController()
+        public ChangesetViewerUIController()
         {
             Model = new ChangesetUIModel();
             //Settings = new SettingsModelWrapper();
