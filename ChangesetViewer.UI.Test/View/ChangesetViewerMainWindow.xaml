@@ -167,9 +167,7 @@
                     <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click"
                              IsEnabled="{Binding SearchResultedChangesets}"/>
                     <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="139" Height="25" HorizontalAlignment="Left" />
-                    <Label x:Name="lblTotalCount" Content="" />
-
-
+                    <Label x:Name="lblTotalCount" Content="{Binding ChangesetCollectionCount}" />
                 </StackPanel>
             </StackPanel>
         </Grid>
