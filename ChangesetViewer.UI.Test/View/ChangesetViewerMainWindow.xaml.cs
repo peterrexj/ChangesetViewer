@@ -23,7 +23,7 @@ namespace ChangesetViewer.UI.View
 
             //Remove this line
             //InitializeWindow();
-            txtSourceControlName.DataContext = _cController.Model.NotifyModel;
+            txtSourceControlName.DataContext = _cController.Model;
 
         }
 

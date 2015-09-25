@@ -12,7 +12,6 @@ namespace ChangesetViewer.Core.UI
 
         public ObservableCollection<Identity> UserCollectionInTfs { get; set; }
         public ObservableCollection<ChangesetViewModel> ChangeSetCollection { get; set; }
-        public ChangesetViewerNotifyModel NotifyModel { get; set; }
 
         protected void Notify(string propertyName)
         {
@@ -26,9 +25,6 @@ namespace ChangesetViewer.Core.UI
         {
             UserCollectionInTfs = new ObservableCollection<Identity>();
             ChangeSetCollection = new ObservableCollection<ChangesetViewModel>();
-            NotifyModel = new ChangesetViewerNotifyModel();
-
-           
         }
 
         public int ChangeSetCollectionCount()
