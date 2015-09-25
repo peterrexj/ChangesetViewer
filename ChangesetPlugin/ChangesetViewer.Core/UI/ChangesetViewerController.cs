@@ -305,7 +305,7 @@ namespace ChangesetViewer.Core.UI
 
         void tfsServerContext_ProjectContextChanged(object sender, EventArgs e)
         {
-            Model.NotifyModel.SourceControlName = _tfsServerContext.ActiveProjectContext.ProjectName;
+            Model.SourceControlName = _tfsServerContext.ActiveProjectContext.ProjectName;
             OnTfsServerContextChanged(EventArgs.Empty);
         }
 
