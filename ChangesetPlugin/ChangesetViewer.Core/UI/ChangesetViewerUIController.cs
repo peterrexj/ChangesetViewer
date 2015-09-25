@@ -91,12 +91,10 @@ namespace ChangesetViewer.Core.UI
         public Action DisableLoadNotificatioChangeset { get; set; }
         public Action SearchButtonTextLoading { get; set; }
         public Action SearchButtonTextReset { get; set; }
-        public Action<int> UpdateChangesetCount { get; set; }
 
         public ChangesetViewerUIController()
         {
             Model = new ChangesetUIModel();
-            //Settings = new SettingsModelWrapper();
             _searchOptions = new ChangesetSearchOptions();
 
             _workerUsersFetch = new BackgroundWorker();
@@ -208,7 +206,6 @@ namespace ChangesetViewer.Core.UI
             Action<ChangesetViewModel> addChangesetToCollection = changeset =>
             {
                 Model.ChangeSetCollection.Add(changeset);
-                UpdateChangesetCount.Invoke(Model.ChangeSetCollectionCount());
             };
 
             Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(

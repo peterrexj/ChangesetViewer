@@ -26,6 +26,7 @@ namespace ChangesetViewer.UI.View
             txtSourceControlName.DataContext = _cController.Model;
             btnExportToExcel.DataContext = _cController.Model;
             btnSearch.DataContext = _cController.Model;
+            lblTotalCount.DataContext = _cController.Model;
 
         }
 
@@ -47,7 +48,6 @@ namespace ChangesetViewer.UI.View
                 DisableLoadNotificatioChangeset = DisableUINotificationChangeset,
                 SearchButtonTextLoading = SearchButtonTextLoading,
                 SearchButtonTextReset = SearchButtonTextReset,
-                UpdateChangesetCount = UpdateTotalCount
             };
 
             _cController.TfsServerContextChanged += _cController_TfsServerContextChanged;
@@ -140,7 +140,6 @@ namespace ChangesetViewer.UI.View
                         lstContainer.ItemsSource = _cController.Model.ChangeSetCollection;
                     }
                     _cController.Model.ChangeSetCollection.Clear();
-                    lblTotalCount.Content = "";
                     btnSearch.Content = "Stop";
                 });
 
@@ -238,10 +237,6 @@ namespace ChangesetViewer.UI.View
         public void SearchButtonTextReset()
         {
             btnSearch.Content = "Search";
-        }
-        public void UpdateTotalCount(int count)
-        {
-            lblTotalCount.Content = count.ToString();
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

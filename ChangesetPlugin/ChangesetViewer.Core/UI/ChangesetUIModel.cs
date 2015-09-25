@@ -35,6 +35,7 @@ namespace ChangesetViewer.Core.UI
         void ChangeSetCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Notify("SearchResultedChangesets");
+            Notify("ChangesetCollectionCount");
         }
 
         public int ChangeSetCollectionCount()
@@ -73,6 +74,14 @@ namespace ChangesetViewer.Core.UI
             get
             {
                 return ChangeSetCollection.Count > 0;
+            }
+        }
+
+        public int ChangesetCollectionCount
+        {
+            get
+            {
+                return ChangeSetCollection.Count;
             }
         }
         #endregion
