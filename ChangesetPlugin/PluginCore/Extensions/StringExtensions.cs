@@ -100,7 +100,7 @@ namespace PluginCore.Extensions
         }
 
         /// <summary>
-        /// Get the QueryString part of a URL. http://janison.com?v=100 will return v=100
+        /// Get the QueryString part of a URL. http://microsoft.com?v=100 will return v=100
         /// Supports schemed, schemeless or relative paths. (Doesn't use new URI())
         /// </summary>
         public static string QueryPart(this string url)
@@ -116,7 +116,7 @@ namespace PluginCore.Extensions
         }
 
         /// <summary>
-        /// Get the left part of a URL removing the QueryString part. http://janison.com?v=100 will http://janison.com.
+        /// Get the left part of a URL removing the QueryString part. http://microsoft.com?v=100 will http://microsoft.com.
         /// Supports schemed, schemeless or relative paths. (Doesn't use new URI())
         /// </summary>
         public static string StripQueryPart(this string url)
@@ -186,8 +186,8 @@ namespace PluginCore.Extensions
 
         /// <summary>
         /// Remove a subdomain from a URL. Has TestCoverage RemoveSubdomainPart_Should_Remove_Subdomain().
-        /// Supports Schemeless URLs like //www.janison.com
-        /// Converts 'scheme://www.janison.com' -> 'scheme://janison.com'
+        /// Supports Schemeless URLs like //www.microsoft.com
+        /// Converts 'scheme://www.microsoft.com' -> 'scheme://microsoft.com'
         /// </summary>
         public static string UrlRemoveSubdomainPart(this string url)
         {
@@ -204,7 +204,7 @@ namespace PluginCore.Extensions
 
         /// <summary>
         /// Remove scheme from a URL. Has TestCoverage RemoveSubdomainPart_Should_Remove_Subdomain().
-        /// Converts 'scheme://www.janison.com' -> '//www.janison.com'
+        /// Converts 'scheme://www.microsoft.com' -> '//www.microsoft.com'
         /// </summary>
         public static string UrlRemoveScheme(this string url)
         {
@@ -538,9 +538,6 @@ namespace PluginCore.Extensions
 
         }
 
-        /// <summary>
-        /// IS: moved from Janison.BaseFramework
-        /// </summary>
         public static string Truncate(this string s, int length, bool atWord = true, bool addEllipsis = true)
         {
             // Return if the string is less than or equal to the truncation length 
@@ -584,7 +581,7 @@ namespace PluginCore.Extensions
         }
 
         /// <summary>
-        /// replicates janison get field functionality
+        /// replicates microsoft get field functionality
         /// </summary>
         /// <param name="value"></param>
         /// <param name="id"></param>

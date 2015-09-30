@@ -45,6 +45,7 @@ namespace ChangesetViewer.Core.Settings
 
             chkUseVStfsInfo.Enabled = false;
             grpServerCredentials.Enabled = false;
+            txtDefaultSearchPath.Enabled = false;
         }
 
         private void UpdateSettingsModelBasedonUI()
