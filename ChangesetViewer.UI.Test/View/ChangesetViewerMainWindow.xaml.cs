@@ -23,14 +23,16 @@ namespace ChangesetViewer.UI.View
 
             //Remove this line
             //InitializeWindow();
-            txtSourceControlName.DataContext = _cController.Model;
-            btnExportToExcel.DataContext = _cController.Model;
-            btnSearch.DataContext = _cController.Model;
-            lblTotalCount.DataContext = _cController.Model;
+            txtSourceControlName.DataContext = UIController.Model;
+            btnExportToExcel.DataContext = UIController.Model;
+            btnSearch.DataContext = UIController.Model;
+            lblTotalCount.DataContext = UIController.Model;
 
         }
 
-        public ChangesetViewerUIController _cController;
+        public ChangesetViewerUIController UIController { get; set; }
+
+        private int _cancelHit;
 
         public enum DateFilterType
         {
@@ -41,9 +43,8 @@ namespace ChangesetViewer.UI.View
 
         private void InitializeInternalComponents()
         {
-            _cController = new ChangesetViewerUIController
+            UIController = new ChangesetViewerUIController
             {
-                EnableLoadNotificationUsers = EnableUINotificationUsers,
                 DisableLoadNotificationUsers = DiableUINotificationUsers,
                 EnableLoadNotificationChangeset = EnableUINotificationChangeset,
                 DisableLoadNotificatioChangeset = DisableUINotificationChangeset,
@@ -51,15 +52,28 @@ namespace ChangesetViewer.UI.View
                 SearchButtonTextReset = SearchButtonTextReset,
             };
 
-            _cController.TfsServerContextChanged += _cController_TfsServerContextChanged;
+            UIController.TfsServerContextChanged += _cController_TfsServerContextChanged;
 
             DiableUINotificationUsers();
             DisableUINotificationChangeset();
         }
+        public void InitializeWindow()
+        {
+            cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
+            txtSource.Text = UIController.GlobalSettings.DefaultTFSSearchPath;
+            HandleErrorInUI();
+        }
 
         void _cController_TfsServerContextChanged(object sender, EventArgs e)
         {
-            _cController.Model.UserCollectionInTfs.Clear();
+            try
+            {
+                UIController.Model.UserCollectionInTfs.Clear();
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
 
         private void HandleErrorInUI(Exception ex = null)
@@ -75,15 +89,6 @@ namespace ChangesetViewer.UI.View
                 txtErrors.Text = ex.Message;
             }
         }
-
-        public void InitializeWindow()
-        {
-            cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
-            txtSource.Text = _cController.GlobalSettings.DefaultTFSSearchPath;
-            HandleErrorInUI();
-        }
-        
-        private int _cancelHit;
 
         private ChangesetSearchOptions ReadOptionsValueFromUI()
         {
@@ -120,41 +125,40 @@ namespace ChangesetViewer.UI.View
 
             return options;
         }
-
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                _cController.UpdateSettingModel();
+                UIController.UpdateSettingModel();
 
                 var processChangesetsPull = ActionExtensions.Create(() =>
                 {
-                    if (!_cController.IsVisualStudioIsConnectedToTFS())
+                    if (!UIController.IsVisualStudioIsConnectedToTFS())
                         return;
 
                     _cancelHit = 0;
                     EnableUINotificationChangeset();
                     var searchModel = ReadOptionsValueFromUI();
-                    _cController.GetChangesets(searchModel);
+                    UIController.GetChangesets(searchModel);
 
                     if (lstContainer.ItemsSource == null)
                     {
                         lstContainer.Items.Clear();
-                        lstContainer.ItemsSource = _cController.Model.ChangeSetCollection;
+                        lstContainer.ItemsSource = UIController.Model.ChangeSetCollection;
                     }
-                    _cController.Model.ChangeSetCollection.Clear();
+                    UIController.Model.ChangeSetCollection.Clear();
                     btnSearch.Content = "Stop";
                 });
 
                 var requestProcessingBreak = ActionExtensions.Create(() =>
                 {
-                    _cController.StopProcessingChangesetFetch();
+                    UIController.StopProcessingChangesetFetch();
                     _cancelHit = _cancelHit + 1;
 
                     if (_cancelHit <= 2) return;
 
-                    _cController.DisableLoadNotificatioChangeset.Invoke();
-                    _cController.SearchButtonTextReset.Invoke();
+                    UIController.DisableLoadNotificatioChangeset.Invoke();
+                    UIController.SearchButtonTextReset.Invoke();
                 });
 
                 if (((Button)sender).Content.Equals("Search"))
@@ -174,62 +178,77 @@ namespace ChangesetViewer.UI.View
 
         private void lstUsers_DropDownOpened(object sender, EventArgs e)
         {
-            InitializeUserList();
+            try
+            {
+                InitializeUserList();
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
         private void lstUsers_GotFocus(object sender, RoutedEventArgs e)
         {
-            InitializeUserList();
+            try
+            {
+                InitializeUserList();
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
-
         public void InitializeUserList()
         {
-            if (!_cController.IsVisualStudioIsConnectedToTFS())
+            if (!UIController.IsVisualStudioIsConnectedToTFS())
                 return;
 
-            //if (_cController.GlobalSettings.IsTfsServerChanged())
-            //{
-            //    lstUsers.ItemsSource = null;
-            //    lstUsers.Items.Clear();
-            //}
-
-            if (lstUsers.ItemsSource != null && _cController.Model.UserCollectionInTfs.Count > 0) return;
+            if (lstUsers.ItemsSource != null && UIController.Model.UserCollectionInTfs.Count > 0) return;
 
             spinnerUser.IsSpinning = true;
             spinnerUser.Visibility = Visibility.Visible;
 
-            lstUsers.ItemsSource = _cController.Model.UserCollectionInTfs;
+            lstUsers.ItemsSource = UIController.Model.UserCollectionInTfs;
 
-            _cController.LoadUsersAsync();
-        }
-       
-        private void btnTest_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-        private void Test()
-        {
-
-
+            UIController.LoadUsersAsync();
         }
 
-        public void EnableUINotificationUsers()
-        {
 
-        }
         public void DiableUINotificationUsers()
         {
-            spinnerUser.IsSpinning = false;
-            spinnerUser.Visibility = System.Windows.Visibility.Collapsed;
+            try
+            {
+                spinnerUser.IsSpinning = false;
+                spinnerUser.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
         public void EnableUINotificationChangeset()
         {
-            spinnerchangeset.IsSpinning = true;
-            spinnerchangeset.Visibility = Visibility.Visible;
+            try
+            {
+                spinnerchangeset.IsSpinning = true;
+                spinnerchangeset.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
         public void DisableUINotificationChangeset()
         {
-            spinnerchangeset.IsSpinning = false;
-            spinnerchangeset.Visibility = System.Windows.Visibility.Collapsed;
+            try
+            {
+                spinnerchangeset.IsSpinning = false;
+                spinnerchangeset.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
         public void SearchButtonTextLoading()
         {
@@ -242,53 +261,71 @@ namespace ChangesetViewer.UI.View
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            _cController.OpenChangesetWindow(e.Target);
+            try
+            {
+                UIController.OpenChangesetWindow(e.Target);
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
-
         private void btnExportToExcel_Click(object sender, RoutedEventArgs e)
         {
-            var disableControls = ActionExtensions.Create(() =>
+            try
             {
-                btnExportToExcel.IsEnabled = false;
-                btnSearch.IsEnabled = false;
-                btnExportToExcel.Content = "Exporting..";
-            });
-
-            var enableControls1 = ActionExtensions.Create(() =>
-            {
-                this.Dispatcher.Invoke(() =>
+                var disableControls = ActionExtensions.Create(() =>
                 {
-                    btnSearch.IsEnabled = true;
+                    btnExportToExcel.IsEnabled = false;
+                    btnSearch.IsEnabled = false;
+                    btnExportToExcel.Content = "Exporting..";
                 });
-            });
 
-            var enableControls2 = ActionExtensions.Create(() =>
-            {
-                this.Dispatcher.Invoke(() =>
+                var enableControls1 = ActionExtensions.Create(() =>
                 {
-                    btnExportToExcel.IsEnabled = true;
-                    btnExportToExcel.Content = "Export to Excel";
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        btnSearch.IsEnabled = true;
+                    });
                 });
-            });
 
-            disableControls();
+                var enableControls2 = ActionExtensions.Create(() =>
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        btnExportToExcel.IsEnabled = true;
+                        btnExportToExcel.Content = "Export to Excel";
+                    });
+                });
 
-            _cController.ExportToExcel(enableControls1, enableControls2);
+                disableControls();
+
+                UIController.ExportToExcel(enableControls1, enableControls2);
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
+
         }
-
         private void btnGoToChangeet_Click(object sender, RoutedEventArgs e)
         {
-            _cController.OpenChangesetWindow(txtChangesetId.Text, true);
+            try
+            {
+                UIController.OpenChangesetWindow(txtChangesetId.Text, true);
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
         }
-
         private void btnSelectServerPath_Click(object sender, RoutedEventArgs e)
         {
-            
-        }
 
-        private void RichTextboxCustomized_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            MessageBox.Show("inside");
+        }
+        private void RichTextboxCustomized_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e) 
+        { 
+            //dummy event which is req. Do not delete 
         }
 
         #region Checkbox change event handler
@@ -308,8 +345,9 @@ namespace ChangesetViewer.UI.View
             if (chkMonth.IsChecked.HasValue && chkMonth.IsChecked.Value)
                 HandleCheckDateField(DateFilterType.Month);
         }
-        private void HandleCheckDateField(DateFilterType dtType) {
-            
+        private void HandleCheckDateField(DateFilterType dtType)
+        {
+
             if (dtType != null)
                 ClearDateRangeUIFields();
 
@@ -337,7 +375,5 @@ namespace ChangesetViewer.UI.View
             endDate.SelectedDate = null;
         }
         #endregion
-
-
     }
 }

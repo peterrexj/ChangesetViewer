@@ -155,7 +155,6 @@
                     </Button>
                     <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click"
                              IsEnabled="{Binding SearchResultedChangesets}"/>
-                    <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="100" Height="26" HorizontalAlignment="Left" Visibility="Collapsed" />
                     <TextBox x:Name="txtChangesetId" Width="80" FontSize="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
                     <Button x:Name="btnGoToChangeet" Width="100" Content=" Go to Changeset " Click="btnGoToChangeet_Click"/>
                 </StackPanel>
