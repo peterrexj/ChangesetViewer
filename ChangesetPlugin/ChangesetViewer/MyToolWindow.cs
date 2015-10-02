@@ -43,8 +43,8 @@ namespace PeterRexJoseph.ChangesetViewer
             var content = new ChangesetViewerMainWindow();
 
             var extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
-            content._cController.DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
-            content._cController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
+            content.UIController.DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+            content.UIController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
 
             content.InitializeWindow();
 
