@@ -316,7 +316,7 @@ namespace ChangesetViewer.Core.UI
         public async void ExportToExcel(Action enableUiControlsLevel1, Action enableUiControlsLevel2)
         {
             //Check the grid with some values then export that
-            var s = new ChangesetExportHelper(new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword));
+            var s = new ChangesetExportHelper();
 
             s.ExportToExcel(Model.ChangeSetCollection, enableUiControlsLevel1, enableUiControlsLevel2);
 
