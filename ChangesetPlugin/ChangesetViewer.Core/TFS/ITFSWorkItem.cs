@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChangesetViewer.Core.TFS
+﻿namespace ChangesetViewer.Core.TFS
 {
-    interface ITFSWorkItem
+    interface ITfsWorkItem
     {
         string GetWorkItemTitle(string id);
     }

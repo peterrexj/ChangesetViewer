@@ -12,8 +12,7 @@ namespace ChangesetViewer.UI
     {
         private TextTypes _formattexttype;
         private string _textToApply;
-        private bool _textFormatted = false;
-        private Action _actionToInvoke;
+        private bool _textFormatted;
 
         #region FormattedText Dependency Property
 
@@ -23,7 +22,7 @@ namespace ChangesetViewer.UI
         private static void FormattedTextChangedCallback(
             DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            (obj as RichTextboxCustomized)._textToApply = e.NewValue as string;
+            ((RichTextboxCustomized)obj)._textToApply = e.NewValue as string;
             ApplyFormatting(obj as RichTextboxCustomized);
         }
 
@@ -61,7 +60,7 @@ namespace ChangesetViewer.UI
         private static void FormattedTextTypeChangedCallback(
             DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            (obj as RichTextboxCustomized)._formattexttype = (TextTypes)e.NewValue;
+            ((RichTextboxCustomized)obj)._formattexttype = (TextTypes)e.NewValue;
             ApplyFormatting(obj as RichTextboxCustomized);
         }
 
@@ -125,17 +124,15 @@ namespace ChangesetViewer.UI
                 return;
             }
 
-            if (obj._formattexttype == TextTypes.WorkItem && !string.IsNullOrEmpty(obj._textToApply) && !obj._textFormatted)
-            {
-                obj.Document = GenerateWorkItemsDocument(obj._textToApply);
-                obj._textFormatted = true;
-                return;
-            }
+            if (obj._formattexttype != TextTypes.WorkItem || string.IsNullOrEmpty(obj._textToApply) ||
+                obj._textFormatted) return;
+            obj.Document = GenerateWorkItemsDocument(obj._textToApply);
+            obj._textFormatted = true;
         }
 
         private static FlowDocument GetCustomDocument(string text)
         {
-            FlowDocument document = new FlowDocument();
+            var document = new FlowDocument();
 
             if (!SettingsStaticModelWrapper.FindJiraTicketsInComment ||
                     string.IsNullOrEmpty(SettingsStaticModelWrapper.JiraSearchRegexPattern) ||
@@ -145,13 +142,11 @@ namespace ChangesetViewer.UI
             }
             else
             {
-                Paragraph para = new Paragraph();
-                para.Margin = new Thickness(0); // remove indent between paragraphs
+                var para = new Paragraph { Margin = new Thickness(0) };
 
-                Match m;
-                int closeIndex = 0;
+                var closeIndex = 0;
 
-                m = Regex.Match(text, SettingsStaticModelWrapper.JiraSearchRegexPattern);
+                var m = Regex.Match(text, SettingsStaticModelWrapper.JiraSearchRegexPattern);
 
                 if (m.Success)
                 {
@@ -159,12 +154,14 @@ namespace ChangesetViewer.UI
                     {
                         para.Inlines.Add(text.Substring(closeIndex, closeIndex > 0 ? m.Groups[0].Index - closeIndex : m.Groups[0].Index));
 
-                        Hyperlink link = new Hyperlink();
-                        link.Foreground = System.Windows.Media.Brushes.SkyBlue;
-                        link.FontWeight = FontWeights.Bold;
-                        link.IsEnabled = true;
+                        var link = new Hyperlink
+                        {
+                            Foreground = System.Windows.Media.Brushes.SkyBlue,
+                            FontWeight = FontWeights.Bold,
+                            IsEnabled = true
+                        };
                         link.Inlines.Add(m.Groups[0].ToString());
-                        link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink + m.Groups[0].ToString());
+                        link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink + m.Groups[0]);
                         link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
                         para.Inlines.Add(link);
 
@@ -188,27 +185,26 @@ namespace ChangesetViewer.UI
 
         private static FlowDocument GenerateWorkItemsDocument(string text)
         {
-            FlowDocument document = new FlowDocument();
-            
-            if (!string.IsNullOrEmpty(text))
+            var document = new FlowDocument();
+
+            if (string.IsNullOrEmpty(text)) return document;
+            var para = new Paragraph { Margin = new Thickness(0) };
+
+            foreach (var workitem in text.Split(",".ToCharArray()))
             {
-                Paragraph para = new Paragraph();
-                para.Margin = new Thickness(0); // remove indent between paragraphs
-
-                foreach (var workitem in text.Split(",".ToCharArray()))
+                var link = new Hyperlink
                 {
-                    Hyperlink link = new Hyperlink();
-                    link.Foreground = System.Windows.Media.Brushes.SkyBlue;
-                    link.FontWeight = FontWeights.Bold;
-                    link.IsEnabled = true;
-                    link.Inlines.Add(workitem);
-                    link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink);
-                    link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+                    Foreground = System.Windows.Media.Brushes.SkyBlue,
+                    FontWeight = FontWeights.Bold,
+                    IsEnabled = true
+                };
+                link.Inlines.Add(workitem);
+                link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink);
+                link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
 
-                    para.Inlines.Add(link);
-                }
-                document.Blocks.Add(para);
+                para.Inlines.Add(link);
             }
+            document.Blocks.Add(para);
 
             return document;
 

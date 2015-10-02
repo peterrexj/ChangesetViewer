@@ -2,7 +2,6 @@
 using Microsoft.TeamFoundation.Framework.Client;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Server;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using PluginCore.Extensions;
 using System;
 using System.Collections.Generic;
@@ -21,9 +20,9 @@ namespace ChangesetViewer.Core.TFS
             _tfsServer = tfsServer;
         }
 
-        public IEnumerable<TeamFoundationIdentity> GetAllUsersInTFSBasedOnProjectCollection()
+        public IEnumerable<TeamFoundationIdentity> GetAllUsersInTfsBasedOnProjectCollection()
         {
-            var css4 = _tfsServer.GetCollection().GetService<Microsoft.TeamFoundation.Server.ICommonStructureService4>();
+            var css4 = _tfsServer.GetCollection().GetService<ICommonStructureService4>();
             TfsTeamService teamService = _tfsServer.GetCollection().GetService<TfsTeamService>();
 
             return from p in css4.ListProjects()
@@ -33,40 +32,43 @@ namespace ChangesetViewer.Core.TFS
                    from ppl in ppls
                    select ppl;
         }
-        public IEnumerable<Identity> GetAllUsersInTFSBasedOnIdentity()
+        public IEnumerable<Identity> GetAllUsersInTfsBasedOnIdentity()
         {
             _tfsServer.GetCollection().EnsureAuthenticated();
-            IGroupSecurityService gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
-            Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
-            return gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None);
+#pragma warning disable 618
+            var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
+#pragma warning restore 618
+            var sids = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
+            return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None);
         }
 
-        public async Task<Identity[]> GetAllUsersInTFSBasedOnIdentityAsync()
+        public async Task<Identity[]> GetAllUsersInTfsBasedOnIdentityAsync()
         {
             var readUsersTask = Task.Factory.StartNew(() =>
                 {
                     _tfsServer.GetCollection().EnsureAuthenticated();
 
-                    IGroupSecurityService gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
-                    ReadOnlyCollection<CatalogNode> teamProjectCollections = _tfsServer.GetCollection().CatalogNode.QueryChildren(
-                        new Guid[] { CatalogResourceTypes.TeamProject },
+#pragma warning disable 618
+                    var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
+#pragma warning restore 618
+                    var teamProjectCollections = _tfsServer.GetCollection().CatalogNode.QueryChildren(
+                        new[] { CatalogResourceTypes.TeamProject },
                         false,
                         CatalogQueryOptions.None);
 
                     if (teamProjectCollections.Any())
                     {
-                        Identity SIDS = gss.ReadIdentity(SearchFactor.AccountName,
+                        var sids = gss.ReadIdentity(SearchFactor.AccountName,
                                 teamProjectCollections.FirstOrDefault().Resource.DisplayName + " Team",
                                 QueryMembership.Expanded);
 
-                        return gss.ReadIdentities(SearchFactor.Sid, SIDS.Members, QueryMembership.None)
+                        return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None)
                             .Where(u => u != null)
                             .OrderBy(u => u.DisplayName)
                             .Select(u => u)
                             .ToArray();
                     }
-                    else
-                        return EnumerableExtensions.Empty<Identity>().ToArray();
+                    return EnumerableExtensions.Empty<Identity>().ToArray();
                 });
 
             return await readUsersTask;

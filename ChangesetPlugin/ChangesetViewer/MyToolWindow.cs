@@ -1,8 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
-using ChangesetViewer;
 using ChangesetViewer.UI.View;
-using ChangesetViewer.Core.Settings;
 using Microsoft.TeamFoundation.Controls;
 
 namespace PeterRexJoseph.ChangesetViewer

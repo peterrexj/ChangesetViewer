@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 
 namespace PluginCore.Extensions
 {
@@ -27,7 +24,7 @@ namespace PluginCore.Extensions
         public static TEnum? TryParse<TEnum>(string value) where TEnum : struct
         {
             TEnum res;
-            return Enum.TryParse<TEnum>(value, true, out res) ? res : (TEnum?)null;
+            return Enum.TryParse(value, true, out res) ? res : (TEnum?)null;
         }
     }
 }

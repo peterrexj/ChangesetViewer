@@ -1,6 +1,5 @@
 ﻿using ChangesetViewer.Core.TFS;
 using Microsoft.TeamFoundation.Server;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -18,7 +17,7 @@ namespace ChangesetViewer.Core.UI
 
         protected void Notify(string propertyName)
         {
-            if (this.PropertyChanged != null)
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
