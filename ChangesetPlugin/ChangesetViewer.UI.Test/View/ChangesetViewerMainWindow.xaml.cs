@@ -125,6 +125,8 @@ namespace ChangesetViewer.UI.View
         {
             try
             {
+                _cController.UpdateSettingModel();
+
                 var processChangesetsPull = ActionExtensions.Create(() =>
                 {
                     if (!_cController.IsVisualStudioIsConnectedToTFS())
@@ -199,12 +201,10 @@ namespace ChangesetViewer.UI.View
 
             _cController.LoadUsersAsync();
         }
-
-       
        
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
-            _cController.UpdateSettingModel();
+            
         }
         private void Test()
         {
