@@ -169,12 +169,12 @@
                         <StackPanel DockPanel.Dock="Left" Width="130">
                             <TextBlock>
                                 <Hyperlink TargetName="{Binding ChangesetId}" NavigateUri="{Binding ArtifactUri}" RequestNavigate="Hyperlink_RequestNavigate">
-                                    <TextBlock Text="{Binding ChangesetId}" FontSize="13" Background="#FFACC6C7" />
+                                    <TextBlock Text="{Binding ChangesetId}" FontSize="13" Background="#FF615C5C" Foreground="AntiqueWhite" />
                                 </Hyperlink>
                             </TextBlock>
-                            <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
+                            <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="LightGoldenrodYellow" FontSize="12" FontWeight="Bold" />
                             <TextBlock Text="{Binding CreationDate}"  FontSize="10" Foreground="White" />
-                            <TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
+                            <TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" Foreground="LightGreen" FontSize="12" FontWeight="Bold" />
                             <!--<local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
                                 BorderThickness="0" Background="{StaticResource BackgroundKey}" Foreground="White">
                             </local:RichTextboxCustomized>-->

@@ -9,6 +9,8 @@ namespace ChangesetViewer.UI.Infra
     {
         private static PercentageConverter _instance;
 
+        public PercentageConverter() { }
+
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
