@@ -38,7 +38,7 @@
         <Grid DockPanel.Dock="Top" Background="{StaticResource BackgroundKey}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel>
-                    <TextBlock Margin="5" HorizontalAlignment="Left" Foreground="{StaticResource ForegroundKey}" FontSize="16" FontFamily="Calibri" >Changesets Viewer | </TextBlock>
+                    <TextBlock Margin="5" HorizontalAlignment="Left" Foreground="{StaticResource ForegroundKey}" FontSize="16" FontFamily="Calibri" >Changesets Viewer |</TextBlock>
                     <TextBlock x:Name="txtSourceControlName" Margin="5,6,5,5" HorizontalAlignment="Center" Foreground="{StaticResource ForegroundKeyLight}" FontSize="13" 
                                Text="{Binding Path=SourceControlName}" ></TextBlock>
                 </WrapPanel>
@@ -57,11 +57,10 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="btnSelectServerPath" Grid.Column="1" Grid.Row="0" IsEnabled="false"
-                            Content="  Server Path ...  " Click="btnSelectServerPath_Click"/>
+                    <Button x:Name="btnSelectServerPath" Grid.Column="1" Grid.Row="0" IsEnabled="false" Width="100"
+                            Content="Server Path ...  " Click="btnSelectServerPath_Click" HorizontalAlignment="Left"/>
                     <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="30" 
                              Style="{StaticResource TextblockStyle}"
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
@@ -118,29 +117,19 @@
                         <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
 
                     </Grid>
-                    <Grid Grid.Column="3" Grid.Row="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="25" />
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Column="0" x:Name="chkToday" Margin="0,4,0,0" Checked="chkToday_Checked">Today</CheckBox>
-                        <CheckBox Grid.Column="1" x:Name="chkWeek" Margin="0,4,0,0" Checked="chkWeek_Checked">Week</CheckBox>
-                        <CheckBox Grid.Column="2" x:Name="chkMonth" Margin="0,4,0,0" Checked="chkMonth_Checked">Month</CheckBox>
-                    </Grid>
-                    
-                    <DockPanel Grid.Column="3" Grid.Row="6">
-                        <TextBox x:Name="txtChangesetId" Width="100" FontSize="14" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-                        <Button x:Name="btnGoToChangeet" Content="  Go to Changeset  " HorizontalAlignment="Left" Click="btnGoToChangeet_Click"/>
+                    <WrapPanel Grid.Column="1" Grid.Row="5">
+                        <Label Style="{StaticResource LabelStyle}" Content="Found : " />
+                        <Label Style="{StaticResource LabelStyle}" x:Name="lblTotalCount" Content="{Binding ChangesetCollectionCount}" />
+                    </WrapPanel>
 
-                    </DockPanel>
 
-                    
-
-                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="4" 
+                    <WrapPanel Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left">
+                        <CheckBox  x:Name="chkToday" Margin="0,6,0,0" Checked="chkToday_Checked">Today</CheckBox>
+                        <CheckBox  x:Name="chkWeek" Margin="0,6,0,0" Checked="chkWeek_Checked">Week</CheckBox>
+                        <CheckBox  x:Name="chkMonth" Margin="0,6,0,0" Checked="chkMonth_Checked">Month</CheckBox>
+                    </WrapPanel>
+                 
+                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" 
                                Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" />
 
                 </Grid>
@@ -166,8 +155,9 @@
                     </Button>
                     <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click"
                              IsEnabled="{Binding SearchResultedChangesets}"/>
-                    <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="139" Height="25" HorizontalAlignment="Left" />
-                    <Label x:Name="lblTotalCount" Content="{Binding ChangesetCollectionCount}" />
+                    <Button  Content="Update settings" Click="btnTest_Click" x:Name="btnTest" Width="100" Height="26" HorizontalAlignment="Left" Visibility="Collapsed" />
+                    <TextBox x:Name="txtChangesetId" Width="80" FontSize="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <Button x:Name="btnGoToChangeet" Width="100" Content=" Go to Changeset " Click="btnGoToChangeet_Click"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -184,19 +174,18 @@
                             </TextBlock>
                             <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
                             <TextBlock Text="{Binding CreationDate}"  FontSize="10" Foreground="White" />
-                            <!--<TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />-->
-                            <local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
+                            <TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" Foreground="White" FontSize="12" FontWeight="Bold" />
+                            <!--<local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
                                 BorderThickness="0" Background="{StaticResource BackgroundKey}" Foreground="White">
-                                
-                            </local:RichTextboxCustomized>
+                            </local:RichTextboxCustomized>-->
                         </StackPanel>
-                        
+
                         <local:RichTextboxCustomized  FontSize="12"  FormattedTextType="Comment"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.6'}"
                             Background="{StaticResource BackgroundKey}"
                             IsDocumentEnabled="True" BorderThickness="0"
                             IsReadOnly="True" FormattedText="{Binding Comment}" Foreground="White" MouseUp="RichTextboxCustomized_MouseUp" />
-                        
+
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

@@ -31,6 +31,7 @@ namespace ChangesetViewer.UI.View
         }
 
         public ChangesetViewerUIController _cController;
+
         public enum DateFilterType
         {
             Today,

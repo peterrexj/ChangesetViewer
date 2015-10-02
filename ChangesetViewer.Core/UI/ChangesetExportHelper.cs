@@ -147,8 +147,8 @@ namespace ChangesetViewer.Core.UI
                     xlWorkSheet.Cells[rowsCounter, 5] = changeset.CreationDate.ToLongDateString() + " " + changeset.CreationDate.ToLongTimeString();
                     xlWorkSheet.Cells[rowsCounter, 6] = changeset.Comment;
                     xlWorkSheet.Cells[rowsCounter, 7] = string.Join(", ", changeset.WorkItemIds.Split(",".ToCharArray()).Select(w => w.Trim()));
-                    //if (changeset.WorkItemTitles.Any())
-                    //    ((Excel.Range)xlWorkSheet.Cells[rowsCounter, 7]).AddComment(string.Join(", ", changeset.WorkItemTitles.Split(",".ToCharArray()).Select(w => w.Trim())));
+                    if (changeset.WorkItemTitles.HasValue())
+                        ((Excel.Range)xlWorkSheet.Cells[rowsCounter, 7]).AddComment(string.Join(", ", changeset.WorkItemTitles.Split(",".ToCharArray()).Select(w => w.Trim())));
 
                     counter++;
                     rowsCounter++;
