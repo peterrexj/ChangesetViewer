@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PluginCore.Classes;
 
 namespace PluginCore.Extensions
 {
@@ -33,12 +28,12 @@ namespace PluginCore.Extensions
         {
             action();
         }
-        public static Func<PluginCore.Classes.Void> AsFunc(this Action action)
+        public static Func<Classes.Void> AsFunc(this Action action)
         {
             return () =>
             {
                 action();
-                return PluginCore.Classes.Void.Value;
+                return Classes.Void.Value;
             };
         }
     }

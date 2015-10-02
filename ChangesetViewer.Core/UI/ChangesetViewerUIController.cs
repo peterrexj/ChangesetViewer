@@ -1,21 +1,14 @@
 ﻿using ChangesetViewer.Core.TFS;
 using Microsoft.TeamFoundation.Server;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using System.Reactive.Linq;
-using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using ChangesetViewer.Core.Settings;
 using Microsoft.VisualStudio.TeamFoundation;
-using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Controls;
-using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
-using System.Threading.Tasks;
-using PluginCore.Extensions;
-using System.Reflection;
 
 
 namespace ChangesetViewer.Core.UI
@@ -26,7 +19,7 @@ namespace ChangesetViewer.Core.UI
         private SettingsModelWrapper _globalSettings;
         private TeamFoundationServerExt _tfsServerContext;
         private EnvDTE80.DTE2 _dte;
-        private bool _loadingUsers = false;
+        private bool _loadingUsers;
         private ITfsServer _tfsServer;
         private ITfsUsers _tfsUsers;
         private ITfsChangsets _changesets;
@@ -38,9 +31,9 @@ namespace ChangesetViewer.Core.UI
                 if (_globalSettings == null)
                     _globalSettings = new SettingsModelWrapper();
 
-                if (_globalSettings.DTE == null)
-                    if (DTE != null)
-                        _globalSettings.DTE = DTE;
+                if (_globalSettings.DTE != null) return _globalSettings;
+                if (DTE != null)
+                    _globalSettings.DTE = DTE;
 
                 return _globalSettings;
             }
@@ -48,23 +41,15 @@ namespace ChangesetViewer.Core.UI
 
         private ITfsServer __TFSServer
         {
-            get
-            {
-                if (_tfsServer == null)
-                    _tfsServer = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
-
-                return _tfsServer;
+            get {
+                return _tfsServer ??
+                       (_tfsServer =
+                           new TfsServer(GlobalSettings.TFSServerURL));
             }
         }
         private ITfsUsers __TFSUsers
         {
-            get
-            {
-                if (_tfsUsers == null)
-                    _tfsUsers = new TfsUsers(__TFSServer);
-
-                return _tfsUsers;
-            }
+            get { return _tfsUsers ?? (_tfsUsers = new TfsUsers(__TFSServer)); }
         }
 
         private readonly BackgroundWorker _workerUsersFetch;
@@ -146,11 +131,11 @@ namespace ChangesetViewer.Core.UI
             //var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
             //var usertoLoad = ident.ToObservable();
 
-            var ident = await __TFSUsers.GetAllUsersInTFSBasedOnIdentityAsync();
+            var ident = await __TFSUsers.GetAllUsersInTfsBasedOnIdentityAsync();
             var usertoLoad = ident.ToObservable();
 
             
-            Action<Identity> addUserToCollection = (user) => 
+            Action<Identity> addUserToCollection = user => 
             {
                 if (!Model.UserCollectionInTfs.Contains(user))
                     Model.UserCollectionInTfs.Add(user);
@@ -196,17 +181,14 @@ namespace ChangesetViewer.Core.UI
 
         private async void GetChangesetAsync(CancellationToken ct)
         {
-            ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
+            ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL);
             _changesets = new TfsChangesets(tfs);
 
             var changesets = await _changesets.GetAsync(_searchOptions);
 
             var changesetToLoad = changesets.ToObservable();
 
-            Action<ChangesetViewModel> addChangesetToCollection = changeset =>
-            {
-                Model.ChangeSetCollection.Add(changeset);
-            };
+            Action<ChangesetViewModel> addChangesetToCollection = changeset => Model.ChangeSetCollection.Add(changeset);
 
             Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
                 DispatcherPriority.Background,
@@ -229,7 +211,7 @@ namespace ChangesetViewer.Core.UI
             );
             }
             catch (QueryCancelRequest) { } //do nothing
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Print error to UI
             }
@@ -258,12 +240,12 @@ namespace ChangesetViewer.Core.UI
             if (!changesetId.Equals(intChangesetID.ToString()))
                 return;
 
-            if (!IsVisualStudioIsConnectedToTFS())
+            if (!IsVisualStudioIsConnectedToTfs())
                 return;
 
             if (requiresVerification)
             {
-                ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
+                ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL);
                 _changesets = new TfsChangesets(tfs);
                 var changeset = _changesets.Get(int.Parse(changesetId));
                 if (changeset == null)
@@ -274,20 +256,15 @@ namespace ChangesetViewer.Core.UI
             if (cId == 0)
                 return;
 
-            var pendingChangesPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
+            TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
         }
 
         //Any operation on tfs should pass through the this call
-        public bool IsVisualStudioIsConnectedToTFS()
+        public bool IsVisualStudioIsConnectedToTfs()
         {
-
-            if (string.IsNullOrEmpty(_tfsServerContext.ActiveProjectContext.DomainUri))
-            {
-                var connectPage = (TeamExplorerPageBase)TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.Connect), null);
-                return false;
-            }
-
-            return true;
+            if (!string.IsNullOrEmpty(_tfsServerContext.ActiveProjectContext.DomainUri)) return true;
+            TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.Connect), null);
+            return false;
         }
 
         protected virtual void OnTfsServerContextChanged(EventArgs e)
@@ -313,16 +290,12 @@ namespace ChangesetViewer.Core.UI
             
         }
 
-        public async void ExportToExcel(Action enableUiControlsLevel1, Action enableUiControlsLevel2)
+        public void ExportToExcel(Action enableUiControlsLevel1, Action enableUiControlsLevel2)
         {
             //Check the grid with some values then export that
             var s = new ChangesetExportHelper();
 
             s.ExportToExcel(Model.ChangeSetCollection, enableUiControlsLevel1, enableUiControlsLevel2);
-
-
-            //AsyncHelpers.RunSync(() =>
-            //    s.ExportToExcel(Model.ChangeSetCollection.ToObservable().Select(c => c).ToEnumerable()));
         }
     }
 }

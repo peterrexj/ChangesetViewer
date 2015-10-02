@@ -1,9 +1,4 @@
 ﻿using Microsoft.VisualStudio.TeamFoundation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChangesetViewer.Core.Settings
 {
@@ -27,7 +22,7 @@ namespace ChangesetViewer.Core.Settings
         {
             if (_dteInstance != null)
             {
-                var props = DTE.get_Properties(Consts.__PLUGINNAME, Consts.__SETTINGSPAGE_SERVER);
+                var props = DTE.get_Properties(Consts.Pluginname, Consts.SettingspageServer);
 
                 //System.IO.File.WriteAllText(@"D:\1.txt", props.Item(propName).Value.ToString());
 
@@ -88,7 +83,7 @@ namespace ChangesetViewer.Core.Settings
         {
             get
             {
-                return getProperties("DefaultTFSSearchPath") ?? Consts.__DEFAULT_SEARCHPATH;
+                return getProperties("DefaultTFSSearchPath") ?? Consts.DefaultSearchpath;
             }
         }
 

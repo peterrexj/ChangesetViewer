@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using PluginCore.Extensions;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System;
-using ChangesetViewer.Core.UI;
 
 namespace ChangesetViewer.Core.TFS
 {
@@ -38,7 +35,7 @@ namespace ChangesetViewer.Core.TFS
         {
             get
             {
-                return (IEnumerable<string>)SearchKeyword.Split(" ".ToCharArray()).Select(s => s.Trim());
+                return SearchKeyword.Split(" ".ToCharArray()).Select(s => s.Trim());
             }
         }
 

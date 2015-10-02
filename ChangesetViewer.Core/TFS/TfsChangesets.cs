@@ -122,7 +122,7 @@ namespace ChangesetViewer.Core.TFS
             {
                 return qryHistroy.Select(c => ToViewModel(c)).Where(c => c != null);
             }
-            catch (Exception e) { return EnumerableExtensions.Empty<ChangesetViewModel>(); }
+            catch (Exception) { return EnumerableExtensions.Empty<ChangesetViewModel>(); }
 
         }
 
@@ -143,7 +143,7 @@ namespace ChangesetViewer.Core.TFS
             {
                 if (ex is ChangesetNotFoundException)
                     return null;
-                throw ex;
+                throw;
             }
         }
 
@@ -160,28 +160,7 @@ namespace ChangesetViewer.Core.TFS
                     //WorkItemTitles = string.Join(", ", c.AssociatedWorkItems.Select(w => w.Title)),
                     ArtifactUri = c.ArtifactUri,
                 };
-            else
-                return null;
-                //throw new QueryCancelRequest("Cancel Requested");
-        }
-
-
-        private async Task<ChangesetViewModel> ToViewModelAsync(Changeset c)
-        {
-            return new ChangesetViewModel
-            {
-                ChangesetId = c.ChangesetId,
-                Comment = c.Comment,
-                CommitterDisplayName = c.CommitterDisplayName,
-                CreationDate = c.CreationDate,
-                WorkItemIds = await GetWorkItemsFromChangeset(c), //string.Join(", ", c.WorkItems.Select(w => w.Id))
-                ArtifactUri = c.ArtifactUri,
-            };
-        }
-
-        private async Task<string> GetWorkItemsFromChangeset(Changeset c)
-        {
-            return await Task.Factory.StartNew(() => string.Join(", ", c.WorkItems.Select(w => w.Id)));
+            return null;
         }
 
 
@@ -201,7 +180,7 @@ namespace ChangesetViewer.Core.TFS
             {
                 if (ex is ChangesetNotFoundException)
                     return null;
-                throw ex;
+                throw;
             }
         }
     }

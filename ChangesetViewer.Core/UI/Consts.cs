@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChangesetViewer.Core
+﻿namespace ChangesetViewer.Core
 {
     public static class Consts
     {
@@ -15,12 +9,12 @@ namespace ChangesetViewer.Core
         }
 
         #region default values
-        public const  string __DEFAULT_SEARCHPATH = @"$/";
-        public const  string __DEFAULT_JIRATICKETSEARCHREGEX = @"[a-zA-Z]+[-]\d+";
-        public const  string __DEFAULT_JIRATICKETBROWSEURL = "";
+        public const  string DefaultSearchpath = @"$/";
+        public const  string DefaultJiraticketsearchregex = @"[a-zA-Z]+[-]\d+";
+        public const  string DefaultJiraticketbrowseurl = "";
 
-        public const string __PLUGINNAME = "Changeset Viewer";
-        public const string __SETTINGSPAGE_SERVER = "ServerPage";
+        public const string Pluginname = "Changeset Viewer";
+        public const string SettingspageServer = "ServerPage";
         
         #endregion
     }

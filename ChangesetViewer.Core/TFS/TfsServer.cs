@@ -1,24 +1,19 @@
 ﻿using Microsoft.TeamFoundation.Client;
-using Microsoft.VisualStudio.TeamFoundation;
 using System;
 
 namespace ChangesetViewer.Core.TFS
 {
     public class TfsServer : ITfsServer
     {
-        private string _serverUrl;
-        private string _username;
-        private string _password;
+        private readonly string _serverUrl;
 
         public TfsTeamProjectCollection Collection { get; set; }
 
         public TfsServer() { }
 
-        public TfsServer(string tfsServerUrl, string username, string password)
+        public TfsServer(string tfsServerUrl)
         {
             _serverUrl = tfsServerUrl;
-            _username = username;
-            _password = password;
         }
 
         public TfsTeamProjectCollection GetCollection()

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using ChangesetViewer.Core.TFS;
-using ChangesetViewer.Core.UI;
+﻿using System.Windows;
 
 namespace ChangesetViewer.UI
 {

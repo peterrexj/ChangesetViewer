@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -16,9 +13,9 @@ namespace Hammer.SpinningWheel
    [TemplatePart(Name = "PART_Container", Type = typeof(Canvas))]
    public class SpinningWheel : Control
    {
-      private Canvas container = null;
-      private Storyboard storyBoard = new Storyboard();
-      private DoubleAnimation rotateAnimation = new DoubleAnimation(0, 360, new Duration(TimeSpan.FromSeconds(1)));
+      private Canvas _container;
+      private readonly Storyboard _storyBoard = new Storyboard();
+      private readonly DoubleAnimation _rotateAnimation = new DoubleAnimation(0, 360, new Duration(TimeSpan.FromSeconds(1)));
 
       static SpinningWheel()
       {
@@ -102,12 +99,12 @@ namespace Hammer.SpinningWheel
       private static void OnDirectionChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
       { 
          var wheel = obj as SpinningWheel;
-         if (wheel != null && e.NewValue != null && wheel.storyBoard != null)
+         if (wheel != null && e.NewValue != null && wheel._storyBoard != null)
          {
             var prevState = wheel.IsSpinning;
 
             wheel.ToggleSpinning(false);
-            wheel.rotateAnimation.To *= -1;            
+            wheel._rotateAnimation.To *= -1;            
             wheel.ToggleSpinning(prevState);
          }
       }
@@ -115,7 +112,7 @@ namespace Hammer.SpinningWheel
       private static void OnIsSpinningChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
       {
          var wheel = obj as SpinningWheel;
-         if (wheel != null && e.NewValue != null && wheel.storyBoard != null)
+         if (wheel != null && e.NewValue != null && wheel._storyBoard != null)
          {            
             wheel.ToggleSpinning((bool)e.NewValue);
          }
@@ -125,20 +122,20 @@ namespace Hammer.SpinningWheel
       {
          if (value)
          {
-            this.storyBoard.Begin();
+            _storyBoard.Begin();
          }
          else 
          {
-            this.storyBoard.Stop();
+            _storyBoard.Stop();
          }
       }
 
       private static void OnDotCountChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
       {
          var wheel = obj as SpinningWheel;
-         if (wheel != null && wheel.container != null && e.NewValue != null)
+         if (wheel != null && wheel._container != null && e.NewValue != null)
          {
-            wheel.container.Children.RemoveRange(0, (int)e.OldValue);
+            wheel._container.Children.RemoveRange(0, (int)e.OldValue);
 
             wheel.GenerateDots();
          }
@@ -147,9 +144,9 @@ namespace Hammer.SpinningWheel
       private static void OnRadiusChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
       { 
          var wheel = obj as SpinningWheel;
-         if (wheel != null && wheel.container != null && e.NewValue != null)
+         if (wheel != null && wheel._container != null && e.NewValue != null)
          {
-            UpdateEllipses(wheel.container.Children, (c, ellipse) => wheel.SetEllipsePosition(ellipse, c));
+            UpdateEllipses(wheel._container.Children, (c, ellipse) => wheel.SetEllipsePosition(ellipse, c));
          }
       }
 
@@ -172,10 +169,10 @@ namespace Hammer.SpinningWheel
       private static void OnDotRadiusChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
       { 
          var wheel = obj as SpinningWheel;
-         if (wheel != null && wheel.container != null && e.NewValue != null)
+         if (wheel != null && wheel._container != null && e.NewValue != null)
          {
             var newRadius = (double)e.NewValue;            
-            UpdateEllipses(wheel.container.Children, (c, ellipse) =>
+            UpdateEllipses(wheel._container.Children, (c, ellipse) =>
                {
                   ellipse.Width = newRadius * 2;
                   ellipse.Height = newRadius * 2;
@@ -188,11 +185,11 @@ namespace Hammer.SpinningWheel
       private static void OnSpeedChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
       {
          var wheel = obj as SpinningWheel;
-         if (wheel != null && wheel.storyBoard != null)
+         if (wheel != null && wheel._storyBoard != null)
          {
             // don't ask
-            wheel.storyBoard.SetSpeedRatio((double)e.NewValue);
-            wheel.rotateAnimation.SpeedRatio = (double)e.NewValue;
+            wheel._storyBoard.SetSpeedRatio((double)e.NewValue);
+            wheel._rotateAnimation.SpeedRatio = (double)e.NewValue;
          }
       }
 
@@ -200,72 +197,74 @@ namespace Hammer.SpinningWheel
       {
          base.OnApplyTemplate();
 
-         this.container = this.GetTemplateChild("PART_Container") as Canvas; 
+         _container = GetTemplateChild("PART_Container") as Canvas; 
 
-         this.InitializeControl();
+         InitializeControl();
       }
 
       private void InitializeControl()
       {        
-         this.GenerateDots();
-         this.CreateAnimation();
+         GenerateDots();
+         CreateAnimation();
 
-         this.ToggleSpinning(this.IsSpinning);            
+         ToggleSpinning(IsSpinning);            
       }
 
       private Ellipse CreateEllipse(int counter)
       {
-         var ellipse = new Ellipse();
-         ellipse.Fill = this.DotColor;
-         ellipse.Width = this.DotRadius * 2;
-         ellipse.Height = this.DotRadius * 2;
-         ellipse.Opacity = (double)counter / (double)this.DotCount;
+         var ellipse = new Ellipse
+         {
+             Fill = DotColor,
+             Width = DotRadius*2,
+             Height = DotRadius*2,
+             Opacity = counter/(double) DotCount
+         };
 
-         this.SetEllipsePosition(ellipse, counter);
+          SetEllipsePosition(ellipse, counter);
 
          return ellipse;
       }
       
       private Point CalculatePosition(double radian)
       {         
-         var x = 0 + this.Radius * Math.Cos(radian);
-         var y = 0 + this.Radius * Math.Sin(radian);
+         var x = 0 + Radius * Math.Cos(radian);
+         var y = 0 + Radius * Math.Sin(radian);
 
-         return new Point(x - this.DotRadius, y - this.DotRadius);
+         return new Point(x - DotRadius, y - DotRadius);
       }
 
       private void SetEllipsePosition(Ellipse ellipse, int ellipseCounter)
       {
-         var maxCount = this.SymmetricalArrange ? this.DotCount : (2 * this.Radius * Math.PI) / (2 * this.DotRadius + 2);
+         var maxCount = SymmetricalArrange ? DotCount : (2 * Radius * Math.PI) / (2 * DotRadius + 2);
 
-         var position = this.CalculatePosition(ellipseCounter * 2 * Math.PI / maxCount);
+         var position = CalculatePosition(ellipseCounter * 2 * Math.PI / maxCount);
          Canvas.SetLeft(ellipse, position.X);
          Canvas.SetTop(ellipse, position.Y);
       }
 
       private void GenerateDots()
       {         
-         for (int i = 0; i < this.DotCount; i++)
+         for (int i = 0; i < DotCount; i++)
          {            
-            var ellipse = this.CreateEllipse(i);
+            var ellipse = CreateEllipse(i);
             
-            this.container.Children.Add(ellipse);            
+            _container.Children.Add(ellipse);            
          }
       }
 
       private void CreateAnimation()
       {         
-         this.rotateAnimation.RepeatBehavior = RepeatBehavior.Forever;
-         this.rotateAnimation.SpeedRatio = this.Speed;
-         if (this.Direction == RotateDirection.CCW)
+         _rotateAnimation.RepeatBehavior = RepeatBehavior.Forever;
+         _rotateAnimation.SpeedRatio = Speed;
+         if (Direction == RotateDirection.CCW)
          {
-            this.rotateAnimation.To *= -1;
+            _rotateAnimation.To *= -1;
          }
 
-         Storyboard.SetTarget(this.rotateAnimation, this.container);
-         Storyboard.SetTargetProperty(this.rotateAnimation, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));         
+         Storyboard.SetTarget(_rotateAnimation, _container);
+         Storyboard.SetTargetProperty(_rotateAnimation, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));         
                   
-         this.storyBoard.Children.Add(this.rotateAnimation);         
+         _storyBoard.Children.Add(_rotateAnimation);         
       }
    }
 }

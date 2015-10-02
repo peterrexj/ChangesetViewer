@@ -7,8 +7,8 @@ namespace ChangesetViewer.Core.TFS
 {
     public interface ITfsUsers
     {
-        IEnumerable<Identity> GetAllUsersInTFSBasedOnIdentity();
-        Task<Identity[]> GetAllUsersInTFSBasedOnIdentityAsync();
-        IEnumerable<TeamFoundationIdentity> GetAllUsersInTFSBasedOnProjectCollection();
+        IEnumerable<Identity> GetAllUsersInTfsBasedOnIdentity();
+        Task<Identity[]> GetAllUsersInTfsBasedOnIdentityAsync();
+        IEnumerable<TeamFoundationIdentity> GetAllUsersInTfsBasedOnProjectCollection();
     }
 }

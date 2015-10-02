@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Navigation;
 using ChangesetViewer.Core.TFS;
 using ChangesetViewer.Core.UI;
-using System.Collections.Generic;
 using PluginCore.Extensions;
-using ChangesetViewer.Core.Settings;
 using ChangesetViewer.Core;
 
 namespace ChangesetViewer.UI.View
@@ -13,7 +13,7 @@ namespace ChangesetViewer.UI.View
     /// <summary>
     /// Interaction logic for ChangesetViewerMainWindow.xaml
     /// </summary>
-    public partial class ChangesetViewerMainWindow : UserControl
+    public partial class ChangesetViewerMainWindow
     {
         public ChangesetViewerMainWindow()
         {
@@ -45,17 +45,17 @@ namespace ChangesetViewer.UI.View
         {
             UIController = new ChangesetViewerUIController
             {
-                DisableLoadNotificationUsers = DiableUINotificationUsers,
-                EnableLoadNotificationChangeset = EnableUINotificationChangeset,
-                DisableLoadNotificatioChangeset = DisableUINotificationChangeset,
+                DisableLoadNotificationUsers = DiableUiNotificationUsers,
+                EnableLoadNotificationChangeset = EnableUiNotificationChangeset,
+                DisableLoadNotificatioChangeset = DisableUiNotificationChangeset,
                 SearchButtonTextLoading = SearchButtonTextLoading,
                 SearchButtonTextReset = SearchButtonTextReset,
             };
 
             UIController.TfsServerContextChanged += _cController_TfsServerContextChanged;
 
-            DiableUINotificationUsers();
-            DisableUINotificationChangeset();
+            DiableUiNotificationUsers();
+            DisableUiNotificationChangeset();
         }
         public void InitializeWindow()
         {
@@ -80,12 +80,12 @@ namespace ChangesetViewer.UI.View
         {
             if (ex == null)
             {
-                txtErrors.Visibility = System.Windows.Visibility.Collapsed;
+                txtErrors.Visibility = Visibility.Collapsed;
                 txtErrors.Text = string.Empty;
             }
             else
             {
-                txtErrors.Visibility = System.Windows.Visibility.Visible;
+                txtErrors.Visibility = Visibility.Visible;
                 txtErrors.Text = ex.Message;
             }
         }
@@ -109,18 +109,18 @@ namespace ChangesetViewer.UI.View
 
             if (chkToday.IsChecked.HasValue && chkToday.IsChecked.Value)
             {
-                options.StartDate = DateExtensions.GetStartOfDay(System.DateTime.Now);
-                options.EndDate = DateExtensions.GetEndOfDay(System.DateTime.Now);
+                options.StartDate = DateExtensions.GetStartOfDay(DateTime.Now);
+                options.EndDate = DateExtensions.GetEndOfDay(DateTime.Now);
             }
             else if (chkWeek.IsChecked.HasValue && chkWeek.IsChecked.Value)
             {
-                options.StartDate = DateExtensions.GetStartOfDay(System.DateTime.Now.AddDays(-7));
-                options.EndDate = DateExtensions.GetEndOfDay(System.DateTime.Now);
+                options.StartDate = DateExtensions.GetStartOfDay(DateTime.Now.AddDays(-7));
+                options.EndDate = DateExtensions.GetEndOfDay(DateTime.Now);
             }
             else if (chkMonth.IsChecked.HasValue && chkMonth.IsChecked.Value)
             {
-                options.StartDate = DateExtensions.GetStartOfDay(System.DateTime.Now.AddDays(-30));
-                options.EndDate = DateExtensions.GetEndOfDay(System.DateTime.Now);
+                options.StartDate = DateExtensions.GetStartOfDay(DateTime.Now.AddDays(-30));
+                options.EndDate = DateExtensions.GetEndOfDay(DateTime.Now);
             }
 
             return options;
@@ -133,11 +133,11 @@ namespace ChangesetViewer.UI.View
 
                 var processChangesetsPull = ActionExtensions.Create(() =>
                 {
-                    if (!UIController.IsVisualStudioIsConnectedToTFS())
+                    if (!UIController.IsVisualStudioIsConnectedToTfs())
                         return;
 
                     _cancelHit = 0;
-                    EnableUINotificationChangeset();
+                    EnableUiNotificationChangeset();
                     var searchModel = ReadOptionsValueFromUI();
                     UIController.GetChangesets(searchModel);
 
@@ -200,7 +200,7 @@ namespace ChangesetViewer.UI.View
         }
         public void InitializeUserList()
         {
-            if (!UIController.IsVisualStudioIsConnectedToTFS())
+            if (!UIController.IsVisualStudioIsConnectedToTfs())
                 return;
 
             if (lstUsers.ItemsSource != null && UIController.Model.UserCollectionInTfs.Count > 0) return;
@@ -214,19 +214,19 @@ namespace ChangesetViewer.UI.View
         }
 
 
-        public void DiableUINotificationUsers()
+        public void DiableUiNotificationUsers()
         {
             try
             {
                 spinnerUser.IsSpinning = false;
-                spinnerUser.Visibility = System.Windows.Visibility.Collapsed;
+                spinnerUser.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
                 HandleErrorInUI(ex);
             }
         }
-        public void EnableUINotificationChangeset()
+        public void EnableUiNotificationChangeset()
         {
             try
             {
@@ -238,12 +238,12 @@ namespace ChangesetViewer.UI.View
                 HandleErrorInUI(ex);
             }
         }
-        public void DisableUINotificationChangeset()
+        public void DisableUiNotificationChangeset()
         {
             try
             {
                 spinnerchangeset.IsSpinning = false;
-                spinnerchangeset.Visibility = System.Windows.Visibility.Collapsed;
+                spinnerchangeset.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {
@@ -259,7 +259,7 @@ namespace ChangesetViewer.UI.View
             btnSearch.Content = "Search";
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             try
             {
@@ -281,22 +281,16 @@ namespace ChangesetViewer.UI.View
                     btnExportToExcel.Content = "Exporting..";
                 });
 
-                var enableControls1 = ActionExtensions.Create(() =>
+                var enableControls1 = ActionExtensions.Create(() => Dispatcher.Invoke(() =>
                 {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        btnSearch.IsEnabled = true;
-                    });
-                });
+                    btnSearch.IsEnabled = true;
+                }));
 
-                var enableControls2 = ActionExtensions.Create(() =>
+                var enableControls2 = ActionExtensions.Create(() => Dispatcher.Invoke(() =>
                 {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        btnExportToExcel.IsEnabled = true;
-                        btnExportToExcel.Content = "Export to Excel";
-                    });
-                });
+                    btnExportToExcel.IsEnabled = true;
+                    btnExportToExcel.Content = "Export to Excel";
+                }));
 
                 disableControls();
 
@@ -323,7 +317,7 @@ namespace ChangesetViewer.UI.View
         {
 
         }
-        private void RichTextboxCustomized_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e) 
+        private void RichTextboxCustomized_MouseUp(object sender, MouseButtonEventArgs e) 
         { 
             //dummy event which is req. Do not delete 
         }
@@ -347,9 +341,7 @@ namespace ChangesetViewer.UI.View
         }
         private void HandleCheckDateField(DateFilterType dtType)
         {
-
-            if (dtType != null)
-                ClearDateRangeUIFields();
+            ClearDateRangeUiFields();
 
             switch (dtType)
             {
@@ -365,11 +357,10 @@ namespace ChangesetViewer.UI.View
                     chkWeek.IsChecked = false;
                     chkToday.IsChecked = false;
                     break;
-                default:
-                    break;
             }
         }
-        private void ClearDateRangeUIFields()
+
+        private void ClearDateRangeUiFields()
         {
             startDate.SelectedDate = null;
             endDate.SelectedDate = null;

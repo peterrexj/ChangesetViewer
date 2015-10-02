@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ChangesetViewer.Core.Settings
@@ -81,8 +74,8 @@ namespace ChangesetViewer.Core.Settings
 
         private void btnJIRAdefault_Click(object sender, EventArgs e)
         {
-            txtJiraSearchRegex.Text = Consts.__DEFAULT_JIRATICKETSEARCHREGEX;
-            txtJiraTicketLink.Text = Consts.__DEFAULT_JIRATICKETBROWSEURL;
+            txtJiraSearchRegex.Text = Consts.DefaultJiraticketsearchregex;
+            txtJiraTicketLink.Text = Consts.DefaultJiraticketbrowseurl;
             UpdateSettingsModelBasedonUI();
         }
 
