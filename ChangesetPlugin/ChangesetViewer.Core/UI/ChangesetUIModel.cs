@@ -69,6 +69,14 @@ namespace ChangesetViewer.Core.UI
             }
         }
 
+        public Visibility VisibilityBasedOnChangesetCount
+        {
+            get
+            {
+                return (ChangeSetCollection.Count > 0 ? Visibility.Visible : Visibility.Collapsed);
+            }
+        }
+
         public bool SearchResultedChangesets
         {
             get
