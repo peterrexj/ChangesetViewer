@@ -128,7 +128,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Infra\AnimatedGIFControl.cs" />
     <Compile Include="Infra\PercentageConverter.cs" />
     <Compile Include="Infra\RichTextboxCustomized.cs" />
     <Compile Include="SpinningWheel\RotateDirection.cs" />
@@ -184,22 +183,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\loader01.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Folder Include="Resources\" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\loader01.GIF">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\loader01.GIF" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\1.jpg" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
