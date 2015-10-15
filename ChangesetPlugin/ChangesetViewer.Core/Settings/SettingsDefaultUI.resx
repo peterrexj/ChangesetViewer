@@ -121,13 +121,10 @@
     <value>17, 17</value>
   </metadata>
   <data name="label6.ToolTip" xml:space="preserve">
-    <value>Accepts a hyperlink with a format which will 
-be used to attach the comment found using 
+    <value>Accepts a hyperlink with a format which will be used to attach the text found in the comment using 
 the regex search.
 Format: http://www.yourwebsite.com/somearea/{0}
-{0} will be replaced with the search result and it can be used anywhere in the hyperlink.
-Hyperlink can be any link
-
+{0} will be replaced with the search result and it can be used anywhere in the hyperlink (can be any link)
 For example, a support ticket number which is followed in all checkins can be extracted with the 
 regex and converted to hyperlink. http://www.mycompany.com/tickets/{0}</value>
   </data>
