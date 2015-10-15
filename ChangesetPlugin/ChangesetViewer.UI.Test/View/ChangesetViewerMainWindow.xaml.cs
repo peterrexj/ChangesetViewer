@@ -62,6 +62,7 @@ namespace ChangesetViewer.UI.View
             cboSearchType.ItemsSource = Enum.GetValues(typeof(Consts.SearchCommentType));
             txtSource.Text = UIController.GlobalSettings.DefaultTFSSearchPath;
             HandleErrorInUI();
+            UIController.IsVisualStudioIsConnectedToTfs();
         }
 
         void _cController_TfsServerContextChanged(object sender, EventArgs e)
