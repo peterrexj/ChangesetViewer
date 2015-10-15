@@ -37,7 +37,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ChangesetViewer.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ChangesetViewKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
@@ -137,12 +137,12 @@
     <Compile Include="UI\Consts.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ChangesetViewer.snk" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Settings\SettingsDefaultUI.resx">
       <DependentUpon>SettingsDefaultUI.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ChangesetViewKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
