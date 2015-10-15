@@ -18,7 +18,13 @@ namespace ChangesetViewer.Core.Settings
 
             txtJiraSearchRegex.Leave += txtLeaveEvent;
             txtJiraTicketLink.Leave += txtLeaveEvent;
+            txtJiraSearchRegex.LostFocus += txtLeaveEvent;
+            txtJiraTicketLink.LostFocus += txtLeaveEvent;
+            txtJiraTicketLink.KeyDown += txt_KeyDown;
+            txtJiraSearchRegex.KeyDown += txt_KeyDown;
         }
+
+        
 
         internal SettingsPageModel optionsPage;
 
@@ -57,6 +63,11 @@ namespace ChangesetViewer.Core.Settings
         }
 
         void txtLeaveEvent(object sender, EventArgs e)
+        {
+            UpdateSettingsModelBasedonUI();
+        }
+
+        void txt_KeyDown(object sender, KeyEventArgs e)
         {
             UpdateSettingsModelBasedonUI();
         }

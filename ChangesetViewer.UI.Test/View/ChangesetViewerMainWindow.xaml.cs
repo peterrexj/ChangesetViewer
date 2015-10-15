@@ -366,5 +366,13 @@ namespace ChangesetViewer.UI.View
             endDate.SelectedDate = null;
         }
         #endregion
+
+        private void txtChangesetId_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                btnGoToChangeet_Click(null, null);
+            }
+        }
     }
 }

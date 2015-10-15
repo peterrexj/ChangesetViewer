@@ -161,7 +161,11 @@ namespace ChangesetViewer.UI
                             IsEnabled = true
                         };
                         link.Inlines.Add(m.Groups[0].ToString());
-                        link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink + m.Groups[0]);
+                        try
+                        {
+                            link.NavigateUri = new Uri(string.Format(SettingsStaticModelWrapper.JiraTicketBrowseLink, m.Groups[0]));
+                        }
+                        catch (FormatException) { }
                         link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
                         para.Inlines.Add(link);
 
