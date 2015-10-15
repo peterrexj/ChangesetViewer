@@ -237,7 +237,7 @@ namespace ChangesetViewer.Core.UI
             int intChangesetID;
             int.TryParse(changesetId, out intChangesetID);
 
-            if (!changesetId.Equals(intChangesetID.ToString()))
+            if (!changesetId.Trim().Equals(intChangesetID.ToString()))
                 return;
 
             if (!IsVisualStudioIsConnectedToTfs())

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsDefaultUI));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtDefaultSearchPath = new System.Windows.Forms.TextBox();
             this.grpServerCredentials = new System.Windows.Forms.GroupBox();
@@ -46,6 +48,7 @@
             this.txtJiraTicketLink = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.grpJiraSettings = new System.Windows.Forms.GroupBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.grpServerCredentials.SuspendLayout();
             this.grpJiraSettings.SuspendLayout();
@@ -186,9 +189,9 @@
             this.chkFindJiraTicketsInComment.AutoSize = true;
             this.chkFindJiraTicketsInComment.Location = new System.Drawing.Point(17, 167);
             this.chkFindJiraTicketsInComment.Name = "chkFindJiraTicketsInComment";
-            this.chkFindJiraTicketsInComment.Size = new System.Drawing.Size(163, 17);
+            this.chkFindJiraTicketsInComment.Size = new System.Drawing.Size(130, 17);
             this.chkFindJiraTicketsInComment.TabIndex = 8;
-            this.chkFindJiraTicketsInComment.Text = "Find JIRA tickets in comment";
+            this.chkFindJiraTicketsInComment.Text = "Find items in comment";
             this.chkFindJiraTicketsInComment.UseVisualStyleBackColor = true;
             this.chkFindJiraTicketsInComment.CheckedChanged += new System.EventHandler(this.chkFindJiraTicketsInComment_CheckedChanged);
             // 
@@ -197,9 +200,10 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(14, 16);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(99, 13);
+            this.label5.Size = new System.Drawing.Size(96, 13);
             this.label5.TabIndex = 7;
-            this.label5.Text = "JIRA search Regex";
+            this.label5.Text = "Item search Regex";
+            this.toolTip1.SetToolTip(this.label5, "Regex that will match the changeset comment and hightlight.");
             // 
             // txtJiraTicketLink
             // 
@@ -215,9 +219,10 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(14, 42);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(82, 13);
+            this.label6.Size = new System.Drawing.Size(46, 13);
             this.label6.TabIndex = 11;
-            this.label6.Text = "JIRA Ticket link";
+            this.label6.Text = "Item link";
+            this.toolTip1.SetToolTip(this.label6, resources.GetString("label6.ToolTip"));
             // 
             // grpJiraSettings
             // 
@@ -231,7 +236,17 @@
             this.grpJiraSettings.Size = new System.Drawing.Size(314, 93);
             this.grpJiraSettings.TabIndex = 13;
             this.grpJiraSettings.TabStop = false;
-            this.grpJiraSettings.Text = "Jira Settings";
+            this.grpJiraSettings.Text = "Item Settings";
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutomaticDelay = 10;
+            this.toolTip1.AutoPopDelay = 25000;
+            this.toolTip1.InitialDelay = 10;
+            this.toolTip1.IsBalloon = true;
+            this.toolTip1.ReshowDelay = 2;
+            this.toolTip1.ShowAlways = true;
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             // 
             // SettingsDefaultUI
             // 
@@ -273,5 +288,6 @@
         private System.Windows.Forms.TextBox txtJiraTicketLink;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox grpJiraSettings;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
