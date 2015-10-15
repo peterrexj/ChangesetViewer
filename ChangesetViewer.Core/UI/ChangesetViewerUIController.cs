@@ -66,6 +66,9 @@ namespace ChangesetViewer.Core.UI
                 _dte = value;
                 _tfsServerContext = (TeamFoundationServerExt)_dte.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
                 _tfsServerContext.ProjectContextChanged += tfsServerContext_ProjectContextChanged;
+
+                if (string.IsNullOrEmpty(Model.SourceControlName) && _tfsServerContext != null)
+                    tfsServerContext_ProjectContextChanged(null, null);
             }
         }
         public ITeamExplorer TeamExplorer { get; set; }
