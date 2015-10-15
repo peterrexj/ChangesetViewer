@@ -3,12 +3,21 @@
   <Metadata>
     <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="1.0" Language="en-US" Publisher="Peter Rex Joseph" />
     <DisplayName>ChangesetViewer</DisplayName>
-    <Description xml:space="preserve">Gives information about the changesets and ability to list and search all the changesets applying filters.
-Highlight any links based on regex match which will appear as hyperlink in the search result's comment section.</Description>
+    <Description xml:space="preserve">Search changeset in TFS with wide range of filters and list very easily. An Extra regex based search to find tickets in the comment and provide hyperlink to the tickets found.</Description>
+    <GettingStartedGuide>Changeset Viewer plugin help.docx</GettingStartedGuide>
     <Icon>logo.png</Icon>
+    <PreviewImage>2015-10-15 15_24_13-ChangesetViewer_PreviewHelp.png</PreviewImage>
+    <Tags>TFS, Changeset, Visual Studio 2012, Visual Studio 2013, Search, History, Extension, Plugin</Tags>
   </Metadata>
-  <Installation InstalledByMsi="false">
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />
+  <Installation>
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Premium" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Pro" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Ultimate" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.VSWinExpress" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.VPDExpress" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.VWDExpress" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.VSLS" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.VSWinDesktopExpress" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
