@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="1.0" Language="en-US" Publisher="Peter Rex Joseph" />
+    <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="1.1" Language="en-US" Publisher="Peter Rex Joseph" />
     <DisplayName>ChangesetViewer</DisplayName>
     <Description xml:space="preserve">Search changeset in TFS with wide range of filters and list very easily. An Extra regex based search to find tickets in the comment and provide hyperlink to the tickets found.</Description>
     <GettingStartedGuide>Changeset Viewer plugin help.docx</GettingStartedGuide>

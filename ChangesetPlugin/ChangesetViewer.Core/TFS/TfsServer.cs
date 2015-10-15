@@ -18,9 +18,12 @@ namespace ChangesetViewer.Core.TFS
 
         public TfsTeamProjectCollection GetCollection()
         {
-            var credentials = System.Net.CredentialCache.DefaultCredentials;
-            Collection = new TfsTeamProjectCollection(new Uri(_serverUrl), credentials);
-            Collection.Authenticate();
+            Collection = new TfsTeamProjectCollection(new Uri(_serverUrl));
+            Collection.EnsureAuthenticated();
+            
+            if (!Collection.HasAuthenticated)
+                Collection.Authenticate();
+
             return Collection;
         }
     }
