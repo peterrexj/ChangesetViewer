@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.Core", "Cha
 		{3ED5B861-64DF-492B-8FF5-DC64527684BE} = {3ED5B861-64DF-492B-8FF5-DC64527684BE}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{0774A42C-DFEA-4A92-8FA7-7293E498EDF3}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 7
@@ -88,5 +90,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0774A42C-DFEA-4A92-8FA7-7293E498EDF3} = {A1181D58-BD2D-4BAE-A024-79D52351AB94}
 	EndGlobalSection
 EndGlobal

@@ -235,10 +235,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Changeset Viewer plugin help.docx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="ChangesetViewKey.pfx" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
