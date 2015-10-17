@@ -8,7 +8,7 @@ using PluginCore.Extensions;
 
 namespace ChangesetViewer.Core.TFS
 {
-    public class TfsChangesets : ITfsChangsets
+    public class TfsChangesets : TfsBaseHandlers, ITfsChangsets
     {
         private readonly ITfsServer _tfsServer;
         private VersionControlServer _versionControlServer;
@@ -16,6 +16,12 @@ namespace ChangesetViewer.Core.TFS
         public TfsChangesets(ITfsServer tfsServer)
         {
             _tfsServer = tfsServer;
+        }
+
+        public TfsChangesets(ITfsServer tfsServer, Action<Exception> actionForError)
+        {
+            _tfsServer = tfsServer;
+            ActionToHandleError = actionForError;
         }
 
         public IEnumerable<Changeset> Get(string projectPath, DateTime from)
@@ -61,12 +67,23 @@ namespace ChangesetViewer.Core.TFS
         {
             Task<IEnumerable<ChangesetViewModel>> qryHistory;
 
-            qryHistory = Task.Factory.StartNew(() => BuildQuery(search));
             try
             {
+                qryHistory = Task.Factory.StartNew(() => {
+                    try
+                    {
+                        return BuildQuery(search);
+                    }
+                    catch (Exception ex)
+                    {
+                        InvokeErroHandler(ex);
+                        return null;
+                    }
+                });
+
                 return await qryHistory;
             }
-            catch (Exception) {
+            catch (Exception)  {
                 return null;
             }
                 
@@ -83,46 +100,49 @@ namespace ChangesetViewer.Core.TFS
 
         private IEnumerable<ChangesetViewModel> BuildQuery(ChangesetSearchOptions search)
         {
-            var projectCollection = _tfsServer.GetCollection();
-            if (projectCollection.HasAuthenticated == false)
-                projectCollection.Authenticate();
-
-            // Get the Changeset list from the TFS API.
-            _versionControlServer = projectCollection.GetService<VersionControlServer>();
-
-            var qryHistroy = _versionControlServer.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
-                null, null, null, search.TopN,
-                false, false, false, false)
-                    .OfType<Changeset>();
-
-            if (search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
-            {
-                var rx = new Regex(search.SearchKeyword, RegexOptions.IgnoreCase);
-                qryHistroy = qryHistroy.Where(p => rx.IsMatch(search.SearchKeyword));
-            }
-            else if (!search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
-            {
-                if (search.SearchCommentType == Consts.SearchCommentType.Exact)
-                    qryHistroy = qryHistroy.Where(c => c.Comment != null && c.Comment.Contains(search.SearchKeyword));
-                else if (search.SearchCommentType == Consts.SearchCommentType.Keyword)
-                    qryHistroy = qryHistroy.Where(c => c.Comment != null && search.SearchKeywordSplitMode.Any(s => c.Comment.Contains(s)));
-            }
-
-
-            if (!string.IsNullOrEmpty(search.Committer))
-                qryHistroy = qryHistroy.Where(c => c.CommitterDisplayName == search.Committer);
-
-            if (search.StartDate.HasValue)
-                qryHistroy = qryHistroy.Where(c => c.CreationDate >= search.StartDate.Value);
-
-            if (search.EndDate.HasValue)
-                qryHistroy = qryHistroy.Where(c => c.CreationDate <= search.EndDate.Value);
-
             try
             {
+                var projectCollection = _tfsServer.GetCollection();
+                if (projectCollection.HasAuthenticated == false)
+                    projectCollection.Authenticate();
+
+                // Get the Changeset list from the TFS API.
+                _versionControlServer = projectCollection.GetService<VersionControlServer>();
+
+                var qryHistroy = _versionControlServer.QueryHistory(search.ProjectSourcePath, VersionSpec.Latest, 0, RecursionType.Full,
+                    null, null, null, search.TopN,
+                    false, false, false, false)
+                        .OfType<Changeset>();
+
+                if (search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
+                {
+                    var rx = new Regex(search.SearchKeyword, RegexOptions.IgnoreCase);
+                    qryHistroy = qryHistroy.Where(p => rx.IsMatch(search.SearchKeyword));
+                }
+                else if (!search.IsSearchBasedOnRegex && !string.IsNullOrEmpty(search.SearchKeyword))
+                {
+                    if (search.SearchCommentType == Consts.SearchCommentType.Exact)
+                        qryHistroy = qryHistroy.Where(c => c.Comment != null && c.Comment.Contains(search.SearchKeyword));
+                    else if (search.SearchCommentType == Consts.SearchCommentType.Keyword)
+                        qryHistroy = qryHistroy.Where(c => c.Comment != null && search.SearchKeywordSplitMode.Any(s => c.Comment.Contains(s)));
+                }
+
+
+                if (!string.IsNullOrEmpty(search.Committer))
+                    qryHistroy = qryHistroy.Where(c => c.CommitterDisplayName == search.Committer);
+
+                if (search.StartDate.HasValue)
+                    qryHistroy = qryHistroy.Where(c => c.CreationDate >= search.StartDate.Value);
+
+                if (search.EndDate.HasValue)
+                    qryHistroy = qryHistroy.Where(c => c.CreationDate <= search.EndDate.Value);
+
                 return qryHistroy.Select(c => ToViewModel(c)).Where(c => c != null);
             }
-            catch (Exception) { return EnumerableExtensions.Empty<ChangesetViewModel>(); }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
         }
 

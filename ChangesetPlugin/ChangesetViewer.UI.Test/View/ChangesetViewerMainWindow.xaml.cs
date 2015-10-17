@@ -50,6 +50,7 @@ namespace ChangesetViewer.UI.View
                 DisableLoadNotificatioChangeset = DisableUiNotificationChangeset,
                 SearchButtonTextLoading = SearchButtonTextLoading,
                 SearchButtonTextReset = SearchButtonTextReset,
+                ErrorHandler = HandleErrorInUI,
             };
 
             UIController.TfsServerContextChanged += _cController_TfsServerContextChanged;
@@ -79,16 +80,19 @@ namespace ChangesetViewer.UI.View
 
         private void HandleErrorInUI(Exception ex = null)
         {
-            if (ex == null)
+            Dispatcher.Invoke(() =>
             {
-                txtErrors.Visibility = Visibility.Collapsed;
-                txtErrors.Text = string.Empty;
-            }
-            else
-            {
-                txtErrors.Visibility = Visibility.Visible;
-                txtErrors.Text = ex.Message;
-            }
+                if (ex == null)
+                {
+                    txtErrors.Visibility = Visibility.Collapsed;
+                    txtErrors.Text = string.Empty;
+                }
+                else
+                {
+                    txtErrors.Visibility = Visibility.Visible;
+                    txtErrors.Text = ex.Message;
+                }
+            });
         }
 
         private ChangesetSearchOptions ReadOptionsValueFromUI()
@@ -130,6 +134,8 @@ namespace ChangesetViewer.UI.View
         {
             try
             {
+                HandleErrorInUI(); //clear the error from the UI
+
                 UIController.UpdateSettingModel();
 
                 var processChangesetsPull = ActionExtensions.Create(() =>
@@ -201,6 +207,8 @@ namespace ChangesetViewer.UI.View
         }
         public void InitializeUserList()
         {
+            HandleErrorInUI(); //clear the error from the UI
+
             if (!UIController.IsVisualStudioIsConnectedToTfs())
                 return;
 
@@ -264,6 +272,8 @@ namespace ChangesetViewer.UI.View
         {
             try
             {
+                HandleErrorInUI(); //clear the error from the UI
+
                 UIController.OpenChangesetWindow(e.Target);
             }
             catch (Exception ex)
@@ -275,6 +285,8 @@ namespace ChangesetViewer.UI.View
         {
             try
             {
+                HandleErrorInUI(); //clear the error from the UI
+
                 var disableControls = ActionExtensions.Create(() =>
                 {
                     btnExportToExcel.IsEnabled = false;
@@ -307,6 +319,8 @@ namespace ChangesetViewer.UI.View
         {
             try
             {
+                HandleErrorInUI(); //clear the error from the UI
+
                 UIController.OpenChangesetWindow(txtChangesetId.Text, true);
             }
             catch (Exception ex)
@@ -316,7 +330,7 @@ namespace ChangesetViewer.UI.View
         }
         private void btnSelectServerPath_Click(object sender, RoutedEventArgs e)
         {
-
+            HandleErrorInUI(); //clear the error from the UI
         }
         private void RichTextboxCustomized_MouseUp(object sender, MouseButtonEventArgs e) 
         { 

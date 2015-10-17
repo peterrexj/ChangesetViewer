@@ -3,8 +3,8 @@
   <Metadata>
     <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="1.1" Language="en-US" Publisher="Peter Rex Joseph" />
     <DisplayName>ChangesetViewer</DisplayName>
-    <Description xml:space="preserve">Search changeset in TFS with wide range of filters and list very easily. An Extra regex based search to find tickets in the comment and provide hyperlink to the tickets found.</Description>
-    <GettingStartedGuide>Changeset Viewer plugin help.docx</GettingStartedGuide>
+    <Description xml:space="preserve">List and search through changesets in TFS with wide range of filters. Additional regex based search to find support tickets or any text in the comment and provide hyperlink to the match found.</Description>
+    <MoreInfo>https://visualstudiogallery.msdn.microsoft.com/5662eb68-5c5f-4e3c-accc-9107324581b3</MoreInfo>
     <Icon>logo.png</Icon>
     <PreviewImage>2015-10-15 15_24_13-ChangesetViewer_PreviewHelp.png</PreviewImage>
     <Tags>TFS, Changeset, Visual Studio 2012, Visual Studio 2013, Search, History, Extension, Plugin</Tags>

@@ -47,6 +47,9 @@
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
+    <DeployExtension>True</DeployExtension>
+    <CreateVsixContainer>True</CreateVsixContainer>
+    <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ChangesetViewer.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2cd1042970990dfe, processorArchitecture=MSIL">
