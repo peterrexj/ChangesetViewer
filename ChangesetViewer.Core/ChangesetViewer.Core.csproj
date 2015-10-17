@@ -135,6 +135,7 @@
     <Compile Include="UI\ChangesetViewerUIController.cs" />
     <Compile Include="UI\ChangesetUIModel.cs" />
     <Compile Include="UI\Consts.cs" />
+    <Compile Include="TFS\TfsBaseHandlers.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Settings\SettingsDefaultUI.resx">

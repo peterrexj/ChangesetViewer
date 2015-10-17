@@ -130,7 +130,8 @@
                     </WrapPanel>
                  
                     <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" 
-                               Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" />
+                               Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" 
+                               Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" TextWrapping="Wrap" />
 
                 </Grid>
 

@@ -11,13 +11,19 @@ using System.Threading.Tasks;
 
 namespace ChangesetViewer.Core.TFS
 {
-    public class TfsUsers : ITfsUsers
+    public class TfsUsers : TfsBaseHandlers, ITfsUsers
     {
         private readonly ITfsServer _tfsServer;
-        
+
         public TfsUsers(ITfsServer tfsServer)
         {
             _tfsServer = tfsServer;
+        }
+
+        public TfsUsers(ITfsServer tfsServer, Action<Exception> actionForError)
+        {
+            _tfsServer = tfsServer;
+            ActionToHandleError = actionForError;
         }
 
         public IEnumerable<TeamFoundationIdentity> GetAllUsersInTfsBasedOnProjectCollection()
@@ -44,36 +50,49 @@ namespace ChangesetViewer.Core.TFS
 
         public async Task<Identity[]> GetAllUsersInTfsBasedOnIdentityAsync()
         {
-            var readUsersTask = Task.Factory.StartNew(() =>
-                {
-                    _tfsServer.GetCollection().EnsureAuthenticated();
+            try
+            {
+                var readUsersTask = Task.Factory.StartNew(() =>
+                    {
+                        try
+                        {
+                            _tfsServer.GetCollection().EnsureAuthenticated();
 
 #pragma warning disable 618
-                    var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
+                            var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
 #pragma warning restore 618
-                    var teamProjectCollections = _tfsServer.GetCollection().CatalogNode.QueryChildren(
-                        new[] { CatalogResourceTypes.TeamProject },
-                        false,
-                        CatalogQueryOptions.None);
+                            var teamProjectCollections = _tfsServer.GetCollection().CatalogNode.QueryChildren(
+                                new[] { CatalogResourceTypes.TeamProject },
+                                false,
+                                CatalogQueryOptions.None);
 
-                    if (teamProjectCollections.Any())
-                    {
-                        var sids = gss.ReadIdentity(SearchFactor.AccountName,
-                                teamProjectCollections.FirstOrDefault().Resource.DisplayName + " Team",
-                                QueryMembership.Expanded);
+                            if (teamProjectCollections.Any())
+                            {
+                                var sids = gss.ReadIdentity(SearchFactor.AccountName,
+                                        teamProjectCollections.FirstOrDefault().Resource.DisplayName + " Team",
+                                        QueryMembership.Expanded);
 
-                        return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None)
-                            .Where(u => u != null)
-                            .OrderBy(u => u.DisplayName)
-                            .Select(u => u)
-                            .ToArray();
-                    }
-                    return EnumerableExtensions.Empty<Identity>().ToArray();
-                });
+                                return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None)
+                                    .Where(u => u != null)
+                                    .OrderBy(u => u.DisplayName)
+                                    .Select(u => u)
+                                    .ToArray();
+                            }
+                            return EnumerableExtensions.Empty<Identity>().ToArray();
+                        }
+                        catch(Exception ex)
+                        {
+                            InvokeErroHandler(ex);
+                            return null;
+                        }
+                    });
 
-            return await readUsersTask;
-
+                return await readUsersTask;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
-
     }
 }

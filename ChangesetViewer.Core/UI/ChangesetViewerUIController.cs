@@ -41,7 +41,8 @@ namespace ChangesetViewer.Core.UI
 
         private ITfsServer __TFSServer
         {
-            get {
+            get
+            {
                 return _tfsServer ??
                        (_tfsServer =
                            new TfsServer(GlobalSettings.TFSServerURL));
@@ -49,7 +50,7 @@ namespace ChangesetViewer.Core.UI
         }
         private ITfsUsers __TFSUsers
         {
-            get { return _tfsUsers ?? (_tfsUsers = new TfsUsers(__TFSServer)); }
+            get { return _tfsUsers ?? (_tfsUsers = new TfsUsers(__TFSServer, ErrorHandler)); }
         }
 
         private readonly BackgroundWorker _workerUsersFetch;
@@ -62,7 +63,7 @@ namespace ChangesetViewer.Core.UI
         {
             get { return _dte; }
             set
-            { 
+            {
                 _dte = value;
                 _tfsServerContext = (TeamFoundationServerExt)_dte.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt");
                 _tfsServerContext.ProjectContextChanged += tfsServerContext_ProjectContextChanged;
@@ -79,6 +80,7 @@ namespace ChangesetViewer.Core.UI
         public Action DisableLoadNotificatioChangeset { get; set; }
         public Action SearchButtonTextLoading { get; set; }
         public Action SearchButtonTextReset { get; set; }
+        public Action<Exception> ErrorHandler { get; set; }
 
         public ChangesetViewerUIController()
         {
@@ -134,11 +136,25 @@ namespace ChangesetViewer.Core.UI
             //var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
             //var usertoLoad = ident.ToObservable();
 
-            var ident = await __TFSUsers.GetAllUsersInTfsBasedOnIdentityAsync();
-            var usertoLoad = ident.ToObservable();
+            Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
+                  DispatcherPriority.Background,
+                  new Action(() =>
+                  {
+                      _loadingUsers = false;
+                      DisableLoadNotificationUsers.Invoke();
+                  }));
 
-            
-            Action<Identity> addUserToCollection = user => 
+            var identities = await __TFSUsers.GetAllUsersInTfsBasedOnIdentityAsync();
+
+            if (identities == null)
+            {
+                onErrorOrComplete();
+                return;
+            }
+
+            var usertoLoad = identities.ToObservable();
+
+            Action<Identity> addUserToCollection = user =>
             {
                 if (!Model.UserCollectionInTfs.Contains(user))
                     Model.UserCollectionInTfs.Add(user);
@@ -149,9 +165,8 @@ namespace ChangesetViewer.Core.UI
                     DispatcherPriority.Background,
                     new Action<Identity>(addUserToCollection),
                     u),
-                () => Application.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Background,
-                    new Action(() => DisableLoadNotificationUsers.Invoke())));
+                    onErrorOrComplete
+                );
         }
 
         #endregion
@@ -160,7 +175,7 @@ namespace ChangesetViewer.Core.UI
 
         void workerChangesetFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-           
+
         }
         void workerChangesetFetch_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -185,21 +200,27 @@ namespace ChangesetViewer.Core.UI
         private async void GetChangesetAsync(CancellationToken ct)
         {
             ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL);
-            _changesets = new TfsChangesets(tfs);
+            _changesets = new TfsChangesets(tfs, ErrorHandler);
+
+            Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
+                   DispatcherPriority.Background,
+                   new Action(() =>
+                   {
+                       DisableLoadNotificatioChangeset.Invoke();
+                       SearchButtonTextReset.Invoke();
+                   }));
 
             var changesets = await _changesets.GetAsync(_searchOptions);
+
+            if (changesets == null)
+            {
+                onErrorOrComplete();
+                return;
+            }
 
             var changesetToLoad = changesets.ToObservable();
 
             Action<ChangesetViewModel> addChangesetToCollection = changeset => Model.ChangeSetCollection.Add(changeset);
-
-            Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
-                DispatcherPriority.Background,
-                new Action(() =>
-                {
-                    DisableLoadNotificatioChangeset.Invoke();
-                    SearchButtonTextReset.Invoke();
-                }));
 
             try
             {
@@ -214,12 +235,10 @@ namespace ChangesetViewer.Core.UI
             );
             }
             catch (QueryCancelRequest) { } //do nothing
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Print error to UI
+                ErrorHandler(ex);
             }
-            
-
 
         }
 
@@ -249,7 +268,7 @@ namespace ChangesetViewer.Core.UI
             if (requiresVerification)
             {
                 ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL);
-                _changesets = new TfsChangesets(tfs);
+                _changesets = new TfsChangesets(tfs, ErrorHandler);
                 var changeset = _changesets.Get(int.Parse(changesetId));
                 if (changeset == null)
                     return;
@@ -290,7 +309,7 @@ namespace ChangesetViewer.Core.UI
 
         public static void OpenWorkItemInWindow()
         {
-            
+
         }
 
         public void ExportToExcel(Action enableUiControlsLevel1, Action enableUiControlsLevel2)
