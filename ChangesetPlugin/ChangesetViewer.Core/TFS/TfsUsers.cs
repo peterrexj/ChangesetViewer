@@ -82,7 +82,7 @@ namespace ChangesetViewer.Core.TFS
                         }
                         catch(Exception ex)
                         {
-                            InvokeErroHandler(ex);
+                            InvokeErrorHandler(ex);
                             return null;
                         }
                     });

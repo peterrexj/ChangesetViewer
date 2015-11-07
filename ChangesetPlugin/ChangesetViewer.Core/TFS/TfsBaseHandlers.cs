@@ -9,7 +9,7 @@ namespace ChangesetViewer.Core.TFS
     public abstract class TfsBaseHandlers
     {
         public Action<Exception> ActionToHandleError { get; set; }
-        public void InvokeErroHandler(Exception ex)
+        public void InvokeErrorHandler(Exception ex)
         {
             if (ActionToHandleError != null)
                 ActionToHandleError(ex);
