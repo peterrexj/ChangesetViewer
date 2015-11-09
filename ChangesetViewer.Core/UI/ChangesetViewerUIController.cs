@@ -126,47 +126,50 @@ namespace ChangesetViewer.Core.UI
         }
         void _workerUsersFetch_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            _loadingUsers = false;
         }
 
         private async void LoadUsersInTfsAsync()
         {
-            _loadingUsers = true;
+            
             //var users = new TfsUsers(GlobalSettings.TFSServerURL, GlobalSettings.TFSUsername, GlobalSettings.TFSPassword);
             //var ident = await users.GetAllUsersInTFSBasedOnIdentityAsync();
             //var usertoLoad = ident.ToObservable();
-
-            Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
-                  DispatcherPriority.Background,
-                  new Action(() =>
-                  {
-                      _loadingUsers = false;
-                      DisableLoadNotificationUsers.Invoke();
-                  }));
-
-            var identities = await __TFSUsers.GetAllUsersInTfsBasedOnIdentityAsync();
-
-            if (identities == null)
+            if (!_loadingUsers)
             {
-                onErrorOrComplete();
-                return;
+                _loadingUsers = true;
+
+                Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
+                      DispatcherPriority.Background,
+                      new Action(() =>
+                      {
+                          _loadingUsers = false;
+                          DisableLoadNotificationUsers.Invoke();
+                      }));
+
+                var identities = await __TFSUsers.GetAllUsersInTfsBasedOnIdentityAsync();
+
+                if (identities == null)
+                {
+                    onErrorOrComplete();
+                    return;
+                }
+
+                var usertoLoad = identities.ToObservable();
+
+                Action<TeamFoundationUser> addUserToCollection = user =>
+                {
+                    if (!Model.UserCollectionInTfs.Contains(user))
+                        Model.UserCollectionInTfs.Add(user);
+                };
+
+                usertoLoad.Subscribe(u =>
+                    Application.Current.Dispatcher.Invoke(
+                        DispatcherPriority.Background,
+                        new Action<TeamFoundationUser>(addUserToCollection),
+                        u),
+                        onErrorOrComplete
+                    );
             }
-
-            var usertoLoad = identities.ToObservable();
-
-            Action<Identity> addUserToCollection = user =>
-            {
-                if (!Model.UserCollectionInTfs.Contains(user))
-                    Model.UserCollectionInTfs.Add(user);
-            };
-
-            usertoLoad.Subscribe(u =>
-                Application.Current.Dispatcher.Invoke(
-                    DispatcherPriority.Background,
-                    new Action<Identity>(addUserToCollection),
-                    u),
-                    onErrorOrComplete
-                );
         }
 
         #endregion
@@ -292,6 +295,8 @@ namespace ChangesetViewer.Core.UI
         protected virtual void OnTfsServerContextChanged(EventArgs e)
         {
             EventHandler handler = TfsServerContextChanged;
+            Model.UserCollectionInTfs.Clear();
+            Model.ChangeSetCollection.Clear();
             if (handler != null)
                 handler(this, e);
 

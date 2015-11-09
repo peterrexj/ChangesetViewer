@@ -10,7 +10,7 @@ namespace ChangesetViewer.Core.UI
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<Identity> UserCollectionInTfs { get; set; }
+        public ObservableCollection<TeamFoundationUser> UserCollectionInTfs { get; set; }
         public ObservableCollection<ChangesetViewModel> ChangeSetCollection { get; set; }
 
         
@@ -25,7 +25,7 @@ namespace ChangesetViewer.Core.UI
 
         public ChangesetUIModel()
         {
-            UserCollectionInTfs = new ObservableCollection<Identity>();
+            UserCollectionInTfs = new ObservableCollection<TeamFoundationUser>();
             ChangeSetCollection = new ObservableCollection<ChangesetViewModel>();
 
             ChangeSetCollection.CollectionChanged += ChangeSetCollection_CollectionChanged;
