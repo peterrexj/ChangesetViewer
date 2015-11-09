@@ -120,6 +120,7 @@
     <Compile Include="Settings\SettingsPageModel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TFS\TeamFoundationUser.cs" />
     <Compile Include="TFS\TfsChangesets.cs" />
     <Compile Include="TFS\ChangesetSearchOptions.cs" />
     <Compile Include="TFS\ChangesetViewModel.cs" />

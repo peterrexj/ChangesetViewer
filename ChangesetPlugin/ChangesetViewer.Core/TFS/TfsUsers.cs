@@ -48,7 +48,7 @@ namespace ChangesetViewer.Core.TFS
             return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None);
         }
 
-        public async Task<Identity[]> GetAllUsersInTfsBasedOnIdentityAsync()
+        public async Task<TeamFoundationUser[]> GetAllUsersInTfsBasedOnIdentityAsync()
         {
             try
             {
@@ -56,7 +56,12 @@ namespace ChangesetViewer.Core.TFS
                     {
                         try
                         {
+
                             _tfsServer.GetCollection().EnsureAuthenticated();
+
+
+                            var css4 = _tfsServer.GetCollection().GetService<ICommonStructureService4>();
+                            TfsTeamService teamService = _tfsServer.GetCollection().GetService<TfsTeamService>();
 
 #pragma warning disable 618
                             var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
@@ -72,13 +77,21 @@ namespace ChangesetViewer.Core.TFS
                                         teamProjectCollections.FirstOrDefault().Resource.DisplayName + " Team",
                                         QueryMembership.Expanded);
 
-                                return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None)
+                                var identities = gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None)
                                     .Where(u => u != null)
                                     .OrderBy(u => u.DisplayName)
-                                    .Select(u => u)
-                                    .ToArray();
+                                    .Select(u => new TeamFoundationUser { DisplayName = u.DisplayName });
+
+                                var tidentities =  from p in css4.ListProjects()
+                                        let allTeams = teamService.QueryTeams(p.Uri)
+                                        from a in allTeams
+                                        let ppls = a.GetMembers(_tfsServer.GetCollection(), MembershipQuery.Direct)
+                                        from ppl in ppls
+                                        select new TeamFoundationUser { DisplayName = ppl.DisplayName };
+
+                                return identities.Union(tidentities).DistinctBy(u => u.DisplayName).ToArray();
                             }
-                            return EnumerableExtensions.Empty<Identity>().ToArray();
+                            return EnumerableExtensions.Empty<TeamFoundationUser>().ToArray();
                         }
                         catch(Exception ex)
                         {
