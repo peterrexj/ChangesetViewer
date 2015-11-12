@@ -1,0 +1,5 @@
+Changeset Viewer version 1.3
+
+- Fixed retrival of users bug
+	- Not able to load users in some specific TFS version (VS Online)
+	- Duplication of users
