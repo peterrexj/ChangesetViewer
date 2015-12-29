@@ -1,4 +1,5 @@
-﻿using Microsoft.TeamFoundation.VersionControl.Client;
+﻿using ChangesetViewer.Core.Model;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;

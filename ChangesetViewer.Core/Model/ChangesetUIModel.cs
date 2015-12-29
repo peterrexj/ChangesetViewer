@@ -1,19 +1,17 @@
-﻿using ChangesetViewer.Core.TFS;
-using Microsoft.TeamFoundation.Server;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 
-namespace ChangesetViewer.Core.UI
+namespace ChangesetViewer.Core.Model
 {
     public class ChangesetUIModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<TeamFoundationUser> UserCollectionInTfs { get; set; }
+        public ObservableCollection<IdentityViewModel> UserCollectionInTfs { get; set; }
         public ObservableCollection<ChangesetViewModel> ChangeSetCollection { get; set; }
 
-        
+
 
         protected void Notify(string propertyName)
         {
@@ -25,7 +23,7 @@ namespace ChangesetViewer.Core.UI
 
         public ChangesetUIModel()
         {
-            UserCollectionInTfs = new ObservableCollection<TeamFoundationUser>();
+            UserCollectionInTfs = new ObservableCollection<IdentityViewModel>();
             ChangeSetCollection = new ObservableCollection<ChangesetViewModel>();
 
             ChangeSetCollection.CollectionChanged += ChangeSetCollection_CollectionChanged;

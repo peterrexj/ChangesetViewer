@@ -1,4 +1,5 @@
-﻿using ChangesetViewer.Core.TFS;
+﻿using ChangesetViewer.Core.Model;
+using ChangesetViewer.Core.TFS;
 using Microsoft.TeamFoundation.Server;
 using System;
 using System.ComponentModel;
@@ -156,7 +157,7 @@ namespace ChangesetViewer.Core.UI
 
                 var usertoLoad = identities.ToObservable();
 
-                Action<TeamFoundationUser> addUserToCollection = user =>
+                Action<IdentityViewModel> addUserToCollection = user =>
                 {
                     if (!Model.UserCollectionInTfs.Contains(user))
                         Model.UserCollectionInTfs.Add(user);
@@ -165,7 +166,7 @@ namespace ChangesetViewer.Core.UI
                 usertoLoad.Subscribe(u =>
                     Application.Current.Dispatcher.Invoke(
                         DispatcherPriority.Background,
-                        new Action<TeamFoundationUser>(addUserToCollection),
+                        new Action<IdentityViewModel>(addUserToCollection),
                         u),
                         onErrorOrComplete
                     );

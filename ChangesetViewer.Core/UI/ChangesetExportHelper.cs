@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using ChangesetViewer.Core.Model;
 using ChangesetViewer.Core.TFS;
 using System;
 using System.Collections.Generic;
