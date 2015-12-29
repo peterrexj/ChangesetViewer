@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChangesetViewer.Core.TFS
+namespace ChangesetViewer.Core.Model
 {
     public class ChangesetViewModel
     {
