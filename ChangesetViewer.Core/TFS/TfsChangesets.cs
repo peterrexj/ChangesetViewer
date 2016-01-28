@@ -1,4 +1,5 @@
-﻿using ChangesetViewer.Core.Model;
+﻿using System.Net;
+using ChangesetViewer.Core.Model;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
@@ -138,7 +139,7 @@ namespace ChangesetViewer.Core.TFS
                 if (search.EndDate.HasValue)
                     qryHistroy = qryHistroy.Where(c => c.CreationDate <= search.EndDate.Value);
 
-                return qryHistroy.Select(c => ToViewModel(c)).Where(c => c != null);
+                return qryHistroy.AsQueryable().Paging(search.PagingInfo).Select(ToViewModel).Where(c => c != null);
             }
             catch (Exception ex)
             {

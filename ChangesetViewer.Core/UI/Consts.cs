@@ -15,6 +15,8 @@
 
         public const string Pluginname = "Changeset Viewer";
         public const string SettingspageServer = "ServerPage";
+
+        public const int DefaultSearchPageSize = 50;
         
         #endregion
     }

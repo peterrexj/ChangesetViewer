@@ -1,4 +1,6 @@
-﻿using ChangesetViewer.Core.Model;
+﻿using System.Diagnostics;
+using System.Linq;
+using ChangesetViewer.Core.Model;
 using ChangesetViewer.Core.TFS;
 using Microsoft.TeamFoundation.Server;
 using System;
@@ -8,6 +10,7 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Reactive.Linq;
 using ChangesetViewer.Core.Settings;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.TeamFoundation.Controls;
 
@@ -24,6 +27,7 @@ namespace ChangesetViewer.Core.UI
         private ITfsServer _tfsServer;
         private ITfsUsers _tfsUsers;
         private ITfsChangsets _changesets;
+        private bool HasRequestedToForceStop = false;
 
         public SettingsModelWrapper GlobalSettings
         {
@@ -85,8 +89,10 @@ namespace ChangesetViewer.Core.UI
 
         public ChangesetViewerUIController()
         {
-            Model = new ChangesetUIModel();
             _searchOptions = new ChangesetSearchOptions();
+
+            Model = new ChangesetUIModel();
+            UpdateSettingModel();
 
             _workerUsersFetch = new BackgroundWorker();
             _workerChangesetFetch = new BackgroundWorker();
@@ -98,9 +104,6 @@ namespace ChangesetViewer.Core.UI
             _workerChangesetFetch.WorkerReportsProgress = true;
             _workerChangesetFetch.DoWork += workerChangesetFetch_DoWork;
             _workerChangesetFetch.RunWorkerCompleted += workerChangesetFetch_RunWorkerCompleted;
-
-
-            UpdateSettingModel();
         }
 
         public void UpdateSettingModel()
@@ -110,6 +113,9 @@ namespace ChangesetViewer.Core.UI
             SettingsStaticModelWrapper.FindJiraTicketsInComment = _globalSettings.FindJiraTicketsInComment;
             SettingsStaticModelWrapper.JiraTicketBrowseLink = _globalSettings.JiraTicketBrowseLink;
             SettingsStaticModelWrapper.JiraSearchRegexPattern = _globalSettings.JiraSearchRegexPattern;
+            SettingsStaticModelWrapper.SearchPageSize = _globalSettings.SearchPageSize;
+
+            _searchOptions.PagingInfo.PageSize = GlobalSettings.SearchPageSize;
         }
 
 
@@ -199,12 +205,17 @@ namespace ChangesetViewer.Core.UI
         {
             _cts.Cancel();
             _changesets.CancelAsyncQueryHistorySearch();
+            Model.FoundMoreItemsAfterInitialSearch = false;
+            HasRequestedToForceStop = true;
         }
 
         private async void GetChangesetAsync(CancellationToken ct)
         {
             ITfsServer tfs = new TfsServer(GlobalSettings.TFSServerURL);
             _changesets = new TfsChangesets(tfs, ErrorHandler);
+            Model.FoundMoreItemsAfterInitialSearch = false; //making this variable initialized in each call. Once anything found will be set to true
+            Model.IsSearchingMode = true;
+            HasRequestedToForceStop = false;
 
             Action onErrorOrComplete = () => Application.Current.Dispatcher.Invoke(
                    DispatcherPriority.Background,
@@ -212,8 +223,9 @@ namespace ChangesetViewer.Core.UI
                    {
                        DisableLoadNotificatioChangeset.Invoke();
                        SearchButtonTextReset.Invoke();
+                       Model.IsSearchingMode = false;
                    }));
-
+          
             var changesets = await _changesets.GetAsync(_searchOptions);
 
             if (changesets == null)
@@ -224,7 +236,13 @@ namespace ChangesetViewer.Core.UI
 
             var changesetToLoad = changesets.ToObservable();
 
-            Action<ChangesetViewModel> addChangesetToCollection = changeset => Model.ChangeSetCollection.Add(changeset);
+            Action<ChangesetViewModel> addChangesetToCollection = changeset =>
+            {
+                if (HasRequestedToForceStop) return;
+                Model.ChangeSetCollection.Add(changeset);
+                if (Model.ChangeSetCollection.Count > GlobalSettings.SearchPageSize && !Model.FoundMoreItemsAfterInitialSearch)
+                    Model.FoundMoreItemsAfterInitialSearch = true;
+            };
 
             try
             {
@@ -296,8 +314,9 @@ namespace ChangesetViewer.Core.UI
         protected virtual void OnTfsServerContextChanged(EventArgs e)
         {
             EventHandler handler = TfsServerContextChanged;
-            Model.UserCollectionInTfs.Clear();
-            Model.ChangeSetCollection.Clear();
+            Model.InitializeChangesetsModel();
+            Model.InitializeUsersModel();
+
             if (handler != null)
                 handler(this, e);
 
