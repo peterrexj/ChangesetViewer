@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System;
+using ChangesetViewer.Core.Model;
 
 namespace ChangesetViewer.Core.TFS
 {
@@ -39,5 +40,11 @@ namespace ChangesetViewer.Core.TFS
             }
         }
 
+        public PagingModel PagingInfo { get; set; }
+
+        public ChangesetSearchOptions()
+        {
+            PagingInfo = new PagingModel();
+        }
     }
 }

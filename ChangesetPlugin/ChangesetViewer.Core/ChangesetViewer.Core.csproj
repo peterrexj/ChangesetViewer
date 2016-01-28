@@ -110,7 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\IdentityEx.cs" />
+    <Compile Include="Model\EventQueue.cs" />
     <Compile Include="Model\IdentityViewModel.cs" />
+    <Compile Include="Model\Pagging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\SettingsDefaultUI.cs">
       <SubType>UserControl</SubType>

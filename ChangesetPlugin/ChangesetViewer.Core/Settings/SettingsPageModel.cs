@@ -23,6 +23,8 @@ namespace ChangesetViewer.Core.Settings
 
         public string DefaultTFSSearchPath { get; set; }
 
+        public int SearchPageSize { get; set; }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         protected override IWin32Window Window

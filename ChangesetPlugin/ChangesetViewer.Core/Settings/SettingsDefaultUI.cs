@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using PluginCore.Extensions;
 
 namespace ChangesetViewer.Core.Settings
 {
@@ -22,6 +23,15 @@ namespace ChangesetViewer.Core.Settings
             txtJiraTicketLink.LostFocus += txtLeaveEvent;
             txtJiraTicketLink.KeyDown += txt_KeyDown;
             txtJiraSearchRegex.KeyDown += txt_KeyDown;
+
+            txtSearchPageSize.Leave += txtLeaveEvent;
+            txtSearchPageSize.LostFocus += txtLeaveEvent;
+            txtSearchPageSize.KeyPress += txtSearchPageSize_KeyPress;
+        }
+
+        void txtSearchPageSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsNumber(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
 
         
@@ -45,6 +55,8 @@ namespace ChangesetViewer.Core.Settings
             chkUseVStfsInfo.Enabled = false;
             grpServerCredentials.Enabled = false;
             txtDefaultSearchPath.Enabled = false;
+
+            txtSearchPageSize.Text = optionsPage.SearchPageSize.ToString();
         }
 
         private void UpdateSettingsModelBasedonUI()
@@ -59,6 +71,8 @@ namespace ChangesetViewer.Core.Settings
 
             optionsPage.FindJiraTicketsInComment = chkFindJiraTicketsInComment.Checked;
             optionsPage.UseVisualStudioEnvironmentTfsConnection = chkUseVStfsInfo.Checked;
+
+            optionsPage.SearchPageSize = txtSearchPageSize.Text.ToInteger().HasValue ? txtSearchPageSize.Text.ToInteger().Value : Consts.DefaultSearchPageSize;
 
         }
 

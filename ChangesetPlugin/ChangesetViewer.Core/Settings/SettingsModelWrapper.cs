@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TeamFoundation;
+using PluginCore.Extensions;
 
 namespace ChangesetViewer.Core.Settings
 {
@@ -112,12 +113,31 @@ namespace ChangesetViewer.Core.Settings
             }
         }
 
+        public int SearchPageSize
+        {
+            get
+            {
+                int result;
+                if (int.TryParse(getProperties("SearchPageSize").ToString(), out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return Consts.DefaultSearchPageSize;
+                }
+            }
+        }
     }
 
+    /// <summary>
+    /// This class is used when it has to provide the settings value to another wrapper object like text box
+    /// </summary>
     public static class SettingsStaticModelWrapper
     {
         public static bool FindJiraTicketsInComment { get; set; }
         public static string JiraSearchRegexPattern { get; set; }
         public static string JiraTicketBrowseLink { get; set; }
+        public static int SearchPageSize { get; set; }
     }
 }

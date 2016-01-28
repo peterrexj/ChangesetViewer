@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using ChangesetViewer.Core.TFS;
@@ -15,6 +17,9 @@ namespace ChangesetViewer.UI.View
     /// </summary>
     public partial class ChangesetViewerMainWindow
     {
+        public ChangesetViewerUIController UIController { get; set; }
+        private int _currentpage = 1;
+
         public ChangesetViewerMainWindow()
         {
             InitializeComponent();
@@ -23,14 +28,41 @@ namespace ChangesetViewer.UI.View
 
             //Remove this line
             //InitializeWindow();
+
             txtSourceControlName.DataContext = UIController.Model;
             btnExportToExcel.DataContext = UIController.Model;
             btnSearch.DataContext = UIController.Model;
             lblTotalCount.DataContext = UIController.Model;
 
+            ModelChangesetDataContextBinder();
+
+            //lstContainer.AddHandler(ScrollViewer.ScrollChangedEvent, new ScrollChangedEventHandler(LstScrollView_ScrollChanged));
+            //lstContainer.AddHandler(ScrollBar.ScrollEvent, new ScrollEventHandler(LstScrollView_ScrollChanged));
+
         }
 
-        public ChangesetViewerUIController UIController { get; set; }
+        public void ModelChangesetDataContextBinder()
+        {
+            btnFetchMore.DataContext = UIController.Model;
+        }
+
+        void LstScrollView_ScrollChanged(object sender, ScrollEventArgs e)
+        {
+            ScrollBar sb = e.OriginalSource as ScrollBar;
+            if (sb == null)
+                return;
+
+            if (sb.Orientation == Orientation.Horizontal)
+                return;
+
+            if (sb.Value == sb.Maximum)
+            {
+                //Fetch more items from the scource control
+                //_currentpage++;
+                //GetChangesetsFromServer(_currentpage);
+            }
+        }
+
 
         private int _cancelHit;
 
@@ -70,7 +102,7 @@ namespace ChangesetViewer.UI.View
         {
             try
             {
-                UIController.Model.UserCollectionInTfs.Clear();
+                UIController.Model.InitializeUsersModel();
             }
             catch (Exception ex)
             {
@@ -138,43 +170,14 @@ namespace ChangesetViewer.UI.View
 
                 UIController.UpdateSettingModel();
 
-                var processChangesetsPull = ActionExtensions.Create(() =>
+                if (!UIController.Model.IsSearchingMode)
                 {
-                    if (!UIController.IsVisualStudioIsConnectedToTfs())
-                        return;
-
-                    _cancelHit = 0;
-                    EnableUiNotificationChangeset();
-                    var searchModel = ReadOptionsValueFromUI();
-                    UIController.GetChangesets(searchModel);
-
-                    if (lstContainer.ItemsSource == null)
-                    {
-                        lstContainer.Items.Clear();
-                        lstContainer.ItemsSource = UIController.Model.ChangeSetCollection;
-                    }
-                    UIController.Model.ChangeSetCollection.Clear();
-                    btnSearch.Content = "Stop";
-                });
-
-                var requestProcessingBreak = ActionExtensions.Create(() =>
-                {
-                    UIController.StopProcessingChangesetFetch();
-                    _cancelHit = _cancelHit + 1;
-
-                    if (_cancelHit <= 2) return;
-
-                    UIController.DisableLoadNotificatioChangeset.Invoke();
-                    UIController.SearchButtonTextReset.Invoke();
-                });
-
-                if (((Button)sender).Content.Equals("Search"))
-                {
-                    processChangesetsPull();
+                    _currentpage = 1;
+                    GetChangesetsFromServer();
                 }
-                else if (((Button)sender).Content.Equals("Stop"))
+                else
                 {
-                    requestProcessingBreak();
+                    StopGettingChangesetsFromServer();
                 }
             }
             catch (Exception ex)
@@ -183,6 +186,12 @@ namespace ChangesetViewer.UI.View
             }
         }
 
+        private void btnFetchMore_Click(object sender, RoutedEventArgs e)
+        {
+            _currentpage++;
+            GetChangesetsFromServer(_currentpage);
+        }
+        
         private void lstUsers_DropDownOpened(object sender, EventArgs e)
         {
             try
@@ -389,5 +398,42 @@ namespace ChangesetViewer.UI.View
                 btnGoToChangeet_Click(null, null);
             }
         }
+
+
+        #region Private Methods
+
+        private void GetChangesetsFromServer(int page = 1)
+        {
+            if (!UIController.IsVisualStudioIsConnectedToTfs())
+                return;
+
+            _cancelHit = 0;
+            EnableUiNotificationChangeset();
+            var searchModel = ReadOptionsValueFromUI();
+            searchModel.PagingInfo.Page = page;
+
+            if (page == 1)
+            {
+                UIController.Model.InitializeChangesetsModel();
+                lstContainer.ItemsSource = null;
+                lstContainer.ItemsSource = UIController.Model.ChangeSetCollection;
+            }
+
+            UIController.GetChangesets(searchModel);
+
+            btnSearch.Content = "Stop";
+        }
+
+        private void StopGettingChangesetsFromServer()
+        {
+            UIController.StopProcessingChangesetFetch();
+            _cancelHit = _cancelHit + 1;
+
+            if (_cancelHit <= 2) return;
+
+            UIController.DisableLoadNotificatioChangeset.Invoke();
+            UIController.SearchButtonTextReset.Invoke();
+        }
+        #endregion
     }
 }
