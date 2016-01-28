@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TeamFoundation;
+﻿using Microsoft.TeamFoundation.Client;
+using Microsoft.VisualStudio.TeamFoundation;
 using PluginCore.Extensions;
 
 namespace ChangesetViewer.Core.Settings
@@ -120,12 +121,12 @@ namespace ChangesetViewer.Core.Settings
                 int result;
                 if (int.TryParse(getProperties("SearchPageSize").ToString(), out result))
                 {
-                    return result;
+                    if (result > 0)
+                    {
+                        return result;
+                    }
                 }
-                else
-                {
-                    return Consts.DefaultSearchPageSize;
-                }
+                return Consts.DefaultSearchPageSize;
             }
         }
     }
