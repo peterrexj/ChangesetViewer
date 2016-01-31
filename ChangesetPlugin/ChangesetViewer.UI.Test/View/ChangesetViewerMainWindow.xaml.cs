@@ -30,9 +30,13 @@ namespace ChangesetViewer.UI.View
             //InitializeWindow();
 
             txtSourceControlName.DataContext = UIController.Model;
-            btnExportToExcel.DataContext = UIController.Model;
-            btnSearch.DataContext = UIController.Model;
+            //btnExportToExcel.DataContext = UIController.Model;
+            //btnSearch.DataContext = UIController.Model;
             lblTotalCount.DataContext = UIController.Model;
+            numberOfItemsFondPanel.DataContext = UIController.Model;
+            //btnExportToExcel.DataContext = UIController.Model;
+
+            buttonsPanel.DataContext = UIController.Model;
 
             ModelChangesetDataContextBinder();
 
