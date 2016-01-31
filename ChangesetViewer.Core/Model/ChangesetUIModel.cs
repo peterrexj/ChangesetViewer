@@ -37,6 +37,7 @@ namespace ChangesetViewer.Core.Model
             Notify("SearchResultedChangesets");
             Notify("ChangesetCollectionCount");
             Notify("HasMoreItemsToFetch");
+            Notify("VisibilityBasedOnChangesetCount");
         }
 
         public int ChangeSetCollectionCount() { return ChangeSetCollection.Count; }

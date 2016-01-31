@@ -100,7 +100,8 @@
                         </ComboBox>
                     </DockPanel>
 
-                    <WrapPanel Grid.Column="1" Grid.Row="4">
+                    <WrapPanel Grid.Column="1" Grid.Row="4" 
+                               x:Name="numberOfItemsFondPanel" Visibility="{Binding VisibilityBasedOnChangesetCount}">
                         <Label Style="{StaticResource LabelStyle}" Content="Found : " />
                         <Label Style="{StaticResource LabelStyle}" x:Name="lblTotalCount" Content="{Binding ChangesetCollectionCount}" />
                     </WrapPanel>
@@ -135,40 +136,40 @@
                                Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" TextWrapping="Wrap" />
 
                 </Grid>
-
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" x:Name="buttonsPanel" VerticalAlignment="Center">
                     <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="10,0,10,0" />
                     <Button x:Name="btnFetchMore" Content=" Fetch More.. " 
-                            Click="btnFetchMore_Click" Visibility="{Binding HasMoreItemsToFetch}"
-                            Style="{StaticResource Link}"/>
-                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" 
-                             HorizontalAlignment="Right" Style="{StaticResource Link}">
+                		Click="btnFetchMore_Click" Visibility="{Binding HasMoreItemsToFetch}"
+                		Style="{StaticResource Link}"/>
+                    <Label Visibility="{Binding HasMoreItemsToFetch}" Content="|"/>
+                    <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" 
+                		HorizontalAlignment="Right" Style="{StaticResource Link}">
                         <Button.ToolTip>
                             <ToolTip Visibility="{Binding SearchTooltipRequired}">
                                 <StackPanel>
-                                    <TextBlock FontWeight="Bold" FontSize="14" Margin="0,0,0,5">Search Option - Disabled</TextBlock>
-                                    <TextBlock>
-                                        The search option is disabled <LineBreak />
-                                        since it is not connected to any <LineBreak />Team Foundation Server.
-                                    </TextBlock>
+                                    <TextBlock FontWeight="Bold" FontSize="14" Margin="0,0,0,5"><Run Text="Search Option - Disabled"/></TextBlock>
+                                    <TextBlock><Run Text="The search option is disabled"/><LineBreak /><Run Text="since it is not connected to any"/><LineBreak /><Run Text="Team Foundation Server."/></TextBlock>
                                     <Border BorderBrush="Silver" BorderThickness="0,1,0,0" Margin="0,8" />
                                     <WrapPanel>
-                                        <TextBlock>Click on the search button <LineBreak />to automatically connect to <LineBreak />one of the Team Collection</TextBlock>
+                                        <TextBlock><Run Text="Click on the search button"/><LineBreak /><Run Text="to automatically connect to"/><LineBreak /><Run Text="one of the Team Collection"/></TextBlock>
                                     </WrapPanel>
                                 </StackPanel>
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
+                    <Label Visibility="{Binding VisibilityBasedOnChangesetCount}" Content="|"/>
                     <Button  Content="Export to Excel" x:Name="btnExportToExcel" 
-                             HorizontalAlignment="Left" Click="btnExportToExcel_Click"
-                             IsEnabled="{Binding SearchResultedChangesets}"
-                             Style="{StaticResource Link}"/>
-                    <TextBox x:Name="txtChangesetId" Width="80" FontSize="12" HorizontalContentAlignment="Center" 
-                             VerticalContentAlignment="Center"
-                             KeyDown="txtChangesetId_KeyDown"></TextBox>
-                    <Button x:Name="btnGoToChangeet" Width="100" 
-                            Content=" Go to Changeset " Click="btnGoToChangeet_Click" 
-                            Style="{StaticResource Link}"/>
+                		HorizontalAlignment="Left" Click="btnExportToExcel_Click"
+                		IsEnabled="{Binding SearchResultedChangesets}"
+                		Style="{StaticResource Link}"
+                		Visibility="{Binding VisibilityBasedOnChangesetCount}"/>
+                    <TextBox x:Name="txtChangesetId" Width="60" 
+                		FontSize="12" HorizontalContentAlignment="Center" 
+                		VerticalContentAlignment="Center"
+                		KeyDown="txtChangesetId_KeyDown" Margin="4,0"/>
+                    <Button x:Name="btnGoToChangeet" 
+                		Content="Go to Changeset " Click="btnGoToChangeet_Click" 
+                		Style="{StaticResource Link}"/>
 
                 </StackPanel>
 
