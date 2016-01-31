@@ -44,9 +44,9 @@
                 </WrapPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="100" />
-                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="85" />
+                        <ColumnDefinition Width="5" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -60,7 +60,10 @@
                     </Grid.RowDefinitions>
 
                     <Button x:Name="btnSelectServerPath" Grid.Column="1" Grid.Row="0" IsEnabled="false" Width="100"
-                            Content="Server Path ...  " Click="btnSelectServerPath_Click" HorizontalAlignment="Left"/>
+                            Content="Server Path ...  " Click="btnSelectServerPath_Click" 
+                            HorizontalAlignment="Left" 
+                            Style="{StaticResource Link}"/>
+
                     <TextBox Grid.Column="3" Grid.Row="0" DockPanel.Dock="Right" Height="30" 
                              Style="{StaticResource TextblockStyle}"
                                  TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource" 
@@ -74,7 +77,8 @@
                                  TextWrapping="Wrap" 
                                  VerticalContentAlignment="Top"
                                  BorderThickness="0,0,0,1"
-                                 VerticalAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="70" FontSize="12"
+                                 VerticalAlignment="Top" 
+                             AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="40" FontSize="12"
                              />
                     <Grid Grid.Column="3" Grid.Row="2">
                         <Grid.ColumnDefinitions>
@@ -83,25 +87,26 @@
                             <ColumnDefinition Width="8*" />
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0" Grid.Row="1" x:Name="cboSearchType" DockPanel.Dock="Bottom" SelectedIndex="0" FontSize="12" Background="{DynamicResource BackgroundKey}"></ComboBox>
-                        <CheckBox Grid.Column="2" Grid.Row="1" x:Name="chkSearchBasedOnRegex" Content="Search Pattern Regex" Margin="0,6,0,0"
-                                IsEnabled="False" FontSize="12" HorizontalAlignment="Center" />
                     </Grid>
 
-                    <DockPanel Grid.Column="1" Grid.Row="3">
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelStyle}" HorizontalAlignment="Left" Content="By user" Width="75" />
-                        <hammer:SpinningWheel x:Name="spinnerUser" DockPanel.Dock="Right" IsSpinning="False" Height="20" Width="20" />
+                    <Label Grid.Column="1" Grid.Row="3" 
+                           Style="{StaticResource LabelStyle}" 
+                           HorizontalAlignment="Left" Content="By user" Width="75" />
+                    <DockPanel  Grid.Column="3" Grid.Row="3">
+                        <hammer:SpinningWheel x:Name="spinnerUser" DockPanel.Dock="Left" 
+                                              IsSpinning="False" Height="20" Width="40" />
+                        <ComboBox x:Name="lstUsers" 
+                            DockPanel.Dock="Right"
+                            IsEditable="True"
+                            TextSearch.TextPath="DisplayName" 
+                            DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus" BorderThickness="0,0,0,1">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </DockPanel>
-
-                    <ComboBox Grid.Column="3" Grid.Row="3" x:Name="lstUsers" 
-                          IsEditable="True"
-                          TextSearch.TextPath="DisplayName" 
-                          DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus" BorderThickness="0,0,0,1">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DisplayName}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
                     <Label Grid.Column="1" Grid.Row="4" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
@@ -137,7 +142,11 @@
 
                 <StackPanel Orientation="Horizontal">
                     <hammer:SpinningWheel x:Name="spinnerchangeset" IsSpinning="False" Height="20" Width="20" Margin="10,0,10,0" />
-                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Width="70" Height="25" HorizontalAlignment="Right">
+                    <Button x:Name="btnFetchMore" Content=" Fetch More.. " 
+                            Click="btnFetchMore_Click" Visibility="{Binding HasMoreItemsToFetch}"
+                            Style="{StaticResource Link}"/>
+                    <Button  Content="Search" Click="btnSearch_Click" x:Name="btnSearch" 
+                             HorizontalAlignment="Right" Style="{StaticResource Link}">
                         <Button.ToolTip>
                             <ToolTip Visibility="{Binding SearchTooltipRequired}">
                                 <StackPanel>
@@ -154,13 +163,19 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" Width="100" Height="26" HorizontalAlignment="Left" Click="btnExportToExcel_Click"
-                             IsEnabled="{Binding SearchResultedChangesets}"/>
-                    <TextBox x:Name="txtChangesetId" Width="80" FontSize="12" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txtChangesetId_KeyDown"></TextBox>
-                    <Button x:Name="btnGoToChangeet" Width="100" Content=" Go to Changeset " Click="btnGoToChangeet_Click"/>
-                    <Button x:Name="btnFetchMore" Width="100" Content=" Fetch More.. " Click="btnFetchMore_Click" Visibility="{Binding HasMoreItemsToFetch}"/>
+                    <Button  Content="Export to Excel" x:Name="btnExportToExcel" 
+                             HorizontalAlignment="Left" Click="btnExportToExcel_Click"
+                             IsEnabled="{Binding SearchResultedChangesets}"
+                             Style="{StaticResource Link}"/>
+                    <TextBox x:Name="txtChangesetId" Width="80" FontSize="12" HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center"
+                             KeyDown="txtChangesetId_KeyDown"></TextBox>
+                    <Button x:Name="btnGoToChangeet" Width="100" 
+                            Content=" Go to Changeset " Click="btnGoToChangeet_Click" 
+                            Style="{StaticResource Link}"/>
+
                 </StackPanel>
-                
+
             </StackPanel>
         </Grid>
 

@@ -135,7 +135,6 @@ namespace ChangesetViewer.UI.View
                 TopN = Int32.MaxValue,
                 SearchKeyword = txtSearchText.Text.Trim(),
                 Committer = lstUsers.Text,
-                IsSearchBasedOnRegex = chkSearchBasedOnRegex.IsChecked.HasValue && chkSearchBasedOnRegex.IsChecked.Value,
                 SearchCommentType = (Consts.SearchCommentType)Enum.Parse(typeof(Consts.SearchCommentType), cboSearchType.SelectedValue.ToString()),
                 StartDate = startDate.SelectedDate
             };
