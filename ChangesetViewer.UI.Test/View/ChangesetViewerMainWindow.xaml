@@ -56,7 +56,6 @@
                         <RowDefinition Height="30" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <Button x:Name="btnSelectServerPath" Grid.Column="1" Grid.Row="0" IsEnabled="false" Width="100"
@@ -80,19 +79,12 @@
                                  VerticalAlignment="Top" 
                              AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="40" FontSize="12"
                              />
-                    <Grid Grid.Column="3" Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10*"  />
-                            <ColumnDefinition Width="1*"  />
-                            <ColumnDefinition Width="8*" />
-                        </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="0" Grid.Row="1" x:Name="cboSearchType" DockPanel.Dock="Bottom" SelectedIndex="0" FontSize="12" Background="{DynamicResource BackgroundKey}"></ComboBox>
-                    </Grid>
+                    
 
-                    <Label Grid.Column="1" Grid.Row="3" 
+                    <Label Grid.Column="1" Grid.Row="2" 
                            Style="{StaticResource LabelStyle}" 
                            HorizontalAlignment="Left" Content="By user" Width="75" />
-                    <DockPanel  Grid.Column="3" Grid.Row="3">
+                    <DockPanel  Grid.Column="3" Grid.Row="2">
                         <hammer:SpinningWheel x:Name="spinnerUser" DockPanel.Dock="Left" 
                                               IsSpinning="False" Height="20" Width="40" />
                         <ComboBox x:Name="lstUsers" 
@@ -107,11 +99,25 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </DockPanel>
-                    <Label Grid.Column="1" Grid.Row="4" 
+
+                    <WrapPanel Grid.Column="1" Grid.Row="4">
+                        <Label Style="{StaticResource LabelStyle}" Content="Found : " />
+                        <Label Style="{StaticResource LabelStyle}" x:Name="lblTotalCount" Content="{Binding ChangesetCollectionCount}" />
+                    </WrapPanel>
+                    <WrapPanel Grid.Column="3" Grid.Row="4">
+                        <CheckBox x:Name="chkToday" Margin="0,6,0,0" Checked="chkToday_Checked">Today</CheckBox>
+                        <CheckBox x:Name="chkWeek" Margin="0,6,0,0" Checked="chkWeek_Checked">Week</CheckBox>
+                        <CheckBox x:Name="chkMonth" Margin="0,6,0,0" Checked="chkMonth_Checked">Month</CheckBox>
+                        <ComboBox x:Name="cboSearchType" Margin="10,0,0,0" SelectedIndex="0" 
+                                  FontSize="12" Background="{DynamicResource BackgroundKey}" ></ComboBox>
+                    </WrapPanel>
+                    
+                    
+                    <Label Grid.Column="1" Grid.Row="3" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
                            Content="Date Between" Width="130" />
-                    <Grid Grid.Column="3" Grid.Row="4">
+                    <Grid Grid.Column="3" Grid.Row="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5*"  />
                             <ColumnDefinition Width="2*"  />
@@ -122,19 +128,9 @@
                         <DatePicker Grid.Column="2"  x:Name="endDate"  VerticalAlignment="Center" BorderThickness="0,0,0,1" Style="{DynamicResource DatePickerStyle}"/>
 
                     </Grid>
-                    <WrapPanel Grid.Column="1" Grid.Row="5">
-                        <Label Style="{StaticResource LabelStyle}" Content="Found : " />
-                        <Label Style="{StaticResource LabelStyle}" x:Name="lblTotalCount" Content="{Binding ChangesetCollectionCount}" />
-                    </WrapPanel>
-
-
-                    <WrapPanel Grid.Column="3" Grid.Row="5" HorizontalAlignment="Left">
-                        <CheckBox  x:Name="chkToday" Margin="0,6,0,0" Checked="chkToday_Checked">Today</CheckBox>
-                        <CheckBox  x:Name="chkWeek" Margin="0,6,0,0" Checked="chkWeek_Checked">Week</CheckBox>
-                        <CheckBox  x:Name="chkMonth" Margin="0,6,0,0" Checked="chkMonth_Checked">Month</CheckBox>
-                    </WrapPanel>
-
-                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="4" 
+                    
+                    <!--Error display in UI-->
+                    <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="4" 
                                Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" 
                                Margin="0,4,0,2" FontFamily="Trebuchet MS" FontWeight="Bold" TextWrapping="Wrap" />
 
