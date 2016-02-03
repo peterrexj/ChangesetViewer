@@ -30,11 +30,8 @@ namespace ChangesetViewer.UI.View
             //InitializeWindow();
 
             txtSourceControlName.DataContext = UIController.Model;
-            //btnExportToExcel.DataContext = UIController.Model;
-            //btnSearch.DataContext = UIController.Model;
             lblTotalCount.DataContext = UIController.Model;
             numberOfItemsFondPanel.DataContext = UIController.Model;
-            //btnExportToExcel.DataContext = UIController.Model;
 
             buttonsPanel.DataContext = UIController.Model;
 
@@ -42,7 +39,7 @@ namespace ChangesetViewer.UI.View
 
             //lstContainer.AddHandler(ScrollViewer.ScrollChangedEvent, new ScrollChangedEventHandler(LstScrollView_ScrollChanged));
             //lstContainer.AddHandler(ScrollBar.ScrollEvent, new ScrollEventHandler(LstScrollView_ScrollChanged));
-
+            HandleDisplayOfShelvesetButton();
         }
 
         public void ModelChangesetDataContextBinder()
@@ -194,7 +191,7 @@ namespace ChangesetViewer.UI.View
             _currentpage++;
             GetChangesetsFromServer(_currentpage);
         }
-        
+
         private void lstUsers_DropDownOpened(object sender, EventArgs e)
         {
             try
@@ -340,13 +337,34 @@ namespace ChangesetViewer.UI.View
                 HandleErrorInUI(ex);
             }
         }
+        private void btnGoToShelveset_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                HandleErrorInUI(); //clear the error from the UI
+
+                UIController.OpenShelvesetWindow(lstUsers.Text);
+            }
+            catch (Exception ex)
+            {
+                HandleErrorInUI(ex);
+            }
+        }
         private void btnSelectServerPath_Click(object sender, RoutedEventArgs e)
         {
             HandleErrorInUI(); //clear the error from the UI
         }
-        private void RichTextboxCustomized_MouseUp(object sender, MouseButtonEventArgs e) 
-        { 
+        private void RichTextboxCustomized_MouseUp(object sender, MouseButtonEventArgs e)
+        {
             //dummy event which is req. Do not delete 
+        }
+        private void lstUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            HandleDisplayOfShelvesetButton();
+        }
+        private void lstUsers_KeyUp(object sender, KeyEventArgs e)
+        {
+            HandleDisplayOfShelvesetButton();
         }
 
         #region Checkbox change event handler
@@ -402,7 +420,6 @@ namespace ChangesetViewer.UI.View
             }
         }
 
-
         #region Private Methods
 
         private void GetChangesetsFromServer(int page = 1)
@@ -437,6 +454,23 @@ namespace ChangesetViewer.UI.View
             UIController.DisableLoadNotificatioChangeset.Invoke();
             UIController.SearchButtonTextReset.Invoke();
         }
+
+        private void HandleDisplayOfShelvesetButton()
+        {
+            btnGotoShelveset.Visibility = System.Windows.Visibility.Collapsed;
+            // Always collapsed since the name in search for shelveset is always the logged in user name
+
+            //if (!string.IsNullOrEmpty(lstUsers.Text))
+            //{
+            //    btnGotoShelveset.Visibility = System.Windows.Visibility.Visible;
+            //}
+            //else
+            //{
+            //    btnGotoShelveset.Visibility = System.Windows.Visibility.Collapsed;
+            //}
+        }
+
         #endregion
+
     }
 }

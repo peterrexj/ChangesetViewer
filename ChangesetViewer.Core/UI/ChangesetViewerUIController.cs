@@ -303,6 +303,19 @@ namespace ChangesetViewer.Core.UI
             TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.ChangesetDetails), cId);
         }
 
+        string _userSearchForShelveset;
+        public void OpenShelvesetWindow(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+                return;
+
+            TeamExplorer.ClosePage(TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.FindShelvesets), _userSearchForShelveset));
+
+            _userSearchForShelveset = username;
+
+            TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.FindShelvesets), _userSearchForShelveset);
+        }
+
         //Any operation on tfs should pass through the this call
         public bool IsVisualStudioIsConnectedToTfs()
         {
@@ -332,7 +345,7 @@ namespace ChangesetViewer.Core.UI
 
         #endregion
 
-        public static void OpenWorkItemInWindow()
+        public void OpenWorkItemInWindow()
         {
 
         }
