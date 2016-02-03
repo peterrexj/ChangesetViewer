@@ -87,17 +87,28 @@
                     <DockPanel  Grid.Column="3" Grid.Row="2">
                         <hammer:SpinningWheel x:Name="spinnerUser" DockPanel.Dock="Left" 
                                               IsSpinning="False" Height="20" Width="40" />
-                        <ComboBox x:Name="lstUsers" 
-                            DockPanel.Dock="Right"
-                            IsEditable="True"
-                            TextSearch.TextPath="DisplayName" 
-                            DropDownOpened="lstUsers_DropDownOpened" GotFocus="lstUsers_GotFocus" BorderThickness="0,0,0,1">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding DisplayName}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                        <DockPanel DockPanel.Dock="Right">
+                            <Button x:Name="btnGotoShelveset" 
+                                DockPanel.Dock="Left"    
+                		        Content=" Show Shelveset " Click="btnGoToShelveset_Click" 
+                		        Style="{StaticResource Link}"/>
+                            <ComboBox x:Name="lstUsers" 
+                                DockPanel.Dock="Right"
+                                IsEditable="True"
+                                TextSearch.TextPath="DisplayName" 
+                                DropDownOpened="lstUsers_DropDownOpened" 
+                                GotFocus="lstUsers_GotFocus" 
+                                
+                                BorderThickness="0,0,0,1" SelectionChanged="lstUsers_SelectionChanged" KeyUp="lstUsers_KeyUp">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                           
+                        </DockPanel>
+                        
                     </DockPanel>
 
                     <WrapPanel Grid.Column="1" Grid.Row="4" 
@@ -163,10 +174,10 @@
                 		IsEnabled="{Binding SearchResultedChangesets}"
                 		Style="{StaticResource Link}"
                 		Visibility="{Binding VisibilityBasedOnChangesetCount}"/>
-                    <TextBox x:Name="txtChangesetId" Width="60" 
+                    <TextBox x:Name="txtChangesetId" Width="60" Height="20"
                 		FontSize="12" HorizontalContentAlignment="Center" 
                 		VerticalContentAlignment="Center"
-                		KeyDown="txtChangesetId_KeyDown" Margin="4,0"/>
+                		KeyDown="txtChangesetId_KeyDown" Margin="4,0,4,0"/>
                     <Button x:Name="btnGoToChangeet" 
                 		Content="Go to Changeset " Click="btnGoToChangeet_Click" 
                 		Style="{StaticResource Link}"/>
