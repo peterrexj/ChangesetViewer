@@ -29,7 +29,7 @@ namespace ChangesetViewer.UI.View
             //Remove this line
             //InitializeWindow();
 
-            txtSourceControlName.DataContext = UIController.Model;
+            //txtSourceControlName.DataContext = UIController.Model;
             lblTotalCount.DataContext = UIController.Model;
             numberOfItemsFondPanel.DataContext = UIController.Model;
 
