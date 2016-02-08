@@ -30,24 +30,40 @@ namespace ChangesetViewer.Core.TFS
 
         public IEnumerable<TeamFoundationIdentity> GetAllUsersInTfsBasedOnProjectCollection()
         {
-            var css4 = _tfsServer.GetCollection().GetService<ICommonStructureService4>();
-            TfsTeamService teamService = _tfsServer.GetCollection().GetService<TfsTeamService>();
+            try
+            {
+                var css4 = _tfsServer.GetCollection().GetService<ICommonStructureService4>();
+                TfsTeamService teamService = _tfsServer.GetCollection().GetService<TfsTeamService>();
 
-            return from p in css4.ListProjects()
-                   let allTeams = teamService.QueryTeams(p.Uri)
-                   from a in allTeams
-                   let ppls = a.GetMembers(_tfsServer.GetCollection(), MembershipQuery.Direct)
-                   from ppl in ppls
-                   select ppl;
+                return from p in css4.ListProjects()
+                       let allTeams = teamService.QueryTeams(p.Uri)
+                       from a in allTeams
+                       let ppls = a.GetMembers(_tfsServer.GetCollection(), MembershipQuery.Direct)
+                       from ppl in ppls
+                       select ppl;
+            }
+            catch (Exception)
+            {
+                return EnumerableExtensions.Empty<TeamFoundationIdentity>();
+            }
+            
         }
         public IEnumerable<IdentityViewModel> GetAllUsersInTfsBasedOnIdentity()
         {
-            _tfsServer.GetCollection().EnsureAuthenticated();
+            try
+            {
+                _tfsServer.GetCollection().EnsureAuthenticated();
 #pragma warning disable 618
-            var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
+                var gss = _tfsServer.GetCollection().GetService<IGroupSecurityService>();
 #pragma warning restore 618
-            var sids = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
-            return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.None).Select(u => u.ToIdentityViewModel());
+                var sids = gss.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
+                return gss.ReadIdentities(SearchFactor.Sid, sids.Members, QueryMembership.Direct).Where(u => u != null).Select(u => u.ToIdentityViewModel());
+
+            }
+            catch (Exception)
+            {
+                return EnumerableExtensions.Empty<IdentityViewModel>();
+            }
         }
 
         public async Task<IdentityViewModel[]> GetAllUsersInTfsBasedOnIdentityAsync()
@@ -84,18 +100,21 @@ namespace ChangesetViewer.Core.TFS
                                     .OrderBy(u => u.DisplayName)
                                     .Select(u => u.ToIdentityViewModel());
 
-                                var tidentities =  from p in css4.ListProjects()
-                                        let allTeams = teamService.QueryTeams(p.Uri)
-                                        from a in allTeams
-                                        let ppls = a.GetMembers(_tfsServer.GetCollection(), MembershipQuery.Direct)
-                                        from ppl in ppls
-                                        select new IdentityViewModel { DisplayName = ppl.DisplayName };
+                                var tidentities = from p in css4.ListProjects()
+                                                  let allTeams = teamService.QueryTeams(p.Uri)
+                                                  from a in allTeams
+                                                  let ppls = a.GetMembers(_tfsServer.GetCollection(), MembershipQuery.Direct)
+                                                  from ppl in ppls
+                                                  select new IdentityViewModel { DisplayName = ppl.DisplayName };
 
-                                return identities.Union(tidentities).DistinctBy(u => u.DisplayName).ToArray();
+                                var p1 = GetAllUsersInTfsBasedOnIdentity();
+                                var q = GetAllUsersInTfsBasedOnProjectCollection().Select(u => new IdentityViewModel { DisplayName = u.DisplayName });
+
+                                return p1.Union(q).Union(identities).Union(tidentities).DistinctBy(u => u.DisplayName).OrderBy(u => u.DisplayName).ToArray();
                             }
                             return EnumerableExtensions.Empty<IdentityViewModel>().ToArray();
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             InvokeErrorHandler(ex);
                             return null;

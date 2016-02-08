@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using ChangesetViewer.Core.Settings;
 using ChangesetViewer.Core;
+using Microsoft.TeamFoundation.Controls;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -58,13 +59,23 @@ namespace PeterRexJoseph.ChangesetViewer
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = this.FindToolWindow(typeof(MyToolWindow), 0, true);
-            if ((null == window) || (null == window.Frame))
+
+
+            //ToolWindowPane window = this.FindToolWindow(typeof(MyToolWindow), 0, true);
+            //if ((null == window) || (null == window.Frame))
+            //{
+            //    throw new NotSupportedException(Resources.CanNotCreateWindow);
+            //}
+            //IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            //Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+
+            //Trying to show in the team explorer window
+            var service = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
+            if (service == null)
             {
-                throw new NotSupportedException(Resources.CanNotCreateWindow);
+                return;
             }
-            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            service.NavigateToPage(new Guid(GuidList.guidchangesetviewerTeamExplorerPage), null);
         }
 
 

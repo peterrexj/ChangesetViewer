@@ -119,6 +119,7 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.12.0" />
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -201,6 +202,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangesetviewerTeamExplorerNavigationItem.cs" />
+    <Compile Include="ChangesetviewerTeamExplorerPage.cs" />
     <Compile Include="MyControl.xaml.cs">
       <DependentUpon>MyControl.xaml</DependentUpon>
     </Compile>
@@ -235,6 +238,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="Resources\reload9.png" />
     <None Include="ChangesetViewKey.pfx" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
