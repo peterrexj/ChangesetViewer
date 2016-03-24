@@ -1,11 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 using Microsoft.TeamFoundation.Controls;
 using ChangesetViewer.UI.View;
 using System.Collections.Generic;
 using System.Drawing;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.PlatformUI;
+using PluginCore.Extensions;
+using ChangesetViewer.Core.UI;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -28,6 +32,12 @@ namespace PeterRexJoseph.ChangesetViewer
         public void Initialize(object sender, PageInitializeEventArgs e)
         {
             this.serviceProvider = e.ServiceProvider;
+            VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
+        }
+
+        void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
+        {
+            Refresh();
         }
 
         public bool IsBusy
@@ -52,27 +62,38 @@ namespace PeterRexJoseph.ChangesetViewer
         {
             get
             {
-                var col = GetVisualStudioDetailedColorList();
-
                 if (_pageContent == null)
                 {
-                    var content = new ChangesetViewerMainWindow();
-
-                    var extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
-                    content.UIController.DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
-                    content.UIController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
-
-                    content.InitializeWindow();
-
-                    _pageContent = content;
+                    _pageContent = CreateContent();
                 }
-
                 return _pageContent;
             }
         }
 
         public void Refresh()
         {
+            var service = this.GetService<ITeamExplorer>();
+            if (service == null)
+            {
+                return;
+            }
+            _pageContent = null;
+            service.NavigateToPage(new Guid(GuidList.guidchangesetviewerTeamExplorerPage), null);
+            
+        }
+
+        private object CreateContent()
+        {
+            var extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
+            var content = new ChangesetViewerMainWindow();
+
+            content.UIController.DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
+            ChangesetViewerUIController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
+            content.InitializeWindow();
+            content.UIController.VisualStudioColors = GetVisualStudioFilteredColors();
+            content.ApplyTheme();
+
+            return content;
         }
 
         public void SaveContext(object sender, PageSaveContextEventArgs e)
@@ -132,11 +153,26 @@ namespace PeterRexJoseph.ChangesetViewer
                 uiShell.GetVSSysColorEx((int)vsSysColor, out win32Color);
                 Color color = ColorTranslator.FromWin32((int)win32Color);
 
-                result.Add(vsSysColor.ToString(), color);
+                if (!result.Any(c => c.Key == vsSysColor.ToString()))
+                    result.Add(vsSysColor.ToString(), color);
             }
 
             return result;
         }
+
+        private Dictionary<string, Color> GetVisualStudioFilteredColors()
+        {
+            Dictionary<string, Color> result = new Dictionary<string, Color>();
+
+            result.Add("ToolboxBackgroundColorKey", VSColorTheme.GetThemedColor(EnvironmentColors.ToolboxBackgroundColorKey));
+            result.Add("ControlLinkTextColorKey", VSColorTheme.GetThemedColor(EnvironmentColors.ControlLinkTextColorKey));
+            result.Add("ControlOutlineColorKey", VSColorTheme.GetThemedColor(EnvironmentColors.ControlOutlineColorKey));
+            result.Add("PanelTextColorKey", VSColorTheme.GetThemedColor(EnvironmentColors.PanelTextColorKey));
+            result.Add("CommandBarTextInactiveColorKey", VSColorTheme.GetThemedColor(EnvironmentColors.CommandBarTextInactiveColorKey));
+
+            return result;
+        }
+
         #endregion
     }
 }

@@ -20,20 +20,22 @@
             <ResourceDictionary.MergedDictionaries>
                 <!--<ResourceDictionary Source="../Themes/MetroDark/MetroDark.MSControls.Core.Implicit.xaml" />-->
                 <ResourceDictionary Source="../Themes/StaticStyles.xaml" />
+                <ResourceDictionary Source="../Themes/DatePicker.xaml" />
+                <ResourceDictionary Source="../Themes/Combobox.xaml" />
+                <ResourceDictionary Source="../Themes/CheckboxStyle.xaml" />
 
                 <!--<ResourceDictionary Source="../Themes/MetroDark/MetroDark.MSControls.Toolkit.Implicit.xaml" />-->
                 <!--<ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Core.Implicit.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Toolkit.Implicit.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
-            
-            <SolidColorBrush x:Key="ForegroundKeyError" Color="#FFB24848" />
+          
             <!--<SolidColorBrush x:Key="ForegroundKeyLight" Color="#FF999999" />-->
 
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel>
+    <DockPanel Background="{DynamicResource ToolboxBackgroundColorKey}">
         <Grid DockPanel.Dock="Top">
             <StackPanel Orientation="Vertical">
                 <Grid>
@@ -87,6 +89,7 @@
                 		        Content=" Show Shelveset " Click="btnGoToShelveset_Click" 
                 		        Style="{StaticResource Link}"/>
                             <ComboBox x:Name="lstUsers" 
+                                Style="{StaticResource ComboBoxStyleCustomView}"
                                 DockPanel.Dock="Right"
                                 VerticalContentAlignment="Center"
                                 IsEditable="True"
@@ -97,7 +100,7 @@
                                 SelectionChanged="lstUsers_SelectionChanged" KeyUp="lstUsers_KeyUp">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding DisplayName}" />
+                                        <TextBlock  Text="{Binding DisplayName}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -116,14 +119,15 @@
                     <WrapPanel Grid.Column="3" Grid.Row="4">
                         <CheckBox x:Name="chkToday" Margin="0,6,15,0" 
                                   Style="{StaticResource CheckboxDate}"
-                                  Checked="chkToday_Checked">Today</CheckBox>
+                                  Checked="chkToday_Checked" Template="{DynamicResource CheckBoxControlTemplateCs}">Today</CheckBox>
                         <CheckBox x:Name="chkWeek" Margin="0,6,15,0" 
                                   Style="{StaticResource CheckboxDate}"
-                                  Checked="chkWeek_Checked">Week</CheckBox>
+                                  Checked="chkWeek_Checked" Template="{DynamicResource CheckBoxControlTemplateCs}">Week</CheckBox>
                         <CheckBox x:Name="chkMonth" Margin="0,6,15,0" 
                                   Style="{StaticResource CheckboxDate}"
-                                  Checked="chkMonth_Checked">Month</CheckBox>
+                                  Checked="chkMonth_Checked" Template="{DynamicResource CheckBoxControlTemplateCs}">Month</CheckBox>
                         <ComboBox x:Name="cboSearchType" 
+                                  Style="{StaticResource ComboBoxStyleCustomView}"
                                   Margin="10,6,0,6" SelectedIndex="0" 
                                   BorderThickness="0,0,0,1" 
                                   ></ComboBox>
@@ -143,7 +147,7 @@
                         <DatePicker Grid.Column="0" x:Name="startDate" 
                                     Style="{StaticResource DatePickerStyle.Centred}"
                                     BorderThickness="0,0,0,1" />
-                        <Label Grid.Column="1" HorizontalAlignment="Center" Content=" AND "/>
+                        <Label Grid.Column="1"  Style="{StaticResource LabelStyle}" HorizontalAlignment="Center" Content=" AND "/>
                         <DatePicker Grid.Column="2"  x:Name="endDate" 
                                     Style="{StaticResource DatePickerStyle.Centred}"
                                     BorderThickness="0,0,0,1" />
@@ -197,7 +201,9 @@
             </StackPanel>
         </Grid>
 
-        <ListView DockPanel.Dock="Bottom" x:Name="lstContainer" BorderThickness="0,1,0,0" Margin="0,10,0,0">
+        <ListView DockPanel.Dock="Bottom" x:Name="lstContainer" 
+                  BorderThickness="0,1,0,0" Margin="0,10,0,0"
+                  Background="{DynamicResource ToolboxBackgroundColorKey}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel LastChildFill="True">
@@ -207,18 +213,25 @@
                                     <TextBlock Text="{Binding ChangesetId}" FontSize="13" Background="#FF615C5C" Foreground="AntiqueWhite" />
                                 </Hyperlink>
                             </TextBlock>
-                            <TextBlock Text="{Binding CommitterDisplayName}" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold" />
-                            <TextBlock Text="{Binding CreationDate}"  FontSize="10" />
+                            <TextBlock Text="{Binding CommitterDisplayName}" Foreground="{DynamicResource PanelTextColorKey}" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold" />
+                            <TextBlock Text="{Binding CreationDate}" Foreground="{DynamicResource PanelTextColorKey}" FontSize="10" />
                             <TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold" />
-                            <!--<local:RichTextboxCustomized DockPanel.Dock="Right" FormattedTextType="WorkItem"  FormattedText="{Binding WorkItemIds}"
-                                BorderThickness="0" Background="{StaticResource BackgroundKey}" Foreground="White">
-                            </local:RichTextboxCustomized>-->
+                            <!--<local:RichTextboxCustomized  
+                                FontSize="12"  FormattedTextType="WorkItem"
+                                IsDocumentEnabled="True" BorderThickness="0"
+                                IsReadOnly="True" FormattedText="{Binding WorkItemIds}"
+                                Background="{DynamicResource ToolboxBackgroundColorKey}"
+                                Foreground="{DynamicResource PanelTextColorKey}"  
+                                            />-->
                         </StackPanel>
 
                         <local:RichTextboxCustomized  FontSize="12"  FormattedTextType="Comment"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.6'}"
                             IsDocumentEnabled="True" BorderThickness="0"
-                            IsReadOnly="True" FormattedText="{Binding Comment}" MouseUp="RichTextboxCustomized_MouseUp" />
+                            IsReadOnly="True" FormattedText="{Binding Comment}" MouseUp="RichTextboxCustomized_MouseUp"
+                            Background="{DynamicResource ToolboxBackgroundColorKey}"
+                            Foreground="{DynamicResource PanelTextColorKey}"                          
+                            />
 
                     </DockPanel>
                 </DataTemplate>
