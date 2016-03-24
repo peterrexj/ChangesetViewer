@@ -9,6 +9,8 @@ using ChangesetViewer.Core.TFS;
 using ChangesetViewer.Core.UI;
 using PluginCore.Extensions;
 using ChangesetViewer.Core;
+using System.Windows.Media;
+using System.Linq;
 
 namespace ChangesetViewer.UI.View
 {
@@ -40,6 +42,33 @@ namespace ChangesetViewer.UI.View
             //lstContainer.AddHandler(ScrollViewer.ScrollChangedEvent, new ScrollChangedEventHandler(LstScrollView_ScrollChanged));
             //lstContainer.AddHandler(ScrollBar.ScrollEvent, new ScrollEventHandler(LstScrollView_ScrollChanged));
             HandleDisplayOfShelvesetButton();
+        }
+
+        public void ApplyTheme()
+        {
+
+            foreach (var item in UIController.VisualStudioColors)
+            {
+                if (Resources.Contains(item.Key))
+                {
+                    Resources[item.Key] = GetNewBrushFromColor(item.Value);
+                }
+            }
+        }
+        private SolidColorBrush GetNewBrushFromColor(System.Drawing.Color color)
+        {
+            return new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+        }
+
+        private SolidColorBrush GetNewBrushFromColor(string colorKey)
+        {
+            var color = UIController.VisualStudioColors.Where(c => c.Key == colorKey).Select(c => c.Value).FirstOrDefault();
+            return new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+        }
+        private Color GetColorFromCollection(string colorKey)
+        {
+            var color = UIController.VisualStudioColors.Where(c => c.Key == colorKey).Select(c => c.Value).FirstOrDefault();
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         public void ModelChangesetDataContextBinder()
@@ -471,6 +500,5 @@ namespace ChangesetViewer.UI.View
         }
 
         #endregion
-
     }
 }

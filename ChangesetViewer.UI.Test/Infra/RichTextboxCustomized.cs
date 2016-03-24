@@ -1,4 +1,5 @@
 ﻿using ChangesetViewer.Core.Settings;
+using ChangesetViewer.Core.UI;
 using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -124,10 +125,15 @@ namespace ChangesetViewer.UI
                 return;
             }
 
+            if (obj._formattexttype == TextTypes.WorkItem && !string.IsNullOrEmpty(obj._textToApply) && !obj._textFormatted)
+            {
+                obj.Document = GenerateWorkItemsDocument(obj._textToApply);
+                obj._textFormatted = true;
+                return;
+            }
+
             if (obj._formattexttype != TextTypes.WorkItem || string.IsNullOrEmpty(obj._textToApply) ||
-                obj._textFormatted) return;
-            obj.Document = GenerateWorkItemsDocument(obj._textToApply);
-            obj._textFormatted = true;
+               obj._textFormatted) return;
         }
 
         private static FlowDocument GetCustomDocument(string text)
@@ -203,10 +209,16 @@ namespace ChangesetViewer.UI
                     IsEnabled = true
                 };
                 link.Inlines.Add(workitem);
-                link.NavigateUri = new Uri(SettingsStaticModelWrapper.JiraTicketBrowseLink);
-                link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+                link.NavigateUri = new Uri("http://www.google.com");
+                link.TargetName = workitem;
+                link.RequestNavigate += (sender, args) => 
+                {
+                    ChangesetViewerUIController.OpenWorkItem(args.Target);
+                };
 
                 para.Inlines.Add(link);
+
+                para.Inlines.Add(" ");
             }
             document.Blocks.Add(para);
 

@@ -13,6 +13,8 @@ using ChangesetViewer.Core.Settings;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.TeamFoundation.Controls;
+using System.Drawing;
+using System.Collections.Generic;
 
 
 namespace ChangesetViewer.Core.UI
@@ -77,7 +79,8 @@ namespace ChangesetViewer.Core.UI
                     tfsServerContext_ProjectContextChanged(null, null);
             }
         }
-        public ITeamExplorer TeamExplorer { get; set; }
+        public static ITeamExplorer TeamExplorer { get; set; }
+        public Dictionary<string, Color> VisualStudioColors { get; set; }
 
         public Action EnableLoadNotificationUsers { get; set; }
         public Action DisableLoadNotificationUsers { get; set; }
@@ -345,9 +348,9 @@ namespace ChangesetViewer.Core.UI
 
         #endregion
 
-        public void OpenWorkItemInWindow()
+        public static void OpenWorkItem(string workitem)
         {
-
+            TeamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.WorkItems), workitem);
         }
 
         public void ExportToExcel(Action enableUiControlsLevel1, Action enableUiControlsLevel2)

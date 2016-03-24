@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Shell;
 using ChangesetViewer.UI.View;
 using Microsoft.TeamFoundation.Controls;
+using ChangesetViewer.Core.UI;
 
 namespace PeterRexJoseph.ChangesetViewer
 {
@@ -42,7 +43,7 @@ namespace PeterRexJoseph.ChangesetViewer
 
             var extensibility = ChangesetViewerPackage.GetGlobalService(typeof(EnvDTE.IVsExtensibility)) as EnvDTE.IVsExtensibility;
             content.UIController.DTE = extensibility.GetGlobalsObject(null).DTE as EnvDTE80.DTE2;
-            content.UIController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
+            ChangesetViewerUIController.TeamExplorer = (ITeamExplorer)ChangesetViewerPackage.GetGlobalService(typeof(ITeamExplorer));
 
             content.InitializeWindow();
 
