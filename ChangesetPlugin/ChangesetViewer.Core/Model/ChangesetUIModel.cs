@@ -104,10 +104,27 @@ namespace ChangesetViewer.Core.Model
             }
         }
 
+        private bool _forceRemoveFetchItems;
+
+        public bool ForceRemoveFetchItems
+        {
+            get
+            {
+                return _forceRemoveFetchItems;
+            }
+            set
+            {
+                _forceRemoveFetchItems = value;
+                Notify("IsSearchingMode");
+                Notify("HasMoreItemsToFetch");
+            }
+        }
+
+
         /// <summary>
         /// Used to control the UI control visibility (ex. The fetch more button)
         /// </summary>
-        public Visibility HasMoreItemsToFetch { get { return (!IsSearchingMode && (ChangeSetCollection.Count == SettingsStaticModelWrapper.SearchPageSize || FoundMoreItemsAfterInitialSearch)) ? Visibility.Visible : Visibility.Collapsed; } }
+        public Visibility HasMoreItemsToFetch { get { return (!ForceRemoveFetchItems && !IsSearchingMode && (ChangeSetCollection.Count == SettingsStaticModelWrapper.SearchPageSize || FoundMoreItemsAfterInitialSearch)) ? Visibility.Visible : Visibility.Collapsed; } }
 
         #endregion
     }

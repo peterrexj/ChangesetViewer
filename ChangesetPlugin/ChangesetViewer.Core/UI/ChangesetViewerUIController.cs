@@ -206,8 +206,12 @@ namespace ChangesetViewer.Core.UI
         }
         public void StopProcessingChangesetFetch()
         {
-            _cts.Cancel();
-            _changesets.CancelAsyncQueryHistorySearch();
+            if (_cts != null)
+                _cts.Cancel();
+
+            if (_changesets != null)
+                _changesets.CancelAsyncQueryHistorySearch();
+
             Model.FoundMoreItemsAfterInitialSearch = false;
             HasRequestedToForceStop = true;
         }
