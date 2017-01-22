@@ -29,12 +29,11 @@
                 <ResourceDictionary Source="pack://application:,,,/ChangesetViewer.UI;component/Themes/Office2013/Office2013.MSControls.Toolkit.Implicit.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
-          
+
             <!--<SolidColorBrush x:Key="ForegroundKeyLight" Color="#FF999999" />-->
 
         </ResourceDictionary>
     </UserControl.Resources>
-
     <DockPanel Background="{DynamicResource ToolboxBackgroundColorKey}">
         <Grid DockPanel.Dock="Top">
             <StackPanel Orientation="Vertical">
@@ -75,7 +74,7 @@
                                  VerticalAlignment="Top" 
                              AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="40" FontSize="12"
                              />
-                    
+
 
                     <Label Grid.Column="1" Grid.Row="2" 
                            Style="{StaticResource LabelStyle}" 
@@ -104,9 +103,9 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                           
+
                         </DockPanel>
-                        
+
                     </DockPanel>
 
                     <WrapPanel Grid.Column="1" Grid.Row="4" 
@@ -132,8 +131,8 @@
                                   BorderThickness="0,0,0,1" 
                                   ></ComboBox>
                     </WrapPanel>
-                    
-                    
+
+
                     <Label Grid.Column="1" Grid.Row="3" 
                            Style="{StaticResource LabelStyle}"
                            HorizontalAlignment="Left"
@@ -153,7 +152,7 @@
                                     BorderThickness="0,0,0,1" />
 
                     </Grid>
-                    
+
                     <!--Error display in UI-->
                     <TextBlock x:Name="txtErrors" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="4" 
                                Visibility="Collapsed" Foreground="{StaticResource ForegroundKeyError}" 
@@ -200,10 +199,12 @@
 
             </StackPanel>
         </Grid>
-
         <ListView DockPanel.Dock="Bottom" x:Name="lstContainer" 
                   BorderThickness="0,1,0,0" Margin="0,10,0,0"
+                  ScrollViewer.CanContentScroll="True"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                   Background="{DynamicResource ToolboxBackgroundColorKey}">
+
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel LastChildFill="True">
@@ -215,24 +216,16 @@
                             </TextBlock>
                             <TextBlock Text="{Binding CommitterDisplayName}" Foreground="{DynamicResource PanelTextColorKey}" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold" />
                             <TextBlock Text="{Binding CreationDate}" Foreground="{DynamicResource PanelTextColorKey}" FontSize="10" />
-                            <TextBlock Text="{Binding WorkItemIds}" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold" />
-                            <!--<local:RichTextboxCustomized  
-                                FontSize="12"  FormattedTextType="WorkItem"
-                                IsDocumentEnabled="True" BorderThickness="0"
-                                IsReadOnly="True" FormattedText="{Binding WorkItemIds}"
-                                Background="{DynamicResource ToolboxBackgroundColorKey}"
-                                Foreground="{DynamicResource PanelTextColorKey}"  
-                                            />-->
+                            <TextBlock Text="{Binding WorkItemIds}" Foreground="{DynamicResource PanelTextColorKey}" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold"  />
                         </StackPanel>
 
                         <local:RichTextboxCustomized  FontSize="12"  FormattedTextType="Comment"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ListView}, Converter={converters:PercentageConverter}, ConverterParameter='0,0.6'}"
                             IsDocumentEnabled="True" BorderThickness="0"
                             IsReadOnly="True" FormattedText="{Binding Comment}" MouseUp="RichTextboxCustomized_MouseUp"
-                            Background="{DynamicResource ToolboxBackgroundColorKey}"
+                            Background="Transparent"
                             Foreground="{DynamicResource PanelTextColorKey}"                          
                             />
-
                     </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
