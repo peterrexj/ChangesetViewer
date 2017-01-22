@@ -390,10 +390,14 @@ namespace ChangesetViewer.UI.View
         private void lstUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             HandleDisplayOfShelvesetButton();
+
+            ResetFetchMoreOptionOnUIChanges();
         }
         private void lstUsers_KeyUp(object sender, KeyEventArgs e)
         {
             HandleDisplayOfShelvesetButton();
+
+            ResetFetchMoreOptionOnUIChanges();
         }
 
         #region Checkbox change event handler
@@ -402,16 +406,22 @@ namespace ChangesetViewer.UI.View
         {
             if (chkToday.IsChecked.HasValue && chkToday.IsChecked.Value)
                 HandleCheckDateField(DateFilterType.Today);
+
+            ResetFetchMoreOptionOnUIChanges();
         }
         private void chkWeek_Checked(object sender, RoutedEventArgs e)
         {
             if (chkWeek.IsChecked.HasValue && chkWeek.IsChecked.Value)
                 HandleCheckDateField(DateFilterType.Week);
+
+            ResetFetchMoreOptionOnUIChanges();
         }
         private void chkMonth_Checked(object sender, RoutedEventArgs e)
         {
             if (chkMonth.IsChecked.HasValue && chkMonth.IsChecked.Value)
                 HandleCheckDateField(DateFilterType.Month);
+
+            ResetFetchMoreOptionOnUIChanges();
         }
         private void HandleCheckDateField(DateFilterType dtType)
         {
@@ -460,6 +470,7 @@ namespace ChangesetViewer.UI.View
             EnableUiNotificationChangeset();
             var searchModel = ReadOptionsValueFromUI();
             searchModel.PagingInfo.Page = page;
+            UIController.Model.ForceRemoveFetchItems = false;
 
             if (page == 1)
             {
@@ -500,5 +511,14 @@ namespace ChangesetViewer.UI.View
         }
 
         #endregion
+
+        private void ResetFetchMoreOptionOnUIChanges()
+        {
+            StopGettingChangesetsFromServer();
+            UIController.Model.IsSearchingMode = false;
+            UIController.Model.ForceRemoveFetchItems = true;
+            UIController.DisableLoadNotificatioChangeset.Invoke();
+            UIController.SearchButtonTextReset.Invoke();
+        }
     }
 }

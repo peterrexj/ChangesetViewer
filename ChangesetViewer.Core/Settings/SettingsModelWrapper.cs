@@ -24,16 +24,23 @@ namespace ChangesetViewer.Core.Settings
         {
             if (_dteInstance != null)
             {
-                var props = DTE.get_Properties(Consts.Pluginname, Consts.SettingspageServer);
-
-                //System.IO.File.WriteAllText(@"D:\1.txt", props.Item(propName).Value.ToString());
-
-                if (props.Item(propName).Value != null && props.Item(propName).Value.GetType().Name == "String")
+                try
                 {
-                    return props.Item(propName).Value == "" ? null : props.Item(propName).Value;
-                }
+                    var props = DTE.get_Properties(Consts.Pluginname, Consts.SettingspageServer);
 
-                return props.Item(propName).Value;
+                    //System.IO.File.WriteAllText(@"D:\1.txt", props.Item(propName).Value.ToString());
+
+                    if (props.Item(propName).Value != null && props.Item(propName).Value.GetType().Name == "String")
+                    {
+                        return props.Item(propName).Value == "" ? null : props.Item(propName).Value;
+                    }
+
+                    return props.Item(propName).Value;
+                }
+                catch (System.Exception)
+                {
+                    return string.Empty;
+                }
             }
             return string.Empty;
         }
