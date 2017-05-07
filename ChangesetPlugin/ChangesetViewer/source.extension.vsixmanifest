@@ -11,7 +11,7 @@ Integrates to Visual Studio 2013 and Visual Studio 2015</Description>
     <PreviewImage>2015-10-15 15_24_13-ChangesetViewer_PreviewHelp.png</PreviewImage>
     <Tags>TFS, Changeset, Visual Studio 2013, Search, History, Extension, Plugin, Source Control, Visual Studio 2015</Tags>
   </Metadata>
-  <Installation AllUsers="true">
+  <Installation InstalledByMsi="true">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0,13.0)" />
     <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Premium" />
     <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Ultimate" />
