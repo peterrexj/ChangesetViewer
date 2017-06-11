@@ -1,0 +1,97 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1181D58-BD2D-4BAE-A024-79D52351AB94}"
+	ProjectSection(SolutionItems) = preProject
+		IntegrationTests1.testsettings = IntegrationTests1.testsettings
+		UnitTests1.testsettings = UnitTests1.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer", "ChangesetViewer\ChangesetViewer.csproj", "{3335130B-CF57-44B4-87EE-01F0F8DBBD98}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A} = {4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}
+		{08127934-1E88-4BDE-B612-87BB9616CDCB} = {08127934-1E88-4BDE-B612-87BB9616CDCB}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_IntegrationTests", "ChangesetViewer\ChangesetViewer_IntegrationTests\ChangesetViewer_IntegrationTests.csproj", "{A198E8A2-EDC4-4EC2-A122-F420419DC734}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer_UnitTests", "ChangesetViewer\ChangesetViewer_UnitTests\ChangesetViewer_UnitTests.csproj", "{35E0D0B0-8407-420A-A682-215F3DCEB1E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.UI", "ChangesetViewer.UI.Test\ChangesetViewer.UI.csproj", "{08127934-1E88-4BDE-B612-87BB9616CDCB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A} = {4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginCore", "PluginCore\PluginCore.csproj", "{3ED5B861-64DF-492B-8FF5-DC64527684BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangesetViewer.Core", "ChangesetViewer.Core\ChangesetViewer.Core.csproj", "{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE} = {3ED5B861-64DF-492B-8FF5-DC64527684BE}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{0774A42C-DFEA-4A92-8FA7-7293E498EDF3}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://peterrexjoseph.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ChangesetViewer\\ChangesetViewer.csproj
+		SccProjectName1 = ChangesetViewer
+		SccLocalPath1 = ChangesetViewer
+		SccProjectUniqueName2 = ChangesetViewer\\ChangesetViewer_IntegrationTests\\ChangesetViewer_IntegrationTests.csproj
+		SccProjectName2 = ChangesetViewer/ChangesetViewer_IntegrationTests
+		SccLocalPath2 = ChangesetViewer\\ChangesetViewer_IntegrationTests
+		SccProjectUniqueName3 = ChangesetViewer\\ChangesetViewer_UnitTests\\ChangesetViewer_UnitTests.csproj
+		SccProjectName3 = ChangesetViewer/ChangesetViewer_UnitTests
+		SccLocalPath3 = ChangesetViewer\\ChangesetViewer_UnitTests
+		SccProjectUniqueName4 = PluginCore\\PluginCore.csproj
+		SccProjectName4 = PluginCore
+		SccLocalPath4 = PluginCore
+		SccProjectUniqueName5 = ChangesetViewer.Core\\ChangesetViewer.Core.csproj
+		SccProjectName5 = ChangesetViewer.Core
+		SccLocalPath5 = ChangesetViewer.Core
+		SccProjectUniqueName6 = ChangesetViewer.UI.Test\\ChangesetViewer.UI.csproj
+		SccProjectName6 = ChangesetViewer.UI.Test
+		SccLocalPath6 = ChangesetViewer.UI.Test
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3335130B-CF57-44B4-87EE-01F0F8DBBD98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3335130B-CF57-44B4-87EE-01F0F8DBBD98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3335130B-CF57-44B4-87EE-01F0F8DBBD98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3335130B-CF57-44B4-87EE-01F0F8DBBD98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A198E8A2-EDC4-4EC2-A122-F420419DC734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A198E8A2-EDC4-4EC2-A122-F420419DC734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A198E8A2-EDC4-4EC2-A122-F420419DC734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A198E8A2-EDC4-4EC2-A122-F420419DC734}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35E0D0B0-8407-420A-A682-215F3DCEB1E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E0D0B0-8407-420A-A682-215F3DCEB1E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E0D0B0-8407-420A-A682-215F3DCEB1E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E0D0B0-8407-420A-A682-215F3DCEB1E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08127934-1E88-4BDE-B612-87BB9616CDCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ED5B861-64DF-492B-8FF5-DC64527684BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B077F29-BC3C-4C31-805D-D95BC0AFFC4A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0774A42C-DFEA-4A92-8FA7-7293E498EDF3} = {A1181D58-BD2D-4BAE-A024-79D52351AB94}
+	EndGlobalSection
+EndGlobal

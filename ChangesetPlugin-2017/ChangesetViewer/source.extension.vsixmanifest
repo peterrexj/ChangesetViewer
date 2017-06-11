@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="77b916dd-5930-4798-908c-0a317565b3d4" Version="2.0" Language="en-US" Publisher="Peter Rex Joseph" />
+    <DisplayName>ChangesetViewer</DisplayName>
+    <Description xml:space="preserve">List out changesets from TFS with ability to search on them based on different filters. Provide additional regex based search to find support tickets or any text in the comment and provide hyperlink to the match found.
+Integrates to Visual Studio 2013 and Visual Studio 2015</Description>
+    <MoreInfo>https://visualstudiogallery.msdn.microsoft.com/5662eb68-5c5f-4e3c-accc-9107324581b3</MoreInfo>
+    <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
+    <Icon>logo.png</Icon>
+    <PreviewImage>2015-10-15 15_24_13-ChangesetViewer_PreviewHelp.png</PreviewImage>
+    <Tags>TFS, Changeset, Visual Studio 2013, Search, History, Extension, Plugin, Source Control, Visual Studio 2015</Tags>
+  </Metadata>
+  <Installation InstalledByMsi="true">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0,13.0)" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Premium" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.Ultimate" />
+    <InstallationTarget Version="[12.0,13.0)" Id="Microsoft.VisualStudio.IntegratedShell" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Community" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.IntegratedShell" />
+    <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Enterprise" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0]" />
+    <Dependency d:Source="Installed" Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" Version="[14.0,15.0)" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+  </Assets>
+</PackageManifest>

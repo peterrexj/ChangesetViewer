@@ -1,0 +1,17 @@
+ChangesetViewer will allow you list and filter changeset from the TFS easily. It connects to TFS which is connected in the current instance of Visual Studio. Search result can match text based on regex and append hyperlinks to it, for example a support request number which can be navigated to a URL to read more about it. Also highlights the work item Id against which the changeset was checked in and each result can be exported to EXCEL.
+After install you should be able to access the plugin from Menu - View - Other Windows - Changeset Viewer or from Team Explorer 
+
+Changeset Viewer version 2.1
+- Elevated action is not required to install the plugin
+
+Changeset Viewer version 2.0
+
+- Visual Studio 2015 integration
+- Async operations update UI
+- Theme support 
+
+Changeset Viewer version 1.3
+
+- Fixed retrival of users bug
+- Not able to load users in some specific TFS version (VS Online)
+- Duplication of users
