@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+
+<body>
+    <div style="margin-left: 15px;font-family: calibri;">
+        <div>
+            <h2>Changeset Viewer</h2>
+        </div>
+        <p>This plugin will allow you list and filter changeset in the TFS easily. It connects to TFS which is connected in the current instance of Visual Studio. Search result can match text and append hyperlinks to it, for example a support request number which can be navigated to a URL to read more about it. Also highlights the work item Id against which the changeset was checked in and each result can be exported to EXCEL.</p>
+        <div>
+            <p>After install you should be able to access the plugin from Menu - View - Other Windows - Changeset Viewer</p>
+            <p>Features:</p>
+            <ol style="">
+                <li>Search based on comment </li>
+                <li>Search comment on exact or keyword match</li>
+                <li>Search based on user</li>
+                <li>Search based on date range (even from or to date independently)</li>
+                <li>Quick search for dates, current date, one week, one month</li>
+                <li>Search in particular branch</li>
+                <li>All the above can be combined</li>
+                <li>Add ticket link in the comment</li>
+                <li>Go to a particular changeset </li>
+                <li>Navigates to changeset information which opens in VS (changeset number has link)</li>
+                <li>Export the search result to excel spreadsheet</li>
+            </ol>
+
+            <p>Use case (some):</p>
+            <ol>
+                <li>Search changeset checked in today or last one week or last one month in a particular branch</li>
+                <li>Search based on ticket number and find how many changesets are related to that</li>
+                <li>Search based on user and with  some feature mentioned in the comment</li>
+                <li>Search based on a date range</li>
+                <li>Search based on reviewer</li>
+                <li>Find tickets and read about the tickets easily (tickets can have hyperlink as configured in the settings)</li>
+            </ol>
+            <p>When Visual studio is not connected to TFS, the search will not happen and it will open the TFS connect window to help connect one of the servers. Servers can be changed at any time, which the plugin will automatically refresh. Exporting to excel has a predefined template, future release will have customized template. </p>
+            <p><b><i></i>Know Issue:</b>Each search will sweep entire changeset, so some or most of the cases, it is preferred to stop the search after sometime. For example, search for today, it can be stopped once there are no changeset returned for a while, which does not make sense to search throughout the changeset collection. Future release will handle this problem.</p>
+            <p><img style="height: 50%;width: 50%;" id="184302" src="https://i1.visualstudiogallery.msdn.s-msft.com/5662eb68-5c5f-4e3c-accc-9107324581b3/image/file/184302/1/2015-10-15%2015_24_13-changesetviewer_previewhelp.png" alt="" width="500" height="375" /></p>
+            <p>Settings Page (Tools -> Options -> Changeset Viewer)</p>
+            <ol>
+                <li>Item search Regex, comes with a default regex to search patterns like ABC-1233, can be altered based on the requirement</li>
+                <li>Item link, once there is any matching text found, then it will have this hyperlink and appends the matching text in {0} position.
+                    Example: Changeset has a comment “<i>Changes to fix problem mentioned in ABC-1234. Also fixes few minor issues related to UI and audit of the parent page</i>"
+                    ABC-1234 will have the hyperlink http://www.giveninthesettings.com/some/abc-1234 </li>
+            </ol>
+            <p><img style="height: 40%;width: 40%;" id="184311" src="https://i1.visualstudiogallery.msdn.s-msft.com/5662eb68-5c5f-4e3c-accc-9107324581b3/image/file/184311/1/settings.png" /></p>
+        </div>
+    </div>
+
+</body>
+</html>

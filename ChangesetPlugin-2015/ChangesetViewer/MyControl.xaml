@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="PeterRexJoseph.ChangesetViewer.MyControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             Name="MyToolWindow">
+
+    <!--<myUI:ChangesetViewerMainWindow Height="245" />-->
+
+    <!--<Grid>
+        <StackPanel Orientation="Vertical">
+            <TextBlock Margin="10" HorizontalAlignment="Center">Changesets Viewer</TextBlock>
+            <TextBox Height="23" TextWrapping="Wrap" Text="$/CLS/Src/Dev" x:Name="txtSource"/>
+            <TextBox Height="23" TextWrapping="Wrap" Text="" x:Name="txtSearchText" HorizontalAlignment="Right" Width="114"/>
+            <ComboBox x:Name="lstUsers"/>
+            <Button Content="Search" Click="btnSearch_Click" x:Name="btnSearch" Margin="124,26,2,1" Width="71" Height="25" HorizontalAlignment="Right"/>
+            <TextBlock>
+                    <Hyperlink NavigateUri="vstfs:///VersionControl/Changeset/23969" RequestNavigate="Hyperlink_RequestNavigate">
+                            <TextBlock Text="Navigate Changeset" />
+                    </Hyperlink>
+            </TextBlock>
+            <ListBox Height="249" Name="lstContainer" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,2,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Title}" />
+                            <TextBlock Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </Grid>-->
+
+</UserControl>
