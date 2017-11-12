@@ -77,7 +77,7 @@ namespace ChangesetViewer.Core.UI
                 _xRange.Interior.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
             });
 
-            headerColumns.Iter(applyFormatToHeader);
+            headerColumns.Iterate(applyFormatToHeader);
 
             _xlWorkSheet.Cells[HeaderRow, 2] = "SL No";
             _xlWorkSheet.Cells[HeaderRow, 3] = "Id";
@@ -102,7 +102,7 @@ namespace ChangesetViewer.Core.UI
         private void ProcessExportToExcel()
         {
             _observChangesets.ToArray()
-                .Iter(c => _changesetCollection.Add(new ChangesetViewModel
+                .Iterate(c => _changesetCollection.Add(new ChangesetViewModel
                 {
                     ChangesetId = c.ChangesetId,
                     Comment = c.Comment,
@@ -131,7 +131,7 @@ namespace ChangesetViewer.Core.UI
                 var counter = 1;
                 InitializeHeaders();
 
-                _changesetCollection.Iter(changeset =>
+                _changesetCollection.Iterate(changeset =>
                 {
                     _xlWorkSheet.Cells[rowsCounter, 2] = counter.ToString(CultureInfo.InvariantCulture);
                     _xlWorkSheet.Cells[rowsCounter, 3] = changeset.ChangesetId;
