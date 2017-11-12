@@ -58,7 +58,6 @@
     <Compile Include="Classes\Void.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="Extensions\ActionExtensions.cs" />
-    <Compile Include="Extensions\AsyncExtensions.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
