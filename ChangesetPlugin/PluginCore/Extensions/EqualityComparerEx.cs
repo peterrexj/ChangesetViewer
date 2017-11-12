@@ -7,15 +7,15 @@ namespace PluginCore.Extensions
     {
         public static IEqualityComparer<T> Create<T>(Func<T, T, bool> equals, Func<T, int> getHashCode)
         {
-            return new JEqualityComparer<T>(equals, getHashCode);
+            return new TEqualityComparer<T>(equals, getHashCode);
         }
     }
 
-    public class JEqualityComparer<T> : IEqualityComparer<T>
+    public class TEqualityComparer<T> : IEqualityComparer<T>
     {
         Func<T, T, bool> _equals;
         Func<T, int> _getHashCode;
-        public JEqualityComparer(Func<T, T, bool> equals, Func<T, int> getHashCode)
+        public TEqualityComparer(Func<T, T, bool> equals, Func<T, int> getHashCode)
         {
             _equals = equals;
             _getHashCode = getHashCode;

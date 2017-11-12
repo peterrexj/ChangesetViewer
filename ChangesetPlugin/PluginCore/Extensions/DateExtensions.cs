@@ -13,6 +13,4 @@ namespace PluginCore.Extensions
             return new DateTime(dateToConsider.Year, dateToConsider.Month, dateToConsider.Day, 0, 0, 0);
         }
     }
-
-
 }
