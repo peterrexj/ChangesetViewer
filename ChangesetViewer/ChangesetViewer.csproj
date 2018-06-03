@@ -29,7 +29,7 @@
     <RootNamespace>PeterRexJoseph.ChangesetViewer</RootNamespace>
     <AssemblyName>ChangesetViewer</AssemblyName>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>ChangesetViewKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -273,11 +273,11 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Key.snk" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="Resources\reload9.png" />
-    <None Include="ChangesetViewKey.pfx" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
